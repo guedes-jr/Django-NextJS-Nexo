@@ -1,18 +1,39 @@
 <p align="center">
-  <img src="./logo.png" alt="NEXO Logo" width="120" />
+  <img src="./logo.png" alt="NEXO Logo" width="220" />
 </p>
 
-# NEXO — Gerenciamento de Investimentos & Patrimônio
+# NEXO — Terminal de Inteligência Patrimonial
 
-NEXO é uma plataforma de consolidação patrimonial, análise e inteligência de portfólio desenvolvida para investidores e clientes premium. Sua essência foca tanto em engenharia rigorosa quanto em uma interface (UX/UI) altamente sofisticada calcada nas correntes mais inovadoras de "Glassmorphism" do design de mercado.
+NEXO é um ecossistema **Fullstack (Django + Next.js)** projetado para consolidação patrimonial, análise quantitativa e gestão de portfólios multi-ativos. Criada para investidores de alta renda e plataformas de Wealth Management, a NEXO une o rigor matemático do mercado financeiro a uma interface focada em alta performance e estética **Glassmorphism**.
 
-![Pévia de Interface NEXO](./nexo_dashboard_mockup.png)
+---
+
+## 🎨 Interface Premium
+*(Substitua estas imagens pelos prints reais da pasta root)*
+
+### Dashboard Analítico
+![Dashboard NEXO](./readme_dashboard.png)
+*Visualização dinâmica de alocação por classe de ativos e rentabilidade via Gráfico Donut.*
+
+### Autenticação Inteligente
+![Login NEXO](./readme_login.png)
+*Fluxo de Login seguro com JWT e background geométrico interativo com rastreamento de mouse.*
+
+---
+
+## ✨ Funcionalidades Atuais (Etapa 5/6)
+
+- **[x] Autenticação Robusta:** Sistema JWT completo com login, registro e tokens de renovação.
+- **[x] Onboarding Interativo:** Fluxo guiado para perfil do investidor (Suitability) e configuração de corretoras parceiras.
+- **[x] Gestão Multi-Ativos:** Suporte nativo para Ações (B3), FIIs e Criptoativos.
+- **[x] Dashboard Dinâmico:** Gráficos de alocação renderizados via CSS puro e tabelas de posições calculadas em tempo real.
+- **[x] Camada de Market Data:** Arquitetura de provedores preparada para integração com Yahoo Finance e Open Finance.
+
+---
 
 ## 🚀 Como Iniciar (Ambiente Local)
 
-A estrutura do projeto conta com pequenos atalhos prontos para ligar todo o ecossistema a partir de um único terminal graças ao nosso `Makefile` nativo.
-
-Certifique-se de que tenha Node/NPM e Python instalados na sua máquina, e em seguida:
+A estrutura do projeto conta com pequenos atalhos prontos para ligar todo o ecossistema a partir de um único terminal:
 
 **1. Instalar as Dependências:**
 ```bash
@@ -24,45 +45,39 @@ make setup
 make dev
 ```
 
-*Seu frontend estará flutuando em `http://localhost:3000` (incluindo rotas de `/login` e `/register`), e se comunicando fielmente junto a seu backend em `http://localhost:8000` na mesma tab do terminal.*
-
-**Deseja acoplar à sua base de dados local Docker?**
-```bash
-make dev-docker
-```
+*O frontend rodará em `http://localhost:3000` e a API em `http://localhost:8001` (porta atualizada para evitar conflitos de sistema).*
 
 ---
 
-## 🛠 Stack Tecnológica Base
+## 🛠 Stack Tecnológica
 
-| Área | Tecnologias Utilizadas |
+| Camada | Tecnologias |
 | :--- | :--- |
-| **Frontend** | Next.js (App Router), React, TypeScript, CSS Modules |
-| **Backend** | Django, Django REST Framework, SimpleJWT |
-| **Bancos** | PostgreSQL (Relacional), Redis (Cache/Assíncrono), SQLite (Fallback) |
-| **Infraestrutura** | Docker Orchestration, Venv (Python) |
+| **Frontend** | Next.js (App Router), TypeScript, CSS Modules |
+| **Backend** | Django 4.2+, DRF, SimpleJWT, yfinance |
+| **Banco de Dados** | PostgreSQL, Redis, SQLite (Dev Fallback) |
+| **DevOps** | Docker, Makefile, Shell Scripting |
+
+---
 
 ## 🏗 Arquitetura Modular
 
-Optamos por manter o padrão *Monolito Modular* em virtude da velocidade provendo blindagem futura.
+Estruturada para escala maciça usando o padrão *Modular Monolith*:
 
 ```
 NEXO/
-├── frontend/             # O SPA construído pelo painel do Next.js
-│   ├── src/app/          # Padrões de Roteamento de telas
-│   ├── public/           # Assets e Logos
-│   └── package.json    
-├── backend/              # O cerne operacional (O motor Python)
+├── frontend/             # Next.js SPA
+│   ├── src/app/onboarding # Wizard de Suitability
+│   └── src/app/(auth)     # Telas de Acesso
+├── backend/              # Django API Engine
 │   ├── apps/
-│   │   ├── identity/     # Autenticação e Configurações de acesso 
-│   │   └── core/         # Abstrações primárias do modelo
-│   ├── nexo_api/         # O Coração de Roteamento Base e Environment
-│   └── requirements.txt
-├── docker-compose.yml    # Manifesto de Bancos de Dados local
-└── Makefile              # Comando central de startup `make dev`
+│   │   ├── identity/     # Users & Auth & Profiles
+│   │   ├── portfolio/    # Assets & Positions & Calculus
+│   │   └── market_data/  # Yahoo Finance Providers
+└── start.sh              # Orquestrador de processos
 ```
 
 ---
 
-### Observação Técnica (IA Agents)
-> Os arquivos invisíveis da raiz (`.ai-system`, `.ai-context`, entre outros) são os cérebros balizadores para padronizar os desenvolvimentos técnicos das features da plataforma, desenhados utilizando o `plano_plataforma_investimentos.md`. Não os apague para garantir que o comportamento modular seja respeitado perante arquiteturas futuras.
+### 🛡 Observação Técnica (IA Agents)
+> Os arquivos de contexto na raiz (`plano_plataforma_investimentos.md` e artefatos `.ai`) guiam a evolução sequencial do produto. Mantenha essa estrutura para continuidade do desenvolvimento assistido.

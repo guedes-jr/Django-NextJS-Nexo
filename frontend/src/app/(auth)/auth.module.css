@@ -5,15 +5,32 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
+  /* Fundo um pouco menos abissal, injetando esmeralda (money) e azul (tech) */
+  background: 
+    radial-gradient(circle at top right, rgba(16, 185, 129, 0.08), transparent 40%),
+    radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.1), transparent 40%),
+    var(--bg-primary);
 }
 
+/* Malha "High-Tech Financeira" de gráficos, iluminada magicamente pelo mouse */
 .authContainer::before {
   content: '';
   position: absolute;
-  top: -50%; left: -50%; right: -50%; bottom: -50%;
-  background: radial-gradient(circle at 60% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-              radial-gradient(circle at 40% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
+  top: 0; left: 0; right: 0; bottom: 0;
+  
+  /* Grid técnico remetendo a painéis de análise e tabelas (Esmeralda + Azul) */
+  background-image: 
+    linear-gradient(rgba(16, 185, 129, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+  background-position: -1px -1px;
+  
+  /* Máscara ampla revelando a malha da bolsa/tech muito mais vivamente ao redor do cursor */
+  mask-image: radial-gradient(circle 700px at var(--mouse-x, 50%) var(--mouse-y, 50%), black 15%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle 700px at var(--mouse-x, 50%) var(--mouse-y, 50%), black 15%, transparent 100%);
+  
   z-index: 0;
+  pointer-events: none;
 }
 
 .authCard {
@@ -25,6 +42,13 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+/* Card acende quando está digitando! */
+.authCard.typingActive {
+  box-shadow: 0 0 60px rgba(59, 130, 246, 0.12), inset 0 0 0 1px rgba(59, 130, 246, 0.3);
+  transform: translateY(-4px);
 }
 
 .logo {
@@ -37,6 +61,7 @@
   font-size: 32px;
   letter-spacing: 0.05em;
   margin-bottom: 12px;
+  user-select: none;
 }
 
 .header {
@@ -70,9 +95,22 @@
   font-size: 14px;
   font-weight: 500;
   color: var(--text-secondary);
+  transition: all 0.3s;
+}
+
+.inputGroup:focus-within .label {
+  color: var(--accent-primary);
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .input {
+  width: 100%;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
@@ -83,11 +121,39 @@
   transition: all 0.2s;
 }
 
+.input.passwordField {
+  padding-right: 48px;
+}
+
 .input:focus {
   outline: none;
   border-color: var(--accent-primary);
   background: rgba(255, 255, 255, 0.05);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, transform 0.2s;
+  padding: 4px;
+}
+
+.passwordToggle:hover {
+  color: var(--accent-primary);
+  transform: scale(1.1);
+}
+
+.passwordToggle:focus {
+  outline: none;
+  color: var(--accent-primary);
 }
 
 .btnPrimary {
@@ -111,13 +177,42 @@
   color: var(--text-secondary);
   font-size: 14px;
   margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 
 .linkText a {
-  color: var(--accent-primary);
+  color: var(--text-primary);
   font-weight: 500;
   text-decoration: none;
+  position: relative;
 }
+
+/* Efeito bacana de linha de underline nas opções */
+.linkText a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--accent-primary);
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.linkText a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
 .linkText a:hover {
-  text-decoration: underline;
+  color: var(--accent-primary);
+}
+
+.separator {
+  color: var(--glass-border);
 }

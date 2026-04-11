@@ -1,7 +1,38 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import styles from './page.module.css';
 
 export default function Home() {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [summary, setSummary] = useState<any>(null); // State da API
+
+  useEffect(() => {
+    // Checagem basica Client-side de seguranca por Token
+    const token = localStorage.getItem('nexo_access');
+    if (!token) {
+      router.push('/login');
+    } else {
+      setMounted(true);
+      
+      // Bate no Backend Mágico do NEXO
+      fetch('http://localhost:8001/api/portfolio/summary/', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        setSummary(data);
+        setLoading(false);
+      });
+    }
+  }, [router]);
+
+  if (!mounted || loading) return null; // Previne glitch na tela
+
   return (
     <div className={styles.container}>
       {/* Sidebar */}
@@ -52,37 +83,35 @@ export default function Home() {
 
         <section className={styles.dashboardGrid}>
           <div className={`${styles.statCard} glass-panel animate-fade-in`} style={{ animationDelay: '0.1s' }}>
-            <span className={styles.statLabel}>Patrimônio Líquido</span>
-            <span className={styles.statValue}>R$ 1.284.590,00</span>
+            <span className={styles.statLabel}>Patrimônio Líquido Real</span>
+            <span className={styles.statValue}>
+              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary?.total_balance || 0)}
+            </span>
             <div>
               <span className={`${styles.statChange} ${styles.positive}`}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                +2.45%
+                Ativo
               </span>
-              <span className={styles.statLabel} style={{ marginLeft: '8px' }}>esse mês</span>
+              <span className={styles.statLabel} style={{ marginLeft: '8px' }}>via API do Django</span>
             </div>
           </div>
 
           <div className={`${styles.statCard} glass-panel animate-fade-in`} style={{ animationDelay: '0.2s' }}>
-            <span className={styles.statLabel}>Rentabilidade Acumulada</span>
-            <span className={styles.statValue}>+14.2%</span>
+            <span className={styles.statLabel}>Rentabilidade da Carteira</span>
+            <span className={styles.statValue}>Variavel</span>
             <div>
               <span className={`${styles.statChange} ${styles.positive}`}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                Acima do CDI (+120%)
+                Calculando ao vivo
               </span>
             </div>
           </div>
 
           <div className={`${styles.statCard} glass-panel animate-fade-in`} style={{ animationDelay: '0.3s' }}>
-            <span className={styles.statLabel}>Proventos do Mês</span>
-            <span className={styles.statValue}>R$ 4.250,50</span>
+            <span className={styles.statLabel}>Market Data</span>
+            <span className={styles.statValue}>Offline</span>
             <div>
-              <span className={`${styles.statChange} ${styles.negative}`}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
-                -1.2%
-              </span>
-              <span className={styles.statLabel} style={{ marginLeft: '8px' }}>vs mês passado</span>
+              <span className={`${styles.statChange} ${styles.negative}`}>Aguardando Módulo 6</span>
             </div>
           </div>
         </section>
@@ -90,63 +119,91 @@ export default function Home() {
         <section className={styles.contentGrid}>
           <div className={`${styles.section} glass-panel animate-fade-in`} style={{ animationDelay: '0.4s' }}>
             <div className={styles.sectionHeader}>
-              <h2>Evolução Patrimonial</h2>
-              <button className={styles.viewAll}>Detalhes</button>
+              <h2>Alocação Inteligente</h2>
+              <button className={styles.viewAll}>Rebalancear</button>
             </div>
-            <div className={styles.chartPlaceholder}>
-              Gráfico Dinâmico de Patrimônio
-              <div className={styles.chartLine}></div>
-            </div>
+            
+            {/* O Pulo do Gato: Gráfico Donut de CSS usando state */}
+            {(() => {
+              const pA = summary?.allocations_pct?.ACAO || 0;
+              const pF = summary?.allocations_pct?.FII || 0;
+              const pC = summary?.allocations_pct?.CRIPTO || 0;
+              
+              // Colors logic mapping
+              const pA_end = pA;
+              const pF_end = pA + pF;
+              // ACAO=Blue, FII=Purple, CRIPTO=Yellow/Orange
+              const conicStr = `conic-gradient(#3b82f6 0% ${pA_end}%, #8b5cf6 ${pA_end}% ${pF_end}%, #f59e0b ${pF_end}% 100%)`;
+
+              return (
+                <div className={styles.donutWrapper}>
+                  <div className={styles.donutChart} style={{ background: conicStr }}>
+                    <div className={styles.donutHole}>
+                      <span className={styles.donutLabel}>Total</span>
+                      <span className={styles.donutTotal}>100%</span>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.legendList}>
+                    <div className={styles.legendItem}>
+                      <div className={styles.legendKey}><div className={styles.legendColor} style={{background:'#3b82f6'}}></div>Ações Nacionais</div>
+                      <span>{pA.toFixed(1)}%</span>
+                    </div>
+                    <div className={styles.legendItem}>
+                      <div className={styles.legendKey}><div className={styles.legendColor} style={{background:'#8b5cf6'}}></div>FII (Imóveis)</div>
+                      <span>{pF.toFixed(1)}%</span>
+                    </div>
+                    <div className={styles.legendItem}>
+                      <div className={styles.legendKey}><div className={styles.legendColor} style={{background:'#f59e0b'}}></div>Criptomoedas</div>
+                      <span>{pC.toFixed(1)}%</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+            
           </div>
 
           <div className={`${styles.section} glass-panel animate-fade-in`} style={{ animationDelay: '0.5s' }}>
             <div className={styles.sectionHeader}>
               <h2>Top Alocações</h2>
-              <button className={styles.viewAll}>Ver Carteira</button>
+              <button className={styles.viewAll}>Ver Carteira Completa</button>
             </div>
             
             <div className={styles.assetList}>
-              <div className={styles.assetItem}>
-                <div className={styles.assetInfo}>
-                  <div className={styles.assetIcon}>IT</div>
-                  <div>
-                    <div className={styles.assetName}>Itaú Unibanco</div>
-                    <div className={styles.assetTicker}>ITUB4</div>
-                  </div>
-                </div>
-                <div className={styles.assetValues}>
-                  <div className={styles.assetPrice}>R$ 45.200,00</div>
-                  <div className={`${styles.assetChange} ${styles.positive}`}>+1.2%</div>
-                </div>
-              </div>
-              
-              <div className={styles.assetItem}>
-                <div className={styles.assetInfo}>
-                  <div className={styles.assetIcon}>WE</div>
-                  <div>
-                    <div className={styles.assetName}>WEG S.A.</div>
-                    <div className={styles.assetTicker}>WEGE3</div>
-                  </div>
-                </div>
-                <div className={styles.assetValues}>
-                  <div className={styles.assetPrice}>R$ 38.450,00</div>
-                  <div className={`${styles.assetChange} ${styles.positive}`}>+0.8%</div>
-                </div>
-              </div>
+              {(summary?.positions || []).map((pos: any) => {
+                const totalValue = pos.quantity * pos.current_price;
+                const profitPct = ((pos.current_price - pos.average_price) / pos.average_price) * 100;
+                const isPositive = profitPct >= 0;
+                const iconMap:Record<string,{bg:string, color:string, short:string}> = {
+                  'CRIPTO': { bg: '#f59e0b', color: '#000', short: '₿' },
+                  'FII': { bg: '#8b5cf6', color: '#fff', short: 'FII' },
+                  'ACAO': { bg: 'rgba(255,255,255,0.1)', color: '#fff', short: pos.asset.ticker.substring(0,2) }
+                };
+                const config = iconMap[pos.asset.asset_type] || iconMap['ACAO'];
 
-              <div className={styles.assetItem}>
-                <div className={styles.assetInfo}>
-                  <div className={styles.assetIcon} style={{ background: '#f59e0b', color: '#000' }}>₿</div>
-                  <div>
-                    <div className={styles.assetName}>Bitcoin</div>
-                    <div className={styles.assetTicker}>BTC</div>
+                return (
+                  <div className={styles.assetItem} key={pos.id}>
+                    <div className={styles.assetInfo}>
+                      <div className={styles.assetIcon} style={{ background: config.bg, color: config.color }}>
+                        {config.short}
+                      </div>
+                      <div>
+                        <div className={styles.assetName}>{pos.asset.name}</div>
+                        <div className={styles.assetTicker}>{pos.asset.ticker} &bull; {pos.quantity} cotas</div>
+                      </div>
+                    </div>
+                    <div className={styles.assetValues}>
+                      <div className={styles.assetPrice}>
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
+                      </div>
+                      <div className={`${styles.assetChange} ${isPositive ? styles.positive : styles.negative}`}>
+                        {isPositive ? '+' : ''}{profitPct.toFixed(2)}%
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className={styles.assetValues}>
-                  <div className={styles.assetPrice}>R$ 125.000,00</div>
-                  <div className={`${styles.assetChange} ${styles.negative}`}>-2.4%</div>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </section>

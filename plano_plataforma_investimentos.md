@@ -578,20 +578,20 @@ Objetivo: preparar a base para crescer sem retrabalho.
 Objetivo: travar o coração do acesso.
 
 #### Sequência
-- [ ] 1. cadastro
-- [ ] 2. login
-- [ ] 3. refresh token
+- [x] 1. cadastro
+- [x] 2. login
+- [x] 3. refresh token
 - [ ] 4. logout
 - [ ] 5. reset de senha
 - [ ] 6. verificação de e-mail
 - [ ] 7. MFA
 - [ ] 8. biometria no mobile
-- [ ] 9. gestão de sessões
+- [x] 9. gestão de sessões
 - [ ] 10. revogação de dispositivos
-- [ ] 11. RBAC
+- [x] 11. RBAC
 - [ ] 12. trilha de auditoria de login
-- [ ] 13. política de senha
-- [ ] 14. rate limiting
+- [x] 13. política de senha
+- [x] 14. rate limiting (padrão DRF)
 - [ ] 15. antifraude básico
 
 ---
@@ -600,15 +600,15 @@ Objetivo: travar o coração do acesso.
 Objetivo: fazer o primeiro uso ser útil e guiado.
 
 #### Sequência
-- [ ] 1. wizard de onboarding
-- [ ] 2. dados básicos
-- [ ] 3. objetivo financeiro
+- [x] 1. wizard de onboarding
+- [x] 2. dados básicos
+- [x] 3. objetivo financeiro
 - [ ] 4. horizonte
-- [ ] 5. perfil de risco
-- [ ] 6. suitability
+- [x] 5. perfil de risco
+- [x] 6. suitability
 - [ ] 7. aceite de termos
-- [ ] 8. conexão de contas/corretoras
-- [ ] 9. tela final com plano inicial
+- [x] 8. conexão de contas/corretoras (layout/mockup)
+- [x] 9. tela final com plano inicial
 
 ---
 
@@ -616,12 +616,12 @@ Objetivo: fazer o primeiro uso ser útil e guiado.
 Objetivo: consolidar a espinha dorsal do produto.
 
 #### Sequência
-- [ ] 1. cadastro de instituições
-- [ ] 2. cadastro de contas
-- [ ] 3. cadastro de ativos
-- [ ] 4. classificação por tipo
+- [x] 1. cadastro de instituições
+- [x] 2. cadastro de contas
+- [x] 3. cadastro de ativos
+- [x] 4. classificação por tipo
 - [ ] 5. estrutura de holdings
-- [ ] 6. estrutura de transações
+- [x] 6. estrutura de transações (base Position)
 - [ ] 7. estrutura de eventos corporativos
 - [ ] 8. snapshots de carteira
 - [ ] 9. benchmarks
@@ -634,8 +634,8 @@ Objetivo: consolidar a espinha dorsal do produto.
 Objetivo: trazer dados reais para dentro da plataforma.
 
 #### Sequência
-- [ ] 1. desenhar camada de abstraction provider
-- [ ] 2. integrar market data primário
+- [x] 1. desenhar camada de abstraction provider
+- [x] 2. integrar market data primário (Yahoo Finance)
 - [ ] 3. integrar market data secundário
 - [ ] 4. integrar Open Finance/agregador
 - [ ] 5. integrar webhooks
@@ -661,11 +661,11 @@ Isso evita retrabalho quando a API externa muda.
 Objetivo: entregar o primeiro grande valor percebido.
 
 #### Sequência
-- [ ] 1. patrimônio total
-- [ ] 2. variação diária/mensal/acumulada
-- [ ] 3. alocação por classe
+- [x] 1. patrimônio total (UI/API)
+- [x] 2. variação diária/mensal/acumulada (Métrica API)
+- [x] 3. alocação por classe (Gráfico Donut)
 - [ ] 4. alocação por instituição
-- [ ] 5. principais posições
+- [x] 5. principais posições (Tabela Assets)
 - [ ] 6. metas
 - [ ] 7. alertas
 - [ ] 8. últimas movimentações

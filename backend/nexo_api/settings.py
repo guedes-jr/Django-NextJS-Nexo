@@ -37,8 +37,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     
-    # Local apps
+    # Nexo Apps
     'apps.identity',
+    'apps.portfolio',
+    'apps.market_data',
 ]
 
 MIDDLEWARE = [

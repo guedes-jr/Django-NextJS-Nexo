@@ -19,10 +19,10 @@ npm run dev &
 FRONTEND_PID=$!
 cd ..
 
-echo "⚙️  [BACKEND] Iniciando Django na porta 8000..."
+echo "⚙️  [BACKEND] Iniciando Django na porta 8001..."
 cd backend
 source venv/bin/activate
-python3 manage.py runserver &
+python3 manage.py runserver 8001 &
 BACKEND_PID=$!
 cd ..
 

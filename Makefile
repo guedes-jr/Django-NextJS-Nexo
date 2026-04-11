@@ -26,7 +26,7 @@ frontend:
 	cd frontend && npm run dev
 
 backend:
-	cd backend && source venv/bin/activate && python3 manage.py runserver
+	cd backend && source venv/bin/activate && python3 manage.py runserver 8001
 
 setup:
 	@echo "Instalando dependências do Frontend..."
