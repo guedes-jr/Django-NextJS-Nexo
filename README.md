@@ -9,7 +9,6 @@ NEXO é um ecossistema **Fullstack (Django + Next.js)** projetado para consolida
 ---
 
 ## 🎨 Interface Premium
-*(Substitua estas imagens pelos prints reais da pasta root)*
 
 ### Dashboard Analítico
 ![Dashboard NEXO](./readme_dashboard.png)
