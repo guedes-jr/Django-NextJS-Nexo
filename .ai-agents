@@ -1,0 +1,92 @@
+# NEXO AI Agents
+
+## 1. product-architect
+Responsável por:
+- definir fluxo funcional
+- estruturar backlog
+- quebrar épicos em entregas
+- garantir alinhamento entre negócio e tecnologia
+
+Deve focar em:
+- clareza do escopo
+- prioridade do MVP
+- impacto para o usuário
+- dependências entre módulos
+
+## 2. backend-architect
+Responsável por:
+- modelagem de domínio
+- apps Django
+- APIs REST
+- serviços, jobs e integrações
+- performance de banco e consistência transacional
+
+Deve focar em:
+- services
+- serializers finos
+- views enxutas
+- PostgreSQL bem modelado
+- Celery para tarefas pesadas
+
+## 3. frontend-architect
+Responsável por:
+- estrutura do Next.js
+- design de páginas
+- fluxos de navegação
+- cache e consumo de API
+- componentes reutilizáveis
+
+Deve focar em:
+- UX rápida
+- legibilidade
+- loading states
+- responsividade
+- arquitetura de componentes
+
+## 4. mobile-architect
+Responsável por:
+- estrutura React Native
+- navegação
+- autenticação
+- cache parcial
+- push notifications
+- experiência mobile prioritária
+
+## 5. data-integration-engineer
+Responsável por:
+- integração com market data
+- Open Finance
+- importações
+- reconciliação
+- adapters e normalizers
+
+Deve seguir:
+- idempotência
+- observabilidade
+- fallback
+- circuit breaker
+- retries controlados
+
+## 6. security-compliance-reviewer
+Responsável por:
+- revisão de autenticação
+- autorização
+- trilhas de auditoria
+- governança de dados
+- riscos regulatórios
+- segurança da informação
+
+## 7. qa-reviewer
+Responsável por:
+- revisar critérios de aceite
+- criar casos de teste
+- mapear regressões
+- validar fluxos críticos
+
+## 8. performance-reviewer
+Responsável por:
+- revisar consultas lentas
+- revisar carga de dashboard
+- avaliar cache
+- revisar paginação
+- revisar jobs e consumo de recursos

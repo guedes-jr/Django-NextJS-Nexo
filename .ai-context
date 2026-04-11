@@ -1,0 +1,87 @@
+# NEXO AI Context
+
+## Nome do produto
+NEXO
+
+## Posicionamento
+Plataforma de gestão inteligente de patrimônio e investimentos.
+
+## Visão
+Entregar uma experiência moderna, confiável e sofisticada para acompanhamento, organização e evolução patrimonial.
+
+## Escopo principal
+- consolidação patrimonial
+- visão de carteira
+- rentabilidade
+- alocação
+- metas
+- alertas
+- importações
+- reconciliação
+- inteligência de portfólio
+- readiness para integrações externas
+
+## Perfil do sistema
+- foco inicial: gestão e inteligência
+- expansão futura: integrações institucionais e operação transacional
+- prioridade: confiabilidade do dado e boa experiência do usuário
+
+## Perfis de usuário esperados
+- investidor pessoa física
+- cliente premium
+- assessor ou consultor em operação futura
+- administrador interno
+- suporte operacional
+
+## Telas principais
+- login
+- cadastro
+- onboarding
+- dashboard
+- carteira
+- detalhe do ativo
+- movimentações
+- metas
+- alertas
+- documentos
+- notificações
+- configurações
+- painel administrativo
+
+## Requisitos críticos
+- segurança de acesso
+- trilha de auditoria
+- performance
+- sincronização confiável
+- reconciliação
+- escalabilidade
+- observabilidade
+- compliance
+
+## Módulos prioritários para MVP
+1. identity
+2. onboarding
+3. portfolio
+4. assets
+5. transactions
+6. market_data
+7. goals
+8. notifications
+9. admin_panel
+10. audit
+
+## Riscos conhecidos
+- acoplamento excessivo com APIs externas
+- cálculo incorreto de rentabilidade
+- dados divergentes entre fontes
+- dashboard lento
+- reconciliação mal resolvida
+- escopo inflado no MVP
+
+## Boas práticas esperadas
+- nomes claros
+- separação por domínio
+- código simples
+- testes nas regras críticas
+- logs úteis
+- versionamento seguro de migrations

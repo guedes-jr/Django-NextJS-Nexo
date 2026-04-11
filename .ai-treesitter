@@ -1,0 +1,56 @@
+# NEXO AI Treesitter
+
+## Linguagens prioritárias para análise estrutural
+- python
+- typescript
+- javascript
+- tsx
+- jsx
+- sql
+- json
+- yaml
+- bash
+
+## Prioridade por área do projeto
+
+### Backend
+- analisar apps Django por domínio
+- identificar models, services, serializers, views, urls e tasks
+- buscar sinais de regras de negócio fora de lugar
+- verificar consultas pesadas
+- verificar acoplamento entre integração externa e domínio
+
+### Frontend web
+- analisar páginas, layouts, hooks, services e componentes
+- identificar estados de loading, erro e vazio
+- verificar excesso de lógica em componentes de tela
+- verificar duplicação de fetch ou overfetching
+
+### Mobile
+- analisar telas, navegação, hooks, services e stores
+- verificar autenticação, persistência local e push notifications
+
+### SQL e migrations
+- verificar constraints
+- verificar índices
+- verificar riscos de lock ou migration perigosa
+- verificar consistência com o domínio financeiro
+
+## Heurísticas de atenção
+- lógica de negócio dentro de controller, view ou page
+- consulta N+1
+- serializer inflado
+- duplicação de regras
+- validação ausente
+- tratamento fraco de erro
+- ausência de logs em integração externa
+- tarefas pesadas rodando em request síncrona
+- uso incorreto de dinheiro, percentual ou datas
+
+## Saída esperada da análise
+A IA deve responder priorizando:
+1. risco arquitetural
+2. risco funcional
+3. risco de segurança
+4. risco de performance
+5. proposta de melhoria objetiva

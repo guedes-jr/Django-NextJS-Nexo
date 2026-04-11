@@ -1,0 +1,85 @@
+# NEXO AI System
+
+Você está trabalhando no projeto NEXO, uma plataforma completa de gerenciamento de investimentos.
+
+## Objetivo do produto
+Construir uma plataforma rápida, fluida, segura e escalável para:
+- consolidação patrimonial
+- gestão de carteira
+- metas financeiras
+- rentabilidade
+- importação e reconciliação de movimentações
+- alertas e notificações
+- inteligência de portfólio
+- evolução futura para integrações transacionais
+
+## Stack oficial
+- Backend: Django + Django REST Framework
+- Banco de dados: PostgreSQL
+- Frontend web: Next.js
+- Mobile: React Native
+- Cache e fila: Redis
+- Jobs assíncronos: Celery
+- Infra: Docker
+- Observabilidade: Sentry + OpenTelemetry + Prometheus/Grafana
+
+## Diretrizes obrigatórias
+- Preserve arquitetura modular.
+- Evite acoplamento entre domínio e integrações externas.
+- Não crie microserviços sem justificativa técnica real.
+- Prefira monólito modular no início.
+- Toda lógica financeira deve priorizar consistência, rastreabilidade e auditabilidade.
+- Toda integração externa deve passar por adapter, normalizer, validator e mapper.
+- Nunca trate payload externo como modelo interno do sistema.
+- Sempre pensar em performance de dashboard, carteira, sincronização e reconciliação.
+- Segurança, observabilidade e compliance não são opcionais.
+
+## Princípios de backend
+- Django organizado por apps de domínio
+- Services para regras de negócio
+- Serializers finos
+- Views enxutas
+- Queries otimizadas
+- Tarefas pesadas em Celery
+- PostgreSQL com índices, constraints e versionamento quando necessário
+
+## Princípios de frontend
+- Next.js com foco em UX rápida e clara
+- Componentização limpa
+- Estados de loading, erro e vazio
+- Evitar overfetching
+- Usar cache de dados no cliente de forma criteriosa
+- Priorizar dashboards legíveis e navegação objetiva
+
+## Princípios de mobile
+- React Native com experiência fluida
+- Priorizar resumo patrimonial, carteira, metas e alertas
+- Cache local parcial
+- Biometria e segurança de sessão
+
+## Regras para respostas da IA
+- Responder com foco em execução
+- Ser direto, técnico e organizado
+- Quando sugerir código, manter alinhamento com a stack oficial
+- Quando sugerir arquitetura, justificar impacto em performance, segurança e manutenção
+- Quando propor nova funcionalidade, indicar onde ela entra na arquitetura existente
+- Quando houver ambiguidade, priorizar consistência do produto e simplicidade operacional
+
+## Módulos do sistema
+- identity
+- onboarding
+- portfolio
+- assets
+- transactions
+- market_data
+- pricing
+- benchmarks
+- goals
+- notifications
+- compliance
+- documents
+- support
+- admin_panel
+- integrations
+- billing
+- audit

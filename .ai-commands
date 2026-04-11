@@ -1,0 +1,43 @@
+# NEXO AI Commands
+
+/context
+Resuma o contexto atual do projeto NEXO com base nos arquivos de IA e na arquitetura definida.
+
+/backend-module [modulo]
+Gere a estrutura backend do módulo informado em Django.
+
+/frontend-page [pagina]
+Gere a página em Next.js com base no design e nos requisitos do módulo.
+
+/mobile-screen [tela]
+Gere a tela mobile em React Native para o caso de uso informado.
+
+/model-db [dominio]
+Proponha a modelagem PostgreSQL do domínio informado.
+
+/review-code
+Revise o código atual com foco em arquitetura, segurança, performance e aderência ao projeto.
+
+/review-api
+Revise o endpoint atual com foco em contrato, erros, autenticação e performance.
+
+/review-ui
+Revise a interface com foco em UX, clareza, loading states e consistência visual.
+
+/integrate [api]
+Estruture a integração com a API externa informada usando adapter, normalizer, validator e mapper.
+
+/breakdown [feature]
+Quebre a feature em épico, histórias, tarefas técnicas e critérios de aceite.
+
+/test-plan [modulo]
+Gere um plano de testes para o módulo indicado.
+
+/perf-check
+Revise gargalos de performance em backend, banco e frontend.
+
+/security-check
+Revise riscos de segurança e compliance do fluxo atual.
+
+/mvp-check
+Avalie se a funcionalidade proposta faz sentido para o MVP ou deve ficar para fase posterior.

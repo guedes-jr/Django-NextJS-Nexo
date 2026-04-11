@@ -1,36 +1,90 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+# =========================
+# MACOS & OS
+# =========================
 .DS_Store
-*.pem
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
 
-# debug
+# =========================
+# AMBIENTE & SEGURANÇA
+# =========================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+secrets.json
+
+# =========================
+# IDE & EDITORES
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# FRONTEND (NEXT.JS & NODE)
+# =========================
+frontend/node_modules/
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnp
+.pnp.js
 
-# local env files
-.env*.local
-.env
-
-# vercel
-.vercel
-
-# typescript
+# Construção e Cache do Next.js
+frontend/.next/
+frontend/out/
+frontend/build/
+.next/
+out/
+build/
+coverage/
 *.tsbuildinfo
 next-env.d.ts
+.vercel/
+
+# =========================
+# BACKEND (DJANGO & PYTHON)
+# =========================
+backend/venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django
+backend/db.sqlite3
+backend/db.sqlite3-journal
+db.sqlite3
+*.sqlite3
+backend/media/
+backend/staticfiles/
+
+# Logs e Celery
+*.log
+celerybeat.pid
+celerybeat-schedule
+*.pid
+
+# =========================
+# DOCKER & INFRA
+# =========================
+.docker/
+docker-compose.override.yml

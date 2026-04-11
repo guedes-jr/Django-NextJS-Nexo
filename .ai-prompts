@@ -1,0 +1,95 @@
+# NEXO AI Prompts
+
+## Prompt 1 — Criar módulo backend
+Crie a estrutura do módulo backend em Django para o domínio [NOME_DO_MODULO], incluindo:
+- models
+- services
+- serializers
+- views
+- urls
+- testes principais
+Respeite a arquitetura modular do NEXO e mantenha views enxutas e regras de negócio em services.
+
+## Prompt 2 — Criar API REST
+Implemente uma API REST em Django REST Framework para [CASO_DE_USO], incluindo:
+- endpoint
+- serializer
+- service
+- tratamento de erro
+- autenticação/autorização
+- resposta consistente
+Explique rapidamente onde isso se encaixa no domínio.
+
+## Prompt 3 — Modelagem PostgreSQL
+Modele as tabelas PostgreSQL para [DOMINIO], considerando:
+- integridade referencial
+- índices
+- constraints
+- auditoria
+- performance
+- possibilidade de crescimento futuro
+
+## Prompt 4 — Tela em Next.js
+Crie a tela em Next.js para [NOME_DA_TELA], com foco em:
+- boa UX
+- loading state
+- error state
+- empty state
+- componentização
+- integração futura com API real
+
+## Prompt 5 — Tela mobile React Native
+Crie uma tela em React Native para [NOME_DA_TELA], priorizando:
+- fluidez
+- clareza visual
+- navegação simples
+- segurança de sessão
+- boa experiência em dispositivos médios
+
+## Prompt 6 — Revisão técnica
+Revise este código com foco em:
+- arquitetura
+- clareza
+- performance
+- segurança
+- risco de manutenção
+- aderência ao projeto NEXO
+Depois proponha melhorias objetivas.
+
+## Prompt 7 — Integração externa
+Implemente uma integração com [API_EXTERNA], criando:
+- client
+- adapter
+- normalizer
+- validator
+- mapper para o domínio interno
+- logs
+- tratamento de falhas
+- estratégia de idempotência
+
+## Prompt 8 — Quebra de backlog
+Quebre esta funcionalidade em:
+- épico
+- histórias
+- subtarefas técnicas
+- dependências
+- critérios de aceite
+considerando o roadmap do NEXO.
+
+## Prompt 9 — Otimização de consulta
+Analise esta consulta ou fluxo de leitura e proponha melhorias de:
+- índice
+- paginação
+- eager loading
+- cache
+- redução de round trips
+considerando Django + PostgreSQL.
+
+## Prompt 10 — Plano de testes
+Monte um plano de testes para [MODULO], cobrindo:
+- testes unitários
+- integração
+- regressão
+- segurança
+- performance
+- cenários de falha
