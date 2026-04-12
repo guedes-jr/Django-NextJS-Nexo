@@ -6,6 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from '../auth.module.css';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -22,7 +24,6 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // Username precisa ser alfanumerico por padrao no Django auth, usamos um extrator de string p/ simplificar MVP.
       const generatedUsername = formData.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + Math.floor(Math.random() * 1000);
       
       const payload = {
@@ -31,7 +32,7 @@ export default function RegisterPage() {
         password: formData.password
       };
 
-      const res = await fetch('http://localhost:8001/api/register/', {
+      const res = await fetch(`${API_URL}/api/register/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -42,7 +43,6 @@ export default function RegisterPage() {
         throw new Error(errorData.detail || 'Ocorreu um erro ao criar a conta.');
       }
 
-      // Se sucesso, vai pro tela de login
       router.push('/login');
     } catch (err: any) {
       setError(err.message);
@@ -66,7 +66,7 @@ export default function RegisterPage() {
 
         <div className={styles.header}>
           <h1>Abra sua conta</h1>
-          <p>O primeiro passo para a sua evolução patrimonial.</p>
+          <p>O primeiro passo para a sua evolucao patrimonial.</p>
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -78,7 +78,7 @@ export default function RegisterPage() {
               type="text" 
               id="name" 
               className={styles.input} 
-              placeholder="João Guedes"
+              placeholder="Joao Guedes"
               value={formData.name}
               onChange={handleChange}
               required
@@ -104,7 +104,7 @@ export default function RegisterPage() {
               type="password" 
               id="password" 
               className={styles.input} 
-              placeholder="Mínimo de 8 caracteres"
+              placeholder="Minimo de 8 caracteres"
               value={formData.password}
               onChange={handleChange}
               required
@@ -118,7 +118,7 @@ export default function RegisterPage() {
         </form>
 
         <p className={styles.linkText}>
-          Já possui conta? <Link href="/login">Fazer login</Link>
+          Ja possui conta? <Link href="/login">Fazer login</Link>
         </p>
       </div>
     </div>

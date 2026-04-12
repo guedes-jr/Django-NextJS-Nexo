@@ -6,6 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from '../auth.module.css';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+
 // Ícones minimalistas para show/hide
 const EyeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -70,9 +72,17 @@ export default function LoginPage() {
       
       localStorage.setItem('nexo_access', data.access);
       localStorage.setItem('nexo_refresh', data.refresh);
+      
+      const userRes = await fetch(`${API_URL}/api/auth/user/`, {
+        headers: { 'Authorization': `Bearer ${data.access}` }
+      });
+      
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        localStorage.setItem('nexo_user', JSON.stringify(userData));
+      }
 
-      // Checa se ja finalizou suitability
-      const profileRes = await fetch('http://localhost:8001/api/profile/', {
+      const profileRes = await fetch(`${API_URL}/api/profile/`, {
         headers: { 'Authorization': `Bearer ${data.access}` }
       });
       

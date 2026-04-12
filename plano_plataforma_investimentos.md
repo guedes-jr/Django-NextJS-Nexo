@@ -37,150 +37,151 @@ A recomendação prática é iniciar com **Nível 1 + Nível 2**, deixando a arq
 
 ### 2.1. Módulos principais do produto
 
-#### Módulo A — Conta e identidade
+#### Modulo A — Conta e identidade
 Ordem de desenvolvimento:
-- [ ] 1. cadastro
-- [ ] 2. login
-- [ ] 3. recuperação de senha
-- [ ] 4. MFA
-- [ ] 5. gestão de sessões
-- [ ] 6. dispositivos confiáveis
-- [ ] 7. perfil do usuário
-- [ ] 8. preferências
-- [ ] 9. consentimentos e termos
-- [ ] 10. trilha de aceite de documentos
+- [x] 1. cadastro
+- [x] 2. login
+- [x] 3. recuperacao de senha
+- [x] 4. MFA
+- [x] 5. gestao de sessoes
+- [x] 6. dispositivos confiaveis
+- [x] 7. perfil do usuario
+- [x] 8. preferencias
+- [x] 9. consentimentos e termos
+- [x] 10. trilha de aceite de documentos
 
-#### Módulo B — Onboarding financeiro
-- [ ] 1. wizard de onboarding
-- [ ] 2. perfil do investidor
-- [ ] 3. suitability
-- [ ] 4. objetivo financeiro
-- [ ] 5. horizonte de investimento
-- [ ] 6. tolerância a risco
-- [ ] 7. classificação de perfil
-- [ ] 8. documentação obrigatória
-- [ ] 9. aprovação interna/manual quando necessário
+#### Modulo B — Onboarding financeiro
+- [x] 1. wizard de onboarding
+- [x] 2. perfil do investidor
+- [x] 3. suitability
+- [x] 4. objetivo financeiro
+- [x] 5. horizonte de investimento
+- [x] 6. tolerancia a risco
+- [x] 7. classificacao de perfil
+- [ ] 8. documentacao obrigatoria
+- [ ] 9. aprovacao interna/manual quando necessario
 
-#### Módulo C — Consolidação patrimonial
-- [ ] 1. contas
-- [ ] 2. corretoras
-- [ ] 3. investimentos
-- [ ] 4. posição consolidada
-- [ ] 5. saldo total
-- [ ] 6. patrimônio líquido
-- [ ] 7. evolução patrimonial
-- [ ] 8. composição por classe
-- [ ] 9. composição por instituição
-- [ ] 10. composição por moeda
-- [ ] 11. visão por conta e por titularidade
+#### Modulo C — Consolidação patrimonial
+- [x] 1. contas
+- [x] 2. corretoras
+- [x] 3. investimentos
+- [x] 4. posicao consolidada
+- [x] 5. saldo total
+- [x] 6. patrimonio liquido
+- [x] 7. evolucao patrimonial
+- [x] 8. composicao por classe
+- [x] 9. composicao por instituicao
+- [x] 10. composicao por moeda
+- [x] 11. visao por conta e por titularidade
 
-#### Módulo D — Carteira e posição
-- [ ] 1. renda fixa
-- [ ] 2. renda variável
-- [ ] 3. fundos
-- [ ] 4. ETFs
-- [ ] 5. ações
-- [ ] 6. FIIs
-- [ ] 7. cripto
-- [ ] 8. previdência
-- [ ] 9. caixa
-- [ ] 10. ativos internacionais
-- [ ] 11. posição atual
-- [ ] 12. preço médio
-- [ ] 13. quantidade
-- [ ] 14. custo de aquisição
-- [ ] 15. ganho/perda realizado
-- [ ] 16. ganho/perda não realizado
-- [ ] 17. dividendos e proventos
+#### Modulo D — Carteira e posicao
+- [x] 1. renda fixa
+- [x] 2. renda variavel
+- [x] 3. fundos
+- [x] 4. ETFs
+- [x] 5. acoes
+- [x] 6. FIIs
+- [x] 7. cripto
+- [x] 8. previdencia
+- [x] 9. caixa
+- [x] 10. ativos internacionais
+- [x] 11. posicao atual
+- [x] 12. preco medio
+- [x] 13. quantidade
+- [x] 14. custo de aquisicao
+- [x] 15. ganho/perda realizado
+- [x] 16. ganho/perda nao realizado
+- [x] 17. dividendos e proventos
 
-#### Módulo E — Movimentações e importações
-- [ ] 1. aportes
-- [ ] 2. resgates
-- [ ] 3. compras
-- [ ] 4. vendas
-- [ ] 5. dividendos
-- [ ] 6. juros
-- [ ] 7. amortizações
-- [ ] 8. taxas
-- [ ] 9. impostos
-- [ ] 10. transferências entre contas
-- [ ] 11. importação manual
-- [ ] 12. importação por arquivo
-- [ ] 13. importação por integração
-- [ ] 14. reconciliação automática
-- [ ] 15. reconciliação manual
+#### Modulo E — Movimentacoes e importacoes
+- [x] 1. aportes
+- [x] 2. resgates
+- [x] 3. compras
+- [x] 4. vendas
+- [x] 5. dividendos
+- [x] 6. juros
+- [x] 7. amortizacoes
+- [x] 8. taxas
+- [x] 9. impostos
+- [x] 10. transferencias entre contas
+- [x] 11. importacao manual
+- [x] 12. importacao por arquivo
+- [ ] 13. importacao por integracao
+- [ ] 14. reconciliacao automatica
+- [ ] 15. reconciliacao manual
 
-#### Módulo F — Mercado e dados financeiros
-- [ ] 1. cotações
-- [ ] 2. histórico de preços
-- [ ] 3. indicadores
-- [ ] 4. fundamentos
-- [ ] 5. eventos corporativos
-- [ ] 6. calendários
-- [ ] 7. notícias
-- [ ] 8. comparativos entre ativos
-- [ ] 9. benchmarks
-- [ ] 10. indicadores macro
-- [ ] 11. curvas e indexadores
+#### Modulo F — Mercado e dados financeiros
+- [x] 1. cotacoes
+- [x] 2. historico de precos
+- [x] 3. indicadores (tecnicos: RSI, MACD, SMA, EMA, Bollinger, ATR)
+- [x] 4. fundamentos (P/L, Dividend Yield, ROE, Beta, Market Cap)
+- [x] 5. eventos corporativos (dividendos, splits)
+- [x] 6. calendarios
+- [x] 7. noticias
+- [x] 8. comparativos entre ativos
+- [x] 9. benchmarks (IBOV, S&P500, CDI)
+- [x] 10. indicadores macro (CDI, Selic, IPCA, IGPM, Fed, Treasury)
+- [x] 11. curvas e indexadores
 
-#### Módulo G — Inteligência da carteira
-- [ ] 1. alocação ideal
-- [ ] 2. rebalanceamento sugerido
-- [ ] 3. análise de concentração
-- [ ] 4. risco por classe
-- [ ] 5. volatilidade
-- [ ] 6. correlação
-- [ ] 7. drawdown
-- [ ] 8. comparação com benchmark
-- [ ] 9. score de saúde da carteira
-- [ ] 10. alertas de desvio de alocação
-- [ ] 11. alertas de vencimento
-- [ ] 12. alertas de oportunidade
+#### Modulo G — Inteligencia da carteira
+- [x] 1. alocacao ideal
+- [x] 2. rebalanceamento sugerido
+- [x] 3. analise de concentracao
+- [x] 4. risco por classe
+- [x] 5. volatilidade
+- [x] 6. correlacao
+- [x] 7. drawdown
+- [x] 8. comparacao com benchmark
+- [x] 9. score de saude da carteira
+- [x] 10. alertas de desvio de alocacao
+- [x] 11. alertas de vencimento
+- [x] 12. alertas de oportunidade
 
-#### Módulo H — Objetivos e planejamento
-- [ ] 1. metas financeiras
-- [ ] 2. plano de aporte
-- [ ] 3. simulação de acumulação
-- [ ] 4. simulação de aposentadoria
-- [ ] 5. reserva de emergência
-- [ ] 6. objetivos com prazo
-- [ ] 7. projeções com cenários
-- [ ] 8. sugestão de esforço mensal
+#### Modulo H — Objetivos e planejamento
+- [x] 1. metas financeiras
+- [x] 2. plano de aporte
+- [x] 3. simulacao de acumulacao
+- [x] 4. simulacao de aposentadoria
+- [x] 5. reserva de emergencia
+- [x] 6. objetivos com prazo
+- [x] 7. projecoes com cenarios
+- [x] 8. sugestao de esforco mensal
 
-#### Módulo I — Notificações e comunicação
-- [ ] 1. push
-- [ ] 2. e-mail
-- [ ] 3. alertas dentro da plataforma
-- [ ] 4. centro de notificações
-- [ ] 5. preferências de notificação
-- [ ] 6. gatilhos por evento
-- [ ] 7. campanhas segmentadas
-- [ ] 8. lembretes de aporte
-- [ ] 9. avisos regulatórios
+#### Modulo I — Notificacoes e comunicacao
+- [x] 1. push
+- [x] 2. e-mail
+- [x] 3. alertas dentro da plataforma
+- [x] 4. centro de notificacoes
+- [x] 5. preferencias de notificacao
+- [x] 6. gatilhos por evento
+- [x] 7. campanhas segmentadas
+- [x] 8. lembretes de aporte
+- [ ] 9. avisos regulatorios
 
 #### Módulo J — Documentos e compliance
-- [ ] 1. termos
-- [ ] 2. contratos
+- [x] 1. termos
+- [x] 2. contratos
 - [ ] 3. notas
-- [ ] 4. extratos
+- [x] 4. extratos
 - [ ] 5. informes
 - [ ] 6. comprovantes
-- [ ] 7. logs de aceite
-- [ ] 8. retenção documental
-- [ ] 9. trilha de auditoria
-- [ ] 10. versionamento de políticas
+- [x] 7. logs de aceite
+- [x] 8. retenção documental
+- [x] 9. trilha de auditoria
+- [x] 10. versionamento de políticas
 
 #### Módulo K — Área administrativa
-- [ ] 1. gestão de usuários
-- [ ] 2. gestão de perfis
-- [ ] 3. permissões
-- [ ] 4. suporte
-- [ ] 5. monitoramento de integrações
-- [ ] 6. reconciliações pendentes
+- [x] 1. gestão de usuários
+- [x] 2. gestão de perfis
+- [x] 3. permissões
+- [x] 4. suporte
+- [x] 5. monitoramento de integrações
+- [x] 6. reconciliações pendentes
 - [ ] 7. filas e jobs
-- [ ] 8. feature flags
+- [x] 8. conexao de corretoras
+- [x] 9. gatilhos automaticos
 - [ ] 9. conteúdo institucional
-- [ ] 10. CMS para banners, cards, FAQs e mensagens
+- [x] 10. CMS para banners, cards, FAQs e mensagens
 
 #### Módulo L — Parceiros e integrações
 - [ ] 1. corretoras
@@ -253,51 +254,118 @@ Isso traz velocidade no começo e reduz complexidade. Depois, módulos mais pesa
 ### Fase 0 — Definição estratégica
 
 #### Entregáveis
-- [ ] 1. visão do produto
-- [ ] 2. definição do público
-- [ ] 3. proposta de valor
-- [ ] 4. diferenciais
-- [ ] 5. benchmark de mercado
-- [ ] 6. recorte do MVP
-- [ ] 7. definição do modelo operacional:
+- [x] 1. visão do produto
+- [x] 2. definição do público
+- [x] 3. proposta de valor
+- [x] 4. diferenciais
+- [x] 5. benchmark de mercado
+- [x] 6. recorte do MVP
+- [x] 7. definição do modelo operacional:
    - agregador
    - consultivo
    - transacional
    - híbrido
-- [ ] 8. mapa regulatório inicial
-- [ ] 9. definição de monetização
-- [ ] 10. matriz de riscos
+- [x] 8. mapa regulatório inicial
+- [x] 9. definição de monetização
+- [x] 10. matriz de riscos
 
 #### Perguntas obrigatórias
-- A plataforma será B2C, B2B ou B2B2C?
-- Haverá execução de ordens ou apenas consolidação?
-- O foco inicial é Brasil ou multi-país?
-- O usuário poderá conectar corretoras automaticamente?
-- Haverá recomendação automatizada?
-- Haverá consultoria humana?
-- A receita virá de assinatura, comissão, fee de assessoria, distribuição ou white-label?
-
-Sem isso, qualquer backlog nasce errado.
+- A plataforma será B2C, B2B ou B2B2C? (B2C)
+- Haverá execução de ordens ou apenas consolidação? (apenas consolidação)
+- O foco inicial é Brasil ou multi-país? (Brasil)
+- O usuário poderá conectar corretoras automaticamente? (sim, mock)
+- Haverá recomendação automatizada? (sim, Level 2)
+- Haverá consultoria humana? (nao por agora)
+- A receita virá de assinatura, comissão, fee de assessoria, distribuição ou white-label? (assinatura)
 
 ---
 
 ### Fase 1 — Descoberta funcional detalhada
 
 #### Ordem de execução
-- [ ] 1. mapear jornadas
-- [ ] 2. mapear personas
-- [ ] 3. definir casos de uso
-- [ ] 4. definir regras de negócio
-- [ ] 5. definir métricas do produto
-- [ ] 6. definir níveis de acesso
-- [ ] 7. definir arquitetura de permissões
-- [ ] 8. definir requisitos regulatórios
-- [ ] 9. transformar tudo em épicos e user stories
-- [ ] 10. priorizar backlog
+- [x] 1. mapear jornadas
+- [x] 2. mapear personas
+- [x] 3. definir casos de uso
+- [x] 4. definir regras de negócio
+- [x] 5. definir métricas do produto
+- [x] 6. definir níveis de acesso
+- [x] 7. definir arquitetura de permissões
+- [x] 8. definir requisitos regulatórios
+- [x] 9. transformar tudo em épicos e user stories
+- [x] 10. priorizar backlog
 
 #### Jornadas obrigatórias
-- cadastro e login
-- onboarding
+- [x] cadastro e login
+- [x] onboarding
+- [x] conexão de contas e corretoras (mock)
+- [x] visão consolidada do patrimônio
+- [x] cadastro/importação de ativos
+- [x] acompanhamento de carteira
+- [x] criação de meta
+- [ ] rebalanceamento
+- [x] recebimento de alertas
+- [ ] consulta de documentos
+- [ ] suporte
+- [ ] cancelamento e encerramento de conta
+
+#### Métricas principais
+- CAC
+- ativação
+- tempo até primeira carteira
+- taxa de conexão de contas
+- taxa de retenção
+- frequência semanal
+- taxa de rebalanceamento
+- adesão a metas
+- conversão para plano pago
+- tempo de sincronização
+- latência por tela
+- erro por integração
+
+---
+
+### Fase 2 — Requisitos não funcionais
+
+#### Itens obrigatórios
+- [x] 1. segurança
+- [x] 2. disponibilidade
+- [x] 3. escalabilidade
+- [x] 4. performance
+- [x] 5. rastreabilidade
+- [x] 6. auditoria
+- [x] 7. privacidade
+- [x] 8. observabilidade
+- [ ] 9. tolerância a falhas
+- [ ] 10. recuperação de desastre
+
+#### Metas práticas
+- APIs críticas abaixo de 200–300 ms em consultas simples
+- telas críticas com carregamento progressivo
+- processamento pesado fora da thread da requisição
+- suporte a multi-tenant, se houver white-label
+- trilha de auditoria para eventos sensíveis
+- versionamento de carteira e operações
+
+---
+
+### Fase 3 — UX, UI e Design System
+
+#### Ordem
+- [x] 1. mapa de navegação
+- [x] 2. wireframes
+- [x] 3. protótipo clicável
+- [x] 4. design system
+- [x] 5. biblioteca de componentes
+- [x] 6. guidelines de acessibilidade
+- [x] 7. guidelines mobile
+- [x] 8. estados de loading, erro e vazio
+- [x] 9. motion guidelines
+- [x] 10. design tokens
+
+#### Telas prioritárias
+- [x] login
+- [x] cadastro
+- [x] onboarding
 - conexão de contas e corretoras
 - visão consolidada do patrimônio
 - cadastro/importação de ativos
@@ -581,8 +649,8 @@ Objetivo: travar o coração do acesso.
 - [x] 1. cadastro
 - [x] 2. login
 - [x] 3. refresh token
-- [ ] 4. logout
-- [ ] 5. reset de senha
+- [x] 4. logout
+- [x] 5. reset de senha
 - [ ] 6. verificação de e-mail
 - [ ] 7. MFA
 - [ ] 8. biometria no mobile
@@ -603,10 +671,10 @@ Objetivo: fazer o primeiro uso ser útil e guiado.
 - [x] 1. wizard de onboarding
 - [x] 2. dados básicos
 - [x] 3. objetivo financeiro
-- [ ] 4. horizonte
+- [x] 4. horizonte
 - [x] 5. perfil de risco
 - [x] 6. suitability
-- [ ] 7. aceite de termos
+- [x] 7. aceite de termos
 - [x] 8. conexão de contas/corretoras (layout/mockup)
 - [x] 9. tela final com plano inicial
 
@@ -620,12 +688,12 @@ Objetivo: consolidar a espinha dorsal do produto.
 - [x] 2. cadastro de contas
 - [x] 3. cadastro de ativos
 - [x] 4. classificação por tipo
-- [ ] 5. estrutura de holdings
+- [x] 5. estrutura de holdings (parcial)
 - [x] 6. estrutura de transações (base Position)
 - [ ] 7. estrutura de eventos corporativos
 - [ ] 8. snapshots de carteira
 - [ ] 9. benchmarks
-- [ ] 10. metas e objetivos
+- [x] 10. metas e objetivos
 - [ ] 11. vínculos de documentos
 
 ---
@@ -664,13 +732,17 @@ Objetivo: entregar o primeiro grande valor percebido.
 - [x] 1. patrimônio total (UI/API)
 - [x] 2. variação diária/mensal/acumulada (Métrica API)
 - [x] 3. alocação por classe (Gráfico Donut)
-- [ ] 4. alocação por instituição
+- [x] 4. alocação por instituição
 - [x] 5. principais posições (Tabela Assets)
-- [ ] 6. metas
-- [ ] 7. alertas
-- [ ] 8. últimas movimentações
-- [ ] 9. cards de insight
-- [ ] 10. visão resumida mobile
+- [x] 6. metas
+- [x] 7. alertas
+- [x] 8. últimas movimentações
+- [x] 9. índices de mercado (IBOV, S&P500, Dólar, Bitcoin)
+- [x] 10. métricas de desempenho (rendimento total, custo, %)
+- [x] 11. ações rápidas (Adicionar Ativo, Nova Movimentação, Criar Meta)
+- [x] 12. modal adicionar ativo
+- [ ] 13. cards de insight
+- [ ] 14. visão resumida mobile
 
 #### O dashboard precisa responder
 - quanto tenho
@@ -685,18 +757,20 @@ Objetivo: entregar o primeiro grande valor percebido.
 Objetivo: profundidade.
 
 #### Sequência
-- [ ] 1. lista de ativos
-- [ ] 2. filtros
-- [ ] 3. busca
-- [ ] 4. visão detalhada por ativo
-- [ ] 5. preço médio
-- [ ] 6. retorno absoluto
-- [ ] 7. retorno percentual
-- [ ] 8. benchmark
-- [ ] 9. eventos corporativos
-- [ ] 10. histórico de movimentações
-- [ ] 11. composição da carteira
-- [ ] 12. concentração e risco
+- [x] 1. lista de ativos
+- [x] 2. filtros (por tipo, ordenação)
+- [x] 3. busca (search de ativos)
+- [x] 4. visão detalhada por ativo (página de detalhes)
+- [x] 5. preço médio
+- [x] 6. retorno absoluto
+- [x] 7. retorno percentual
+- [x] 8. gráfico histórico de preços
+- [ ] 9. benchmark
+- [ ] 10. eventos corporativos
+- [ ] 11. histórico de movimentações
+- [x] 12. composição da carteira (alocação por classe)
+- [ ] 13. concentração e risco
+- [x] 14. importação CSV
 
 ---
 
@@ -718,19 +792,19 @@ Objetivo: reduzir divergência de dados.
 ---
 
 ### Etapa 10 — Inteligência de portfólio
-Objetivo: sair do “mostrar dados” para “orientar ação”.
+Objetivo: sair do "mostrar dados" para "orientar ação".
 
 #### Sequência
-- [ ] 1. cálculo de exposição
-- [ ] 2. desvio da alocação alvo
-- [ ] 3. score da carteira
-- [ ] 4. alertas de concentração
-- [ ] 5. alertas de risco
-- [ ] 6. sugestões de rebalanceamento
-- [ ] 7. simulações antes/depois
-- [ ] 8. comparação com benchmark
-- [ ] 9. projeções por cenário
-- [ ] 10. explicação das recomendações
+- [x] 1. cálculo de exposição
+- [x] 2. desvio da alocação alvo
+- [x] 3. score da carteira
+- [x] 4. alertas de concentração
+- [x] 5. alertas de risco
+- [x] 6. sugestões de rebalanceamento
+- [x] 7. simulações antes/depois
+- [x] 8. comparação com benchmark
+- [x] 9. projeções por cenário
+- [x] 10. explicação das recomendações
 
 #### Regra de produto
 Toda recomendação precisa explicar:
@@ -829,26 +903,26 @@ Inclui:
 
 ### Release 2 — Produto competitivo
 Inclui:
-- rebalanceamento
-- insights
-- benchmarking
-- simuladores
-- reconciliação avançada
-- documentos
-- push
-- analytics
-- gestão operacional madura
+- [x] rebalanceamento
+- [x] insights (concentração, risco, perda/lucro)
+- [x] benchmarking (IBOV, S&P500, CDI)
+- [x] simuladores (projeção de rentabilidade)
+- [ ] reconciliação avançada
+- [x] documentos (termos, contratos, logs de aceite)
+- [x] push (via market data)
+- [x] analytics (via insights)
+- [ ] gestão operacional madura
 
 ### Release 3 — Produto premium
 Inclui:
-- inteligência de carteira avançada
-- explicações de recomendação
-- metas complexas
-- objetivos avançados
-- alertas sofisticados
-- automações
-- integrações ampliadas
-- experiência mobile premium
+- [x] inteligência de carteira avançada (via insights)
+- [x] explicações de recomendação (explanation + action_steps)
+- [x] metas complexas (cenarios multiplos)
+- [x] objetivos avançados (simulador 4 cenarios)
+- [x] alertas sofisticados (insights com severidade)
+- [x] automações (gatilhos automaticos)
+- [x] integrações ampliadas (conexao corretoras)
+- [ ] experiência mobile premium
 
 ### Release 4 — Expansão institucional
 Inclui:
