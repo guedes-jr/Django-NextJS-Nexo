@@ -160,7 +160,10 @@ export default function UsuariosPage() {
       <SharedSidebar />
       <main className="main">
         <div className="header">
-          <h1>Gestão de Usuários</h1>
+          <div>
+            <h1 className="text-gradient animate-fade-in">Gestão de Usuários</h1>
+            <p style={{ color: 'var(--text-secondary)' }}>Controle de acesso e permissões da plataforma</p>
+          </div>
           <button className="btn-primary">+ Novo Usuário</button>
         </div>
 
@@ -292,20 +295,20 @@ export default function UsuariosPage() {
 
         <style>{`
           .container { display: flex; min-height: 100vh; }
-          .main { flex: 1; padding: 2rem; background: #0d0d0d; }
-          .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-          .header h1 { color: #fff; font-size: 1.5rem; margin: 0; }
-          .btn-primary { background: #22c55e; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
-          .btn-primary:hover { background: #16a34a; }
-          .error { background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
-          .filters { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
-          .search-input { flex: 1; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0.75rem 1rem; border-radius: 8px; }
-          .filter-select { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 0.75rem 1rem; border-radius: 8px; }
-          .table-container { background: #141414; border-radius: 12px; overflow: hidden; }
+          .main { flex: 1; padding: 32px 48px; background: var(--bg-primary); display: flex; flex-direction: column; gap: 24px; }
+          .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 24px; border-bottom: 1px solid var(--glass-border); margin-bottom: 0; }
+          .header h1 { font-size: 1.875rem; font-weight: 700; margin: 0; }
+          .btn-primary { background: var(--accent-primary); color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+          .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+          .error { background: rgba(248, 81, 73, 0.1); color: var(--danger); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); margin-bottom: 1rem; }
+          .filters { display: flex; gap: 1rem; margin-top: 8px; }
+          .search-input { flex: 1; background: var(--bg-secondary); border: 1px solid var(--glass-border); color: #fff; padding: 0.75rem 1rem; border-radius: 8px; }
+          .filter-select { background: var(--bg-secondary); border: 1px solid var(--glass-border); color: #fff; padding: 0.75rem 1rem; border-radius: 8px; }
+          .table-container { background: var(--bg-secondary); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; }
           .table { width: 100%; border-collapse: collapse; }
-          .table th { text-align: left; padding: 1rem; color: #888; font-weight: 500; border-bottom: 1px solid #222; }
-          .table td { padding: 1rem; color: #fff; border-bottom: 1px solid #222; }
-          .table tr:hover { background: #1a1a1a; }
+          .table th { text-align: left; padding: 1rem; color: var(--text-secondary); font-weight: 600; border-bottom: 1px solid var(--glass-border); font-size: 0.875rem; }
+          .table td { padding: 1rem; color: var(--text-primary); border-bottom: 1px solid var(--glass-border); font-size: 0.9375rem; }
+          .table tr:hover { background: rgba(255, 255, 255, 0.02); }
           .role-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; color: #fff; }
           .status { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; }
           .status.active { background: #dcfce7; color: #166534; }

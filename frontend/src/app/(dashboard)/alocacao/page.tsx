@@ -95,7 +95,7 @@ export default function AlocacaoPage() {
       <main className={styles.main}>
         <header className={styles.header}>
           <div>
-            <h1 className="text-gradient">Alocação Ideal</h1>
+            <h1 className="text-gradient animate-fade-in">Alocação Ideal</h1>
             <p className={styles.subtitle}>Compare sua alocação atual com a recomendada</p>
           </div>
         </header>

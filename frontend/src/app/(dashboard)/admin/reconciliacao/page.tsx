@@ -130,7 +130,10 @@ export default function ReconciliacaoPage() {
       <SharedSidebar />
       <main className="main">
         <div className="header">
-          <h1>Reconciliação</h1>
+          <div>
+            <h1 className="text-gradient animate-fade-in">Reconciliação de Dados</h1>
+            <p style={{ color: 'var(--text-secondary)' }}>Ajustes e correções de integridade da carteira</p>
+          </div>
           <button className="btn-primary" onClick={runReconciliation} disabled={running}>
             {running ? 'Executando...' : 'Executar Reconciliação'}
           </button>
@@ -198,16 +201,17 @@ export default function ReconciliacaoPage() {
 
         <style>{`
           .container { display: flex; min-height: 100vh; }
-          .main { flex: 1; padding: 2rem; background: #0d0d0d; }
-          .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-          .header h1 { color: #fff; font-size: 1.5rem; margin: 0; }
-          .btn-primary { background: #22c55e; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
-          .btn-primary:disabled { background: #666; }
-          .stats { display: flex; gap: 1rem; margin-bottom: 2rem; }
-          .stat-card { background: #1a1a1a; padding: 1.5rem; border-radius: 12px; text-align: center; flex: 1; }
-          .stat-card.resolved { background: #1a1a1a; }
-          .stat-value { display: block; font-size: 2rem; font-weight: 700; color: #fff; }
-          .stat-label { color: #888; font-size: 0.875rem; }
+          .main { flex: 1; padding: 32px 48px; background: var(--bg-primary); display: flex; flex-direction: column; gap: 24px; }
+          .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 24px; border-bottom: 1px solid var(--glass-border); margin-bottom: 0; }
+          .header h1 { font-size: 1.875rem; font-weight: 700; margin: 0; }
+          .btn-primary { background: var(--accent-primary); color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+          .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+          .btn-primary:disabled { background: var(--text-muted); cursor: not-allowed; }
+          .stats { display: flex; gap: 1rem; margin-top: 8px; }
+          .stat-card { background: var(--bg-secondary); padding: 1.5rem; border: 1px solid var(--glass-border); border-radius: 12px; text-align: center; flex: 1; transition: transform 0.2s; }
+          .stat-card:hover { transform: translateY(-2px); }
+          .stat-value { display: block; font-size: 2rem; font-weight: 800; color: var(--text-primary); }
+          .stat-label { color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; }
           .issues-section { margin-bottom: 2rem; }
           .issues-section h2 { color: #888; font-size: 0.875rem; margin-bottom: 1rem; }
           .issues-list { display: flex; flex-direction: column; gap: 0.75rem; }

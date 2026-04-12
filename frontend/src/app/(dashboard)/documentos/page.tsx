@@ -56,8 +56,12 @@ export default function DocumentosPage() {
     <div style={{ display: 'flex' }}>
       <SharedSidebar />
       <main style={{ flex: 1, padding: '32px 48px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        <h1 className="text-gradient">Documentos</h1>
-        <p style={{ color: 'var(--text-secondary)' }}>Termos e consentimentos</p>
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '24px', borderBottom: '1px solid var(--glass-border)', marginBottom: '8px' }}>
+          <div>
+            <h1 className="text-gradient animate-fade-in">Documentos</h1>
+            <p style={{ color: 'var(--text-secondary)' }}>Termos, contratos e consentimentos de uso</p>
+          </div>
+        </header>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
           <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '24px' }}>

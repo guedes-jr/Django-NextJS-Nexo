@@ -98,7 +98,12 @@ export default function AutomationsPage() {
     <div style={{ display: 'flex' }}>
       <SharedSidebar />
       <main style={{ flex: 1, padding: '32px 48px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        <h1 className="text-gradient">Automacoes e Integracoes</h1>
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '24px', borderBottom: '1px solid var(--glass-border)', marginBottom: '8px' }}>
+          <div>
+            <h1 className="text-gradient animate-fade-in">Automações e Integrações</h1>
+            <p style={{ color: 'var(--text-secondary)' }}>Gerencie seus gatilhos, conexões e fluxos inteligentes</p>
+          </div>
+        </header>
 
         <section style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>

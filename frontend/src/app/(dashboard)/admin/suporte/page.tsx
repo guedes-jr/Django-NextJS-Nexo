@@ -167,7 +167,10 @@ export default function SuportePage() {
       <SharedSidebar />
       <main className="main">
         <div className="header">
-          <h1>Suporte</h1>
+          <div>
+            <h1 className="text-gradient animate-fade-in">Central de Suporte</h1>
+            <p style={{ color: 'var(--text-secondary)' }}>Atendimento e suporte técnico especializado</p>
+          </div>
           <button className="btn-primary" onClick={() => setSelectedTicket(null)}>+ Novo Ticket</button>
         </div>
 
@@ -271,16 +274,16 @@ export default function SuportePage() {
 
         <style>{`
           .container { display: flex; min-height: 100vh; }
-          .main { flex: 1; padding: 2rem; background: #0d0d0d; }
-          .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-          .header h1 { color: #fff; font-size: 1.5rem; margin: 0; }
-          .btn-primary { background: #22c55e; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
-          .btn-primary:hover { background: #16a34a; }
-          .error { background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
-          .content-grid { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; }
-          .tickets-list h2 { color: #888; font-size: 0.875rem; margin-bottom: 1rem; }
-          .ticket-card { background: #1a1a1a; padding: 1rem; border-radius: 8px; cursor: pointer; margin-bottom: 0.75rem; border: 1px solid transparent; }
-          .ticket-card.selected { border-color: #22c55e; }
+          .main { flex: 1; padding: 32px 48px; background: var(--bg-primary); display: flex; flex-direction: column; gap: 24px; }
+          .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 24px; border-bottom: 1px solid var(--glass-border); margin-bottom: 0; }
+          .header h1 { font-size: 1.875rem; font-weight: 700; margin: 0; }
+          .btn-primary { background: var(--accent-primary); color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+          .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+          .error { background: rgba(248, 81, 73, 0.1); color: var(--danger); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); margin-bottom: 1rem; }
+          .content-grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin-top: 8px; }
+          .tickets-list h2 { color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+          .ticket-card { background: var(--bg-secondary); padding: 1.25rem; border-radius: 12px; cursor: pointer; margin-bottom: 12px; border: 1px solid var(--glass-border); transition: all 0.2s; }
+          .ticket-card.selected { border-color: var(--accent-primary); background: rgba(59, 130, 246, 0.05); }
           .ticket-card:hover { background: #222; }
           .ticket-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
           .ticket-id { color: #666; font-size: 0.75rem; }
