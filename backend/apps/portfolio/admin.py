@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Institution, Asset, InvestmentAccount, Position, Transaction, Goal, Notification
+from .models import Institution, Asset, InvestmentAccount, Position, Transaction, Goal, Notification, CorporateAction
 
 @admin.register(Institution)
 class InstitutionAdmin(admin.ModelAdmin):
@@ -44,3 +44,10 @@ class NotificationAdmin(admin.ModelAdmin):
     list_filter = ('notification_type', 'is_read')
     search_fields = ('user__username', 'title', 'message')
     date_hierarchy = 'created_at'
+
+@admin.register(CorporateAction)
+class CorporateActionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'action_type', 'asset', 'date', 'ratio', 'amount_per_share', 'status')
+    list_filter = ('action_type', 'status', 'date')
+    search_fields = ('user__username', 'asset__ticker')
+    date_hierarchy = 'date'

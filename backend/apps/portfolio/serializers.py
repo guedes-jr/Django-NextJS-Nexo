@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Institution, Asset, InvestmentAccount, Position, Transaction, Goal, Notification, ReconciliationIssue
+from .models import Institution, Asset, InvestmentAccount, Position, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction
 
 class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -81,3 +81,12 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+
+class CorporateActionSerializer(serializers.ModelSerializer):
+    asset_ticker = serializers.CharField(source='asset.ticker', read_only=True)
+    asset_name = serializers.CharField(source='asset.name', read_only=True)
+
+    class Meta:
+        model = CorporateAction
+        fields = '__all__'
+        read_only_fields = ('user', 'created_at', 'updated_at')

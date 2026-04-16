@@ -30,7 +30,8 @@ from .views import (
     CampaignView,
     ReconciliationIssueListView,
     ReconciliationIssueResolveView,
-    RunReconciliationView
+    RunReconciliationView,
+    CorporateActionListCreateView
 )
 
 urlpatterns = [
@@ -65,4 +66,5 @@ urlpatterns = [
     path('reconciliation/', ReconciliationIssueListView.as_view(), name='reconciliation'),
     path('reconciliation/<int:pk>/', ReconciliationIssueResolveView.as_view(), name='reconciliation_resolve'),
     path('reconciliation/run/', RunReconciliationView.as_view(), name='run_reconciliation'),
+    path('corporate-actions/', CorporateActionListCreateView.as_view(), name='corporate_actions'),
 ]

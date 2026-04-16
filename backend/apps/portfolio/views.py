@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
-from .models import Position, Asset, Institution, InvestmentAccount, Transaction, Goal, Notification, ReconciliationIssue
+from .models import Position, Asset, Institution, InvestmentAccount, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction
 from .serializers import (
     InstitutionSerializer, 
     AssetSerializer, 
@@ -16,7 +16,8 @@ from .serializers import (
     TransactionSerializer,
     GoalSerializer,
     NotificationSerializer,
-    ReconciliationIssueSerializer
+    ReconciliationIssueSerializer,
+    CorporateActionSerializer
 )
 import decimal
 import csv
@@ -227,6 +228,20 @@ class NotificationMarkReadView(APIView):
             return Response({"message": "Marcada como lida"})
         except Notification.DoesNotExist:
             return Response({"error": "Notificacao nao encontrada"}, status=404)
+
+class CorporateActionListCreateView(generics.ListCreateAPIView):
+    serializer_class = CorporateActionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = CorporateAction.objects.filter(user=self.request.user)
+        asset_id = self.request.query_params.get('asset_id')
+        if asset_id:
+            queryset = queryset.filter(asset_id=asset_id)
+        return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class ImportPositionsView(APIView):
     permission_classes = [IsAuthenticated]

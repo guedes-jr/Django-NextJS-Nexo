@@ -1,33 +1,54 @@
 #!/bin/bash
 
-echo "🚀 Iniciando a plataforma NEXO localmente..."
+# ── Cores ──
+CYAN='\033[1;36m'
+YELLOW='\033[1;33m'
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+GRAY='\033[0;90m'
+RESET='\033[0m'
 
-# Esta função garante que quando você apertar Ctrl+C, ambos os processos morram limpos
+FRONT_TAG="${CYAN}[FRONTEND]${RESET}"
+BACK_TAG="${YELLOW}[BACKEND]${RESET}"
+
+echo ""
+echo -e "${GREEN}🚀 Iniciando a plataforma NEXO localmente...${RESET}"
+echo -e "${GRAY}────────────────────────────────────────────────${RESET}"
+
+# ── Cleanup ──
 cleanup() {
     echo ""
-    echo "🛑 Encerrando todos os servidores da NEXO..."
-    # Usa 'kill 0' para matar todo o grupo de processos filho criados no script
-    kill 0
+    echo -e "${RED}🛑 Encerrando todos os servidores da NEXO...${RESET}"
+    trap - SIGINT SIGTERM
+    kill $FRONTEND_PID $BACKEND_PID 2>/dev/null
+    wait $FRONTEND_PID $BACKEND_PID 2>/dev/null
+    echo -e "${GREEN}✅ Servidores encerrados.${RESET}"
+    exit 0
 }
 
-# Prepara a armadilha para atirar no cleanup ao receber o comando de parada
 trap cleanup SIGINT SIGTERM
 
-echo "📦 [FRONTEND] Iniciando Next.js na porta 3000..."
+# ── Frontend ──
+echo -e "${FRONT_TAG} Iniciando Next.js na porta 3000..."
 cd frontend
-npm run dev &
+npm run dev 2>&1 | sed -u "s/^/$(printf "${CYAN}[FRONT]${RESET} ")/" &
 FRONTEND_PID=$!
 cd ..
 
-echo "⚙️  [BACKEND] Iniciando Django na porta 8001..."
+# ── Backend ──
+echo -e "${BACK_TAG} Iniciando Django na porta 8001..."
 cd backend
 source venv/bin/activate
-python3 manage.py runserver 8001 &
+python3 manage.py runserver 8001 2>&1 | sed -u "s/^/$(printf "${YELLOW}[BACK]${RESET}  ")/" &
 BACKEND_PID=$!
 cd ..
 
-echo "✅ Todos os servidores rodando! Acompanhe os logs abaixo:"
-echo "--------------------------------------------------------"
+echo ""
+echo -e "${GREEN}✅ Todos os servidores rodando!${RESET}"
+echo -e "${GRAY}────────────────────────────────────────────────${RESET}"
+echo -e "  ${FRONT_TAG} http://localhost:3000"
+echo -e "  ${BACK_TAG}  http://localhost:8001"
+echo -e "${GRAY}────────────────────────────────────────────────${RESET}"
+echo ""
 
-# Mantem o script rodando prendendo a atenção nos logs dos PIDs em background
 wait $FRONTEND_PID $BACKEND_PID

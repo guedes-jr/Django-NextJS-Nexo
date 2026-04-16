@@ -164,3 +164,36 @@ class ReconciliationIssue(models.Model):
 
     def __str__(self):
         return f"{self.issue_type} - {self.user.username}"
+
+class CorporateAction(models.Model):
+    ACTION_TYPES = [
+        ('DIVIDENDO', 'Dividendo / JCP'),
+        ('DESDOBRAMENTO', 'Desdobramento (Split)'),
+        ('GRUPAMENTO', 'Grupamento (Reverse Split)'),
+        ('BONIFICACAO', 'Bonificação'),
+        ('AMORTIZACAO', 'Amortização'),
+    ]
+
+    STATUS_CHOICES = [
+        ('PENDING', 'Pendente'),
+        ('APPLIED', 'Aplicado'),
+        ('CANCELLED', 'Cancelado'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='corporate_actions')
+    asset = models.ForeignKey(Asset, on_delete=models.RESTRICT, related_name='corporate_actions')
+    action_type = models.CharField(max_length=30, choices=ACTION_TYPES)
+    date = models.DateField()
+    ratio = models.DecimalField(max_digits=18, decimal_places=6, null=True, blank=True, help_text="Ex: 2 para desdobramento 1:2. 0.5 para grupamento 2:1")
+    amount_per_share = models.DecimalField(max_digits=18, decimal_places=6, null=True, blank=True)
+    total_amount = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-date', '-created_at']
+
+    def __str__(self):
+        return f"{self.action_type} - {self.asset.ticker} - {self.date}"
+
