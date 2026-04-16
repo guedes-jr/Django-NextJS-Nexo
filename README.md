@@ -56,6 +56,28 @@ make dev
 | **Backend** | Django 4.2+, DRF, SimpleJWT, yfinance |
 | **Banco de Dados** | PostgreSQL, Redis, SQLite (Dev Fallback) |
 | **DevOps** | Docker, Makefile, Shell Scripting |
+| **Documentação** | drf-spectacular (OpenAPI 3.0), Swagger UI, ReDoc |
+
+---
+
+## 📖 Documentação da API
+
+A plataforma conta com documentação interativa auto-gerada via **drf-spectacular**, a partir dos serializers e views do Django REST Framework. A documentação segue o padrão **OpenAPI 3.0** e está disponível em três formatos:
+
+| URL | Interface | Descrição |
+| :--- | :--- | :--- |
+| `/api/docs/` | **Swagger UI** | Interface interativa para testar endpoints diretamente no navegador, com autenticação persistente |
+| `/api/redoc/` | **ReDoc** | Documentação estilo leitura, ideal para consulta detalhada dos schemas e parâmetros |
+| `/api/schema/` | **OpenAPI YAML** | Schema bruto para importação no Postman, Insomnia ou geração de clients |
+
+### Acesso Rápido (em desenvolvimento)
+
+```
+Swagger UI → http://localhost:8001/api/docs/
+ReDoc       → http://localhost:8001/api/redoc/
+```
+
+> A documentação inclui exemplos de integração em **Python**, **JavaScript**, **cURL** e **C#**, além de tabela completa dos módulos disponíveis e instruções de autenticação JWT.
 
 ---
 

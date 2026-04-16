@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NEXO — API Reference</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { background: #0a0e1a; font-family: 'Inter', -apple-system, sans-serif; }
+
+    /* ══ NEXO TOP BAR ══ */
+    #nexo-topbar {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      border-bottom: 1px solid rgba(99,102,241,0.15);
+      padding: 14px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+      position: sticky; top: 0; z-index: 1000;
+    }
+    #nexo-topbar .brand { display: flex; align-items: center; gap: 12px; }
+    #nexo-topbar .brand .diamond {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, #6366f1, #818cf8);
+      transform: rotate(45deg); border-radius: 5px;
+      box-shadow: 0 0 20px rgba(99,102,241,0.25);
+    }
+    #nexo-topbar .brand h1 { color: #fff; font-size: 18px; font-weight: 700; letter-spacing: 2px; }
+    #nexo-topbar .brand h1 span { color: #818cf8; font-weight: 400; font-size: 13px; margin-left: 8px; letter-spacing: 0; }
+    #nexo-topbar .links { display: flex; gap: 6px; }
+    #nexo-topbar .links a {
+      color: #94a3b8; text-decoration: none; font-size: 13px;
+      padding: 6px 14px; border-radius: 8px; border: 1px solid transparent; transition: all 0.2s;
+    }
+    #nexo-topbar .links a:hover, #nexo-topbar .links a.active {
+      color: #fff; border-color: rgba(99,102,241,0.15); background: rgba(99,102,241,0.1);
+    }
+
+    #redoc-container { min-height: calc(100vh - 60px); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0e1a; }
+    ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div id="nexo-topbar">
+    <div class="brand">
+      <div class="diamond"></div>
+      <h1>NEXO <span>API Reference</span></h1>
+    </div>
+    <div class="links">
+      <a href="/api/docs/">Swagger UI</a>
+      <a href="/api/redoc/" class="active">ReDoc</a>
+      <a href="/api/schema/">OpenAPI Schema</a>
+      <a href="/admin/">Admin</a>
+    </div>
+  </div>
+
+  <div id="redoc-container"></div>
+
+  <script src="{{ redoc_standalone }}"></script>
+  <script>
+    Redoc.init('{{ schema_url }}', {
+      scrollYOffset: '#nexo-topbar',
+      hideDownloadButton: false,
+      expandResponses: '200',
+      requiredPropsFirst: true,
+      sortPropsAlphabetically: true,
+      pathInMiddlePanel: true,
+      theme: {
+        colors: {
+          primary: { main: '#6366f1' },
+          success: { main: '#34d399' },
+          warning: { main: '#fbbf24' },
+          error:   { main: '#f87171' },
+          text: { primary: '#e2e8f0', secondary: '#94a3b8' },
+          border: { dark: 'rgba(99,102,241,0.2)', light: 'rgba(99,102,241,0.08)' },
+          http: {
+            get: '#34d399', post: '#6366f1', put: '#fbbf24',
+            delete: '#f87171', patch: '#fb923c', options: '#94a3b8',
+          },
+        },
+        typography: {
+          fontSize: '15px',
+          lineHeight: '1.6',
+          fontFamily: 'Inter, -apple-system, sans-serif',
+          headings: { fontFamily: 'Inter, -apple-system, sans-serif', fontWeight: '700' },
+          code: { fontFamily: 'JetBrains Mono, monospace', fontSize: '13px', lineHeight: '1.6', wrap: true, backgroundColor: '#0f172a', color: '#34d399' },
+          links: { color: '#818cf8', hover: '#a5b4fc' },
+        },
+        sidebar: {
+          backgroundColor: '#111827',
+          textColor: '#94a3b8',
+          activeTextColor: '#818cf8',
+          groupItems: { textTransform: 'uppercase', activeBackgroundColor: 'rgba(99,102,241,0.12)', activeTextColor: '#e2e8f0' },
+          level1Items: { textTransform: 'none', activeBackgroundColor: 'rgba(99,102,241,0.08)', activeTextColor: '#818cf8' },
+          arrow: { color: '#475569' },
+          width: '280px',
+        },
+        rightPanel: {
+          backgroundColor: '#0f172a',
+          textColor: '#e2e8f0',
+          width: '42%',
+        },
+        schema: {
+          nestedBackground: '#1e293b',
+          requiresColor: '#f87171',
+          typeNameColor: '#818cf8',
+          typeTitleColor: '#e2e8f0',
+          labelsTextSize: '0.85em',
+        },
+        codeBlock: { backgroundColor: '#0f172a' },
+      },
+    }, document.getElementById('redoc-container'));
+  </script>
+</body>
+</html>

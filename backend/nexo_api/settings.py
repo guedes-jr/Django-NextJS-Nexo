@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_celery_results',
+    'drf_spectacular',
     
     # Nexo Apps
     'apps.identity',
@@ -67,7 +68,7 @@ CORS_ALLOW_ALL_ORIGINS = True # Apenas para dev, depois restrinja para o fronten
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,7 +138,180 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# drf-spectacular — Documentação da API
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'NEXO — API de Investimentos',
+    'DESCRIPTION': '''
+# Plataforma NEXO — API REST
+
+API completa para gerenciamento de investimentos, consolidação patrimonial,
+inteligência de carteira, market data e automações.
+
+## Autenticação
+
+Todas as rotas protegidas exigem um **Bearer Token JWT**.
+
+### Obter Token
+```
+POST /api/auth/token/
+{"username": "seu_usuario", "password": "sua_senha"}
+```
+
+### Usar o Token
+Adicione o header em todas as requisições:
+```
+Authorization: Bearer <access_token>
+```
+
+### Renovar Token
+```
+POST /api/auth/token/refresh/
+{"refresh": "<refresh_token>"}
+```
+
+## Exemplos de Integração
+
+### Python (requests)
+```python
+import requests
+
+BASE = "http://localhost:8001/api"
+
+# Login
+resp = requests.post(f"{BASE}/auth/token/", json={
+    "username": "admin",
+    "password": "admin123"
+})
+token = resp.json()["access"]
+headers = {"Authorization": f"Bearer {token}"}
+
+# Listar posições
+positions = requests.get(f"{BASE}/portfolio/positions/", headers=headers)
+print(positions.json())
+```
+
+### JavaScript (fetch)
+```javascript
+const BASE = "http://localhost:8001/api";
+
+// Login
+const loginRes = await fetch(`${BASE}/auth/token/`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ username: "admin", password: "admin123" })
+});
+const { access } = await loginRes.json();
+
+// Listar posições
+const posRes = await fetch(`${BASE}/portfolio/positions/`, {
+  headers: { Authorization: `Bearer ${access}` }
+});
+const positions = await posRes.json();
+console.log(positions);
+```
+
+### cURL
+```bash
+# Login
+TOKEN=$(curl -s -X POST http://localhost:8001/api/auth/token/ \\
+  -H "Content-Type: application/json" \\
+  -d \'{"username":"admin","password":"admin123"}\' | jq -r .access)
+
+# Listar posições
+curl -s http://localhost:8001/api/portfolio/positions/ \\
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+### C# (HttpClient)
+```csharp
+using var client = new HttpClient();
+client.BaseAddress = new Uri("http://localhost:8001/api/");
+
+// Login
+var loginContent = new StringContent(
+    "{\\"username\\":\\"admin\\",\\"password\\":\\"admin123\\"}",
+    Encoding.UTF8, "application/json");
+var loginRes = await client.PostAsync("auth/token/", loginContent);
+var token = JsonDocument.Parse(await loginRes.Content.ReadAsStringAsync())
+    .RootElement.GetProperty("access").GetString();
+
+client.DefaultRequestHeaders.Authorization =
+    new AuthenticationHeaderValue("Bearer", token);
+
+// Listar posições
+var positions = await client.GetStringAsync("portfolio/positions/");
+Console.WriteLine(positions);
+```
+
+## Módulos Disponíveis
+
+| Módulo | Prefixo | Descrição |
+|---|---|---|
+| Identity | `/api/auth/`, `/api/` | Autenticação, MFA, perfil, suporte |
+| Portfolio | `/api/portfolio/` | Carteira, posições, metas, insights |
+| Market Data | `/api/market/` | Cotações, índices, indicadores |
+| Documents | `/api/documents/` | Termos, contratos, extratos |
+| Automations | `/api/automations/` | Gatilhos e alertas automáticos |
+| CMS | `/api/cms/` | Banners, cards, FAQs |
+| Monitor | `/api/monitor/` | Health check, status de integrações |
+    ''',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'TAGS': [
+        {'name': 'Auth', 'description': 'Autenticação e tokens JWT'},
+        {'name': 'Identity', 'description': 'Cadastro, perfil, MFA, dispositivos e suporte'},
+        {'name': 'Portfolio', 'description': 'Posições, transações, metas e inteligência de carteira'},
+        {'name': 'Market Data', 'description': 'Cotações, índices, indicadores e eventos'},
+        {'name': 'Corporate Actions', 'description': 'Eventos corporativos (dividendos, splits, etc.)'},
+        {'name': 'Documents', 'description': 'Termos, contratos e documentos'},
+        {'name': 'Automations', 'description': 'Gatilhos e alertas automáticos'},
+        {'name': 'CMS', 'description': 'Conteúdo institucional'},
+        {'name': 'Monitor', 'description': 'Observabilidade e health checks'},
+    ],
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': False,
+        'filter': True,
+    },
+    'REDOC_UI_SETTINGS': {
+        'theme': {
+            'colors': {
+                'primary': { 'main': '#6366f1' },
+                'success': { 'main': '#34d399' },
+                'warning': { 'main': '#fbbf24' },
+                'error':   { 'main': '#f87171' },
+                'text': { 'primary': '#e2e8f0', 'secondary': '#94a3b8' },
+                'http': {
+                    'get': '#34d399',
+                    'post': '#6366f1',
+                    'put': '#fbbf24',
+                    'delete': '#f87171',
+                    'patch': '#fb923c',
+                },
+            },
+            'typography': {
+                'fontFamily': 'Inter, -apple-system, sans-serif',
+                'headings': { 'fontFamily': 'Inter, -apple-system, sans-serif' },
+                'code': { 'fontFamily': 'JetBrains Mono, monospace', 'fontSize': '13px' },
+            },
+            'sidebar': {
+                'backgroundColor': '#111827',
+                'textColor': '#94a3b8',
+                'activeTextColor': '#818cf8',
+                'groupItems': { 'textTransform': 'uppercase' },
+            },
+            'rightPanel': {
+                'backgroundColor': '#0f172a',
+                'textColor': '#e2e8f0',
+            },
+        },
+    },
 }
 
 # Celery Configuration
