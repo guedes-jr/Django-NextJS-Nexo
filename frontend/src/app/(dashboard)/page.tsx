@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import SharedSidebar from '@/components/SharedSidebar';
-import styles from '../../page.module.css';
+import styles from './page.module.css';
 
 export default function DashboardPage() {
   const router = useRouter();
