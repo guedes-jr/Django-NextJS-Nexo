@@ -10,6 +10,7 @@ from .views import (
     SupportTicketDetailView, SupportMessageView, DocumentUploadView, DocumentListView, DocumentDeleteView,
     AccountVerificationView, AccountVerificationAdminView, AccountVerificationListView
 )
+from .audit_views import AuditLogListView, AuditLogDetailView, UserActivityView
 
 urlpatterns = [
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -38,4 +39,7 @@ urlpatterns = [
     path('verification/', AccountVerificationView.as_view(), name='account_verification'),
     path('verification/list/', AccountVerificationListView.as_view(), name='verification_list'),
     path('verification/admin/<uuid:user_id>/', AccountVerificationAdminView.as_view(), name='account_verification_admin'),
+    path('audit/', AuditLogListView.as_view(), name='audit_list'),
+    path('audit/<int:log_id>/', AuditLogDetailView.as_view(), name='audit_detail'),
+    path('audit/user/<uuid:user_id>/', UserActivityView.as_view(), name='user_activity'),
 ]

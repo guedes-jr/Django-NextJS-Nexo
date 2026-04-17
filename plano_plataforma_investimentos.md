@@ -878,7 +878,7 @@ Objetivo: evitar crescimento desorganizado.
 
 #### Sequência
 - [ ] 1. consentimentos
-- [ ] 2. trilha de auditoria
+- [x] 2. trilha de auditoria
 - [ ] 3. retenção de logs
 - [ ] 4. versionamento de políticas
 - [ ] 5. governança de acessos
