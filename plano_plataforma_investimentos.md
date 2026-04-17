@@ -58,8 +58,8 @@ Ordem de desenvolvimento:
 - [x] 5. horizonte de investimento
 - [x] 6. tolerancia a risco
 - [x] 7. classificacao de perfil
-- [ ] 8. documentacao obrigatoria
-- [ ] 9. aprovacao interna/manual quando necessario
+- [x] 8. documentacao obrigatoria
+- [x] 9. aprovacao interna/manual quando necessario
 
 #### Modulo C — Consolidação patrimonial
 - [x] 1. contas

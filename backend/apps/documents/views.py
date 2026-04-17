@@ -8,6 +8,35 @@ from .serializers import NoteSerializer, InformeSerializer, ComprovanteSerialize
 
 User = get_user_model()
 
+
+class UserDocumentUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        document_type = request.data.get('document_type')
+        file = request.FILES.get('file')
+        
+        if not document_type or not file:
+            return Response({"error": "document_type e file são obrigatórios"}, status=400)
+        
+        doc_types = ['RG', 'CPF', 'COMPROVANTE_RESIDENCIA', 'EXTRATO_BANCARIO', 'OUTRO']
+        if document_type not in doc_types:
+            return Response({"error": "Tipo de documento inválido"}, status=400)
+        
+        from apps.identity.models import UserDocument
+        user_doc = UserDocument.objects.create(
+            user=request.user,
+            document_type=document_type,
+            file=file,
+            original_name=file.name
+        )
+        
+        return Response({
+            "message": "Documento enviado com sucesso",
+            "document_id": user_doc.id,
+            "document_type": user_doc.document_type
+        }, status=201)
+
 class DocumentListView(APIView):
     permission_classes = [IsAuthenticated]
     

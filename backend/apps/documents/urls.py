@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     DocumentListView, DocumentDetailView, AcceptConsentView, UserConsentsView,
     NoteListView, NoteDetailView, InformeListView, InformeGenerateView,
-    ComprovanteListView, ComprovanteDetailView
+    ComprovanteListView, ComprovanteDetailView, UserDocumentUploadView
 )
 
 urlpatterns = [
@@ -10,6 +10,7 @@ urlpatterns = [
     path('<int:doc_id>/', DocumentDetailView.as_view(), name='document_detail'),
     path('accept/', AcceptConsentView.as_view(), name='accept_consent'),
     path('consents/', UserConsentsView.as_view(), name='user_consents'),
+    path('upload/', UserDocumentUploadView.as_view(), name='user_document_upload'),
     
     path('notes/', NoteListView.as_view(), name='notes'),
     path('notes/<int:note_id>/', NoteDetailView.as_view(), name='note_detail'),
