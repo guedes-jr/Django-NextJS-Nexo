@@ -8,7 +8,7 @@ from .views import (
     CurrentUserView, MFAEnableView, MFAVerifyView, MFASetupView, TrustedDeviceView, PreferencesView,
     ConsentListView, ConsentAcceptView, ProfileListView, ProfileDetailView, SupportTicketListView,
     SupportTicketDetailView, SupportMessageView, DocumentUploadView, DocumentListView, DocumentDeleteView,
-    AccountVerificationView, AccountVerificationAdminView
+    AccountVerificationView, AccountVerificationAdminView, AccountVerificationListView
 )
 
 urlpatterns = [
@@ -36,5 +36,6 @@ urlpatterns = [
     path('documents/', DocumentListView.as_view(), name='document_list'),
     path('documents/<int:pk>/', DocumentDeleteView.as_view(), name='document_delete'),
     path('verification/', AccountVerificationView.as_view(), name='account_verification'),
+    path('verification/list/', AccountVerificationListView.as_view(), name='verification_list'),
     path('verification/admin/<uuid:user_id>/', AccountVerificationAdminView.as_view(), name='account_verification_admin'),
 ]

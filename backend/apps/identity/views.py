@@ -561,3 +561,14 @@ class AccountVerificationAdminView(generics.RetrieveUpdateAPIView):
         
         serializer = AccountVerificationSerializer(instance)
         return Response(serializer.data)
+
+
+class AccountVerificationListView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = AccountVerificationSerializer
+    queryset = AccountVerification.objects.all()
+    
+    def get_queryset(self):
+        if not self.request.user.is_admin:
+            return AccountVerification.objects.none()
+        return AccountVerification.objects.select_related('user').all()
