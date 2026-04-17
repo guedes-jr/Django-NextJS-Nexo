@@ -179,7 +179,7 @@ export default function LandingPage() {
           box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
         }
         
-        .nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; }
+        .nav-links { display: flex; gap: 3rem; align-items: center; list-style: none; white-space: nowrap; margin: 0; padding: 0; }
         .nav-link { 
           color: var(--text-muted); 
           text-decoration: none; 
@@ -187,7 +187,7 @@ export default function LandingPage() {
           font-weight: 500;
           transition: all 0.2s; 
           position: relative;
-          padding: 0.5rem 0;
+          display: inline-block;
         }
         .nav-link::after {
           content: '';
@@ -631,7 +631,7 @@ export default function LandingPage() {
           .hero h1 { font-size: 3rem; }
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
           .nav-links { display: none; }
           .hero-stats { flex-direction: column; gap: 2rem; }
           .contact-form { flex-direction: column; }
