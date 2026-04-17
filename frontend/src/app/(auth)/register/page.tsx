@@ -60,7 +60,7 @@ export default function RegisterPage() {
       <div className={`${styles.authCard} glass-panel animate-fade-in`}>
         
         <div className={styles.logo}>
-          <Image src="/logo.png" alt="NEXO Logo" width={42} height={42} />
+          <div className={styles.logoIcon}>💎</div>
           <span>NEXO</span>
         </div>
 

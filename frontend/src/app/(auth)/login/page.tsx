@@ -94,7 +94,7 @@ export default function LoginPage() {
         }
       }
 
-      router.push('/');
+      router.push('/dashboard');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -111,7 +111,7 @@ export default function LoginPage() {
       <div className={`${styles.authCard} glass-panel animate-fade-in ${isTyping ? styles.typingActive : ''}`}>
         
         <div className={styles.logo}>
-          <Image src="/logo.png" alt="NEXO Logo" width={42} height={42} />
+          <div className={styles.logoIcon}>💎</div>
           <span>NEXO</span>
         </div>
 
