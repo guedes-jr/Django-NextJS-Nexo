@@ -106,9 +106,9 @@ Ordem de desenvolvimento:
 - [x] 10. transferencias entre contas
 - [x] 11. importacao manual
 - [x] 12. importacao por arquivo
-- [ ] 13. importacao por integracao
-- [ ] 14. reconciliacao automatica
-- [ ] 15. reconciliacao manual
+- [x] 13. importacao por integracao
+- [x] 14. reconciliacao automatica
+- [x] 15. reconciliacao manual
 
 #### Modulo F — Mercado e dados financeiros
 - [x] 1. cotacoes
