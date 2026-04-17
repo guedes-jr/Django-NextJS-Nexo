@@ -167,6 +167,22 @@ export default function LandingPage() {
           border-bottom: 1px solid rgba(79, 70, 229, 0.15);
         }
         
+        .nav-left {
+          display: flex;
+          align-items: center;
+        }
+        
+        .nav-center {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        
+        .nav-right {
+          display: flex;
+          align-items: center;
+        }
+        
         .logo { display: flex; align-items: center; gap: 0.75rem; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
         .logo-icon { 
           width: 42px; height: 42px; 
@@ -179,7 +195,7 @@ export default function LandingPage() {
           box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
         }
         
-        .nav-links { display: flex; gap: 3rem; align-items: center; list-style: none; white-space: nowrap; margin: 0; padding: 0; }
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; white-space: nowrap; margin: 0; padding: 0; }
         .nav-link { 
           color: var(--text-muted); 
           text-decoration: none; 
@@ -632,7 +648,9 @@ export default function LandingPage() {
         }
         
         @media (max-width: 900px) {
-          .nav-links { display: none; }
+          .nav-center { display: none; }
+          .nav { justify-content: space-between; }
+          .nav-left, .nav-right { position: relative; left: auto; transform: none; }
           .hero-stats { flex-direction: column; gap: 2rem; }
           .contact-form { flex-direction: column; }
           .contact-form input { width: 100%; }
@@ -642,18 +660,24 @@ export default function LandingPage() {
 
       {/* Navigation */}
       <nav className="nav">
-        <div className="logo">
-          <div className="logo-icon">💎</div>
-          <span>NEXO</span>
+        <div className="nav-left">
+          <div className="logo">
+            <div className="logo-icon">💎</div>
+            <span>NEXO</span>
+          </div>
         </div>
-        <ul className="nav-links">
-          <li><a href="#features" className={`nav-link ${activeSection === 'features' ? 'active' : ''}`}>Recursos</a></li>
-          <li><a href="#benefits" className={`nav-link ${activeSection === 'benefits' ? 'active' : ''}`}>Benefícios</a></li>
-          <li><a href="#how-it-works" className={`nav-link ${activeSection === 'how-it-works' ? 'active' : ''}`}>Como Funciona</a></li>
-          <li><a href="#pricing" className={`nav-link ${activeSection === 'pricing' ? 'active' : ''}`}>Planos</a></li>
-          <li><a href="#faq" className={`nav-link ${activeSection === 'faq' ? 'active' : ''}`}>FAQ</a></li>
-        </ul>
-        <Link href="/login" className="nav-cta">Entrar</Link>
+        <div className="nav-center">
+          <ul className="nav-links">
+            <li><a href="#features" className={`nav-link ${activeSection === 'features' ? 'active' : ''}`}>Recursos</a></li>
+            <li><a href="#benefits" className={`nav-link ${activeSection === 'benefits' ? 'active' : ''}`}>Benefícios</a></li>
+            <li><a href="#how-it-works" className={`nav-link ${activeSection === 'how-it-works' ? 'active' : ''}`}>Como Funciona</a></li>
+            <li><a href="#pricing" className={`nav-link ${activeSection === 'pricing' ? 'active' : ''}`}>Planos</a></li>
+            <li><a href="#faq" className={`nav-link ${activeSection === 'faq' ? 'active' : ''}`}>FAQ</a></li>
+          </ul>
+        </div>
+        <div className="nav-right">
+          <Link href="/login" className="nav-cta">Entrar</Link>
+        </div>
       </nav>
 
       {/* Hero */}
