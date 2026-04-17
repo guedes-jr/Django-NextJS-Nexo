@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from decimal import Decimal
 
 User = get_user_model()
 
@@ -196,4 +197,25 @@ class CorporateAction(models.Model):
 
     def __str__(self):
         return f"{self.action_type} - {self.asset.ticker} - {self.date}"
+
+
+class PortfolioSnapshot(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='portfolio_snapshots')
+    date = models.DateField(help_text="Data do snapshot")
+    total_value = models.DecimalField(max_digits=18, decimal_places=2, help_text="Valor total do portfólio")
+    cash_value = models.DecimalField(max_digits=18, decimal_places=2, default=0, help_text="Valor em caixa")
+    position_value = models.DecimalField(max_digits=18, decimal_places=2, default=0, help_text="Valor em posições")
+    variation = models.DecimalField(max_digits=18, decimal_places=2, default=0, help_text="Variação do período")
+    variation_percent = models.DecimalField(max_digits=10, decimal_places=4, default=0, help_text="Variação percentual")
+    allocation = models.JSONField(default=dict, help_text="Alocação por classe de ativo")
+    positions_count = models.IntegerField(default=0, help_text="Número de posições")
+    accounts_count = models.IntegerField(default=0, help_text="Número de contas")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date']
+        unique_together = ('user', 'date')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.date} - R$ {self.total_value}"
 

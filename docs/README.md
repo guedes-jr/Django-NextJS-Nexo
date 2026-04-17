@@ -11,38 +11,51 @@
 - [Visualização da Carteira](./carteira.md)
 - [Importação de Posições (CSV/Excel)](./importacao-posicoes.md)
 - [Alocação de Ativos](./alocacao.md)
+- [Histórico de Movimentações](./movimentacoes.md)
 
-### 3. Metas e Simulações
+### 3. Análise e Inteligência
+- [Benchmarks](./benchmark.md)
+- [Análise de Concentração](./concentracao.md)
+- [Evolução Patrimonial (Snapshots)](./historico-patrimonial.md)
+- [Insights da Carteira](./insights.md)
+- [Saúde da Carteira](./saude-carteira.md)
+
+### 4. Metas e Simulações
 - [Metas de Investimento](./metas.md)
 - [Simulador de Cenários](./simulador-cenarios.md)
 
-### 4. Integrações
+### 5. Integrações
 - [Conexão de Corretoras](./corretoras.md)
+- [Comparativo de Corretoras](./comparativo-corretoras.md)
 - [Market Data (Yahoo Finance)](./market-data.md)
 
-### 5. Eventos e Dados
+### 6. Eventos e Dados
 - [Eventos Corporativos](./eventos-corporativos.md)
 - [Reconciliação Automática](./reconciliacao.md)
 
-### 6. Automação e Notificações
+### 7. Automação e Notificações
 - [Automações (Gatilhos)](./automacoes.md)
 - [Central de Notificações](./notificacoes.md)
 - [Alertas](./alertas.md)
 
-### 7. Documentos
+### 8. Documentos
 - [Gestão de Documentos](./documentos.md)
 - [Consentimentos](./consentimentos.md)
 
-### 8. Admin e Monitoramento
+### 9. Admin e Monitoramento
 - [Dashboard Admin](./admin-dashboard.md)
 - [Central de Suporte](./suporte.md)
 - [CMS (Banners e FAQs)](./cms.md)
 - [Monitor de Jobs](./monitor-jobs.md)
 
+### 10. Relatórios
+- [Relatórios de Rentabilidade](./relatorios-rentabilidade.md)
+- [Backup e Exportação](./backup-export.md)
+
 ---
 
-##快速链接
+## Links Úteis
 
 - [README Principal](../README.md)
-- [Plano de Desenvolvimento](./plano-desenvolvimento.md)
+- [Plano de Desenvolvimento](../plano_plataforma_investimentos.md)
 - [Stack Técnica](./stack-tecnica.md)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Institution, Asset, InvestmentAccount, Position, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction
+from .models import Institution, Asset, InvestmentAccount, Position, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction, PortfolioSnapshot
 
 class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,3 +90,10 @@ class CorporateActionSerializer(serializers.ModelSerializer):
         model = CorporateAction
         fields = '__all__'
         read_only_fields = ('user', 'created_at', 'updated_at')
+
+
+class PortfolioSnapshotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioSnapshot
+        fields = '__all__'
+        read_only_fields = ('user', 'created_at')

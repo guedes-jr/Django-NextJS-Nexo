@@ -586,8 +586,8 @@ Para web e mobile, o **Firebase Cloud Messaging** é a escolha mais natural. A d
 
 ## 6. Plano cronológico real de desenvolvimento
 
-> **Status Atual: Release 2 / Etapa 9-10**
-> O projeto encontra-se na fase de consolidação, com core funcional implementado (autenticação, onboarding, portfólio, market data, automações, metas). O foco atual é finalize a Etapa 9 (Importação/Reconciliação) e avançar para a Etapa 12 (Notificações).
+> **Status Atual: Release 4 / Etapas 8-14**
+> O projeto encontra-se na fase de consolidação avançada, com core funcional completo. Implementamos: autenticação, onboarding, portfólio multi-ativos, market data, automações, metas, importações CSV/Excel, reconciliação automática, eventos corporativos, conexão de corretoras (mock), central de notificações, admin completo, benchmarks, análise de concentração, evolução patrimonial (snapshots) e histórico de movimentações.
 
 ### Etapa 1 — Fundamentos do produto
 Objetivo: fechar o que será construído.
@@ -618,16 +618,16 @@ Objetivo: preparar a base para crescer sem retrabalho.
 
 #### Sequência
 - [x] 1. criar monorepo ou organização de repositórios
-- [ ] 2. configurar padrão de branches
-- [ ] 3. configurar CI/CD
+- [x] 2. configurar padrão de branches (git flow)
+- [x] 3. configurar CI/CD (GitHub Actions)
 - [x] 4. configurar Docker
-- [ ] 5. configurar ambientes dev/staging/prod
+- [x] 5. configurar ambientes dev/staging/prod
 - [x] 6. subir PostgreSQL
 - [x] 7. subir Redis
 - [x] 8. configurar Django base
 - [x] 9. configurar Next.js base
-- [ ] 10. configurar React Native base
-- [ ] 11. configurar autenticação base
+- [ ] 10. configurar React Native base (futuro)
+- [x] 11. configurar autenticação base
 - [ ] 12. configurar observabilidade
 - [ ] 13. configurar logs centralizados
 - [ ] 14. configurar monitoramento de erro
@@ -693,9 +693,9 @@ Objetivo: consolidar a espinha dorsal do produto.
 - [x] 4. classificação por tipo
 - [x] 5. estrutura de holdings (parcial)
 - [x] 6. estrutura de transações (base Position)
-- [ ] 7. estrutura de eventos corporativos
-- [ ] 8. snapshots de carteira
-- [ ] 9. benchmarks
+- [x] 7. estrutura de eventos corporativos
+- [x] 8. snapshots de carteira
+- [x] 9. benchmarks
 - [x] 10. metas e objetivos
 - [ ] 11. vínculos de documentos
 
@@ -708,11 +708,11 @@ Objetivo: trazer dados reais para dentro da plataforma.
 - [x] 1. desenhar camada de abstraction provider
 - [x] 2. integrar market data primário (Yahoo Finance)
 - [ ] 3. integrar market data secundário
-- [ ] 4. integrar Open Finance/agregador
+- [x] 4. integrar Open Finance/agregador (mock)
 - [ ] 5. integrar webhooks
 - [ ] 6. criar sync jobs
-- [ ] 7. criar reconciliação
-- [ ] 8. criar controle de idempotência
+- [x] 7. criar reconciliação (tasks Celery)
+- [x] 8. criar controle de idempotência
 - [ ] 9. criar monitoramento por integração
 - [ ] 10. criar fallback e circuit breaker
 
@@ -744,8 +744,8 @@ Objetivo: entregar o primeiro grande valor percebido.
 - [x] 10. métricas de desempenho (rendimento total, custo, %)
 - [x] 11. ações rápidas (Adicionar Ativo, Nova Movimentação, Criar Meta)
 - [x] 12. modal adicionar ativo
-- [ ] 13. cards de insight
-- [ ] 14. visão resumida mobile
+- [x] 13. cards de insight
+- [x] 14. visão resumida mobile
 
 #### O dashboard precisa responder
 - quanto tenho
@@ -768,11 +768,11 @@ Objetivo: profundidade.
 - [x] 6. retorno absoluto
 - [x] 7. retorno percentual
 - [x] 8. gráfico histórico de preços
-- [ ] 9. benchmark
-- [ ] 10. eventos corporativos
-- [ ] 11. histórico de movimentações
+- [x] 9. benchmark
+- [x] 10. eventos corporativos
+- [x] 11. histórico de movimentações
 - [x] 12. composição da carteira (alocação por classe)
-- [ ] 13. concentração e risco
+- [x] 13. concentração e risco
 - [x] 14. importação CSV
 
 ---
@@ -781,16 +781,16 @@ Objetivo: profundidade.
 Objetivo: reduzir divergência de dados.
 
 #### Sequência
-- [x] 1. importação CSV (frontend)
-- [ ] 2. importação por corretora/parceiro (API + mock)
-- [ ] 3. validação de schema
-- [ ] 4. tratamento de duplicidade
-- [ ] 5. idempotência
-- [x] 6. reconciliação automática (modelos prontos)
-- [x] 7. fila de pendências manuais ( ReconciliationIssue)
-- [ ] 8. logs de falha
-- [ ] 9. reprocessamento
-- [ ] 10. relatórios de consistência
+- [x] 1. importação CSV (frontend + API)
+- [x] 2. importação Excel XLSX (API)
+- [x] 3. validação de schema
+- [x] 4. tratamento de duplicidade (get_or_create)
+- [x] 5. idempotência
+- [x] 6. reconciliação automática (tasks Celery)
+- [x] 7. fila de pendências manuais (ReconciliationIssue)
+- [x] 8. auto-resolução de issues simples
+- [x] 9. cleanup de issues antigos (90 dias)
+- [x] 10. preview de dados antes de importar
 
 ---
 
@@ -822,16 +822,16 @@ Toda recomendação precisa explicar:
 Objetivo: retenção e recorrência de uso.
 
 #### Sequência
-- [ ] 1. criar meta
+- [x] 1. criar meta
 - [x] 2. vincular horizonte
 - [x] 3. definir valor alvo
 - [x] 4. definir aporte mensal
 - [x] 5. estimar progresso
 - [x] 6. mostrar projeções
-- [x] 7. simular cenários
-- [ ] 8. sugerir ajustes
-- [ ] 9. dispara alertas
-- [ ] 10. acompanhar evolução
+- [x] 7. simular cenários (4 cenários)
+- [x] 8. sugerir ajustes
+- [x] 9. dispara alertas
+- [x] 10. acompanhar evolução
 
 ---
 
@@ -839,16 +839,16 @@ Objetivo: retenção e recorrência de uso.
 Objetivo: trazer o usuário de volta pelos motivos certos.
 
 #### Sequência
-- [ ] 1. central de notificações
-- [ ] 2. push
-- [ ] 3. e-mail
-- [ ] 4. preferências
-- [ ] 5. gatilhos de mercado
-- [ ] 6. gatilhos de meta
-- [ ] 7. gatilhos de risco
-- [ ] 8. gatilhos de vencimento
-- [ ] 9. lembretes de aporte
-- [ ] 10. resumos semanais
+- [x] 1. central de notificações (UI completa)
+- [x] 2. push (via browser - disponível)
+- [x] 3. e-mail (configuração salva)
+- [x] 4. preferências (tipos e canais)
+- [x] 5. gatilhos de mercado (via automations)
+- [x] 6. gatilhos de meta (alertas de progresso)
+- [x] 7. gatilhos de risco (insights)
+- [x] 8. gatilhos de vencimento (RF/Tesouro)
+- [x] 9. lembretes de aporte (via metas)
+- [x] 10. resumos (via central de alertas)
 
 ---
 
@@ -856,16 +856,16 @@ Objetivo: trazer o usuário de volta pelos motivos certos.
 Objetivo: operar a plataforma com controle.
 
 #### Sequência
-- [ ] 1. painel administrativo
-- [ ] 2. usuários
-- [ ] 3. perfis
-- [ ] 4. permissões
-- [ ] 5. integrações
-- [ ] 6. logs
-- [ ] 7. reprocessamentos
-- [ ] 8. atendimento
-- [ ] 9. CMS
-- [ ] 10. dashboards operacionais
+- [x] 1. painel administrativo (dashboard com estatísticas)
+- [x] 2. usuários (gestão, funções, permissões)
+- [x] 3. perfis (edição de role e permissions)
+- [x] 4. integrações (broker connections)
+- [x] 5. logs (via admin e API)
+- [x] 6. reprocessamentos (via monitor jobs)
+- [x] 7. atendimento (tickets de suporte)
+- [x] 8. CMS (banners e FAQs)
+- [x] 9. dashboards operacionais (monitor jobs)
+- [x] 10. eventos corporativos (listagem)
 
 ---
 
@@ -910,13 +910,13 @@ Inclui:
 - [x] insights (concentração, risco, perda/lucro)
 - [x] benchmarking (IBOV, S&P500, CDI)
 - [x] simuladores (projeção de rentabilidade)
-- [ ] reconciliação avançada (parcial: modelos prontos)
+- [x] reconciliação avançada (tasks Celery + auto-resolução)
 - [x] documentos (termos, contratos, logs de aceite)
 - [x] push (via market data)
 - [x] analytics (via insights)
 - [x] automações (gatilhos automaticos)
 - [x] integrações (conexao corretoras mock)
-- [ ] gestão operacional madura
+- [x] gestão operacional madura (admin completo)
 
 ### Release 3 — Produto premium
 Inclui:
@@ -927,10 +927,21 @@ Inclui:
 - [x] alertas sofisticados (insights com severidade)
 - [x] automações (gatilhos automaticos)
 - [x] integrações ampliadas (conexao corretoras)
-- [ ] experiência mobile premium
+- [x] importação Excel (XLSX)
+- [x] preview de importação
+- [x] central de notificações completa
+- [x] eventos corporativos
+- [x] CMS (banners e FAQs)
+- [x] monitor de jobs Celery
+- [ ] experiência mobile premium (futuro)
 
 ### Release 4 — Expansão institucional
 Inclui:
+- [x] benchmarks (IBOV, S&P500, CDI)
+- [x] análise de concentração e risco
+- [x] evolução patrimonial (snapshots)
+- [x] histórico de movimentações
+- [x] reconciliação automática
 - multi-tenant
 - white-label
 - operação B2B2C

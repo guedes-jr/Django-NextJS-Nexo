@@ -7,7 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
-from .models import Position, Asset, Institution, InvestmentAccount, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction
+from django.http import HttpResponse
+from django.db.models import Sum
+from .models import Position, Asset, Institution, InvestmentAccount, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction, PortfolioSnapshot
 from .serializers import (
     InstitutionSerializer, 
     AssetSerializer, 
@@ -17,7 +19,8 @@ from .serializers import (
     GoalSerializer,
     NotificationSerializer,
     ReconciliationIssueSerializer,
-    CorporateActionSerializer
+    CorporateActionSerializer,
+    PortfolioSnapshotSerializer
 )
 import decimal
 import csv
@@ -198,7 +201,25 @@ class TransactionListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user).order_by('-transaction_date')
+        queryset = Transaction.objects.filter(user=self.request.user).order_by('-transaction_date')
+        
+        transaction_type = self.request.query_params.get('type')
+        if transaction_type and transaction_type != 'all':
+            queryset = queryset.filter(transaction_type=transaction_type)
+        
+        start_date = self.request.query_params.get('start_date')
+        if start_date:
+            queryset = queryset.filter(transaction_date__gte=start_date)
+        
+        end_date = self.request.query_params.get('end_date')
+        if end_date:
+            queryset = queryset.filter(transaction_date__lte=end_date)
+        
+        asset_ticker = self.request.query_params.get('asset')
+        if asset_ticker:
+            queryset = queryset.filter(asset__ticker__icontains=asset_ticker)
+        
+        return queryset
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -1722,4 +1743,359 @@ class RunReconciliationView(generics.GenericAPIView):
         return Response({
             "message": "Reconciliação concluída",
             "issues_found": issues_found
+        })
+
+
+class ProfitabilityReportView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        year = int(request.query_params.get('year', datetime.now().year))
+        user = request.user
+        
+        positions = Position.objects.filter(account__user=user).select_related('asset')
+        
+        total_invested = decimal.Decimal('0.0')
+        current_value = decimal.Decimal('0.0')
+        total_profit = decimal.Decimal('0.0')
+        
+        by_asset = []
+        
+        for pos in positions:
+            invested = pos.quantity * pos.average_price
+            current = pos.quantity * (pos.current_price or pos.average_price)
+            profit = current - invested
+            profit_pct = (profit / invested * 100) if invested > 0 else decimal.Decimal('0')
+            
+            total_invested += invested
+            current_value += current
+            total_profit += profit
+            
+            by_asset.append({
+                "ticker": pos.asset.ticker,
+                "name": pos.asset.name,
+                "asset_type": pos.asset.asset_type,
+                "quantity": float(pos.quantity),
+                "average_price": float(pos.average_price),
+                "current_price": float(pos.current_price or pos.average_price),
+                "invested_value": float(invested),
+                "current_value": float(current),
+                "profit": float(profit),
+                "profit_percentage": float(profit_pct)
+            })
+        
+        total_profit_pct = (total_profit / total_invested * 100) if total_invested > 0 else decimal.Decimal('0')
+        
+        by_type = {}
+        for pos in positions:
+            at = pos.asset.asset_type
+            value = float(pos.quantity * (pos.current_price or pos.average_price))
+            by_type[at] = by_type.get(at, 0) + value
+        
+        transactions = Transaction.objects.filter(
+            user=user,
+            transaction_date__year=year
+        ).order_by('transaction_date')
+        
+        monthly_history = {}
+        for tx in transactions:
+            month = tx.transaction_date.strftime('%Y-%m')
+            if month not in monthly_history:
+                monthly_history[month] = {'inflow': 0, 'outflow': 0}
+            
+            if tx.transaction_type in ['APORTE', 'RESGATE']:
+                value = float(tx.total_value)
+                if tx.transaction_type == 'APORTE':
+                    monthly_history[month]['inflow'] += value
+                else:
+                    monthly_history[month]['outflow'] += value
+        
+        return Response({
+            "period": year,
+            "summary": {
+                "total_invested": float(total_invested),
+                "current_value": float(current_value),
+                "total_profit": float(total_profit),
+                "profit_percentage": float(total_profit_pct),
+                "positions_count": len(by_asset)
+            },
+            "by_asset": sorted(by_asset, key=lambda x: x['current_value'], reverse=True),
+            "by_type": by_type,
+            "monthly_history": monthly_history,
+            "dividends_received": float(sum(
+                float(tx.total_value) for tx in transactions if tx.transaction_type == 'DIVIDENDO'
+            ))
+        })
+
+
+class GenerateReportView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        format_type = request.query_params.get('format', 'json')
+        year = int(request.query_params.get('year', datetime.now().year))
+        user = request.user
+        
+        positions = Position.objects.filter(account__user=user).select_related('asset')
+        
+        rows = [['Ativo', 'Tipo', 'Quantidade', 'Preço Médio', 'Preço Atual', 'Valor Investido', 'Valor Atual', 'Lucro/Prejuízo', '%']]
+        
+        total_profit = decimal.Decimal('0')
+        total_invested = decimal.Decimal('0')
+        
+        for pos in positions:
+            invested = pos.quantity * pos.average_price
+            current = pos.quantity * (pos.current_price or pos.average_price)
+            profit = current - invested
+            profit_pct = (profit / invested * 100) if invested > 0 else 0
+            
+            total_profit += profit
+            total_invested += invested
+            
+            rows.append([
+                pos.asset.ticker,
+                pos.asset.asset_type,
+                str(pos.quantity),
+                f"{pos.average_price:.2f}",
+                f"{pos.current_price or pos.average_price:.2f}",
+                f"{invested:.2f}",
+                f"{current:.2f}",
+                f"{profit:.2f}",
+                f"{profit_pct:.2f}%"
+            ])
+        
+        rows.append(['', '', '', '', '', '', '', '', ''])
+        rows.append(['TOTAL', '', '', '', '', f"{total_invested:.2f}", f"{total_invested + total_profit:.2f}", f"{total_profit:.2f}", f"{(total_profit/total_invested*100) if total_invested > 0 else 0:.2f}%"])
+        
+        if format_type == 'csv':
+            import io
+            output = io.StringIO()
+            import csv
+            writer = csv.writer(output)
+            for row in rows:
+                writer.writerow(row)
+            
+            response = HttpResponse(output.getvalue(), content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename=relatorio_rentabilidade_{year}.csv'
+            return response
+        else:
+            return Response({
+                "filename": f"relatorio_rentabilidade_{year}",
+                "format": format_type,
+                "rows": rows
+            })
+
+
+class BackupExportView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        format_type = request.query_params.get('format', 'json')
+        user = request.user
+        include_positions = request.query_params.get('positions', 'true') == 'true'
+        include_transactions = request.query_params.get('transactions', 'true') == 'true'
+        include_goals = request.query_params.get('goals', 'true') == 'true'
+        include_automations = request.query_params.get('automations', 'true') == 'true'
+        
+        export_data = {
+            "export_date": timezone.now().isoformat(),
+            "user": {
+                "username": user.username,
+                "email": user.email,
+            },
+            "version": "1.0"
+        }
+        
+        if include_positions:
+            positions = Position.objects.filter(account__user=user).select_related('asset', 'account__institution')
+            export_data["positions"] = [{
+                "ticker": p.asset.ticker,
+                "name": p.asset.name,
+                "asset_type": p.asset.asset_type,
+                "quantity": float(p.quantity),
+                "average_price": float(p.average_price),
+                "current_price": float(p.current_price or p.average_price),
+                "institution": p.account.institution.name,
+                "account": p.account.description,
+            } for p in positions]
+        
+        if include_transactions:
+            transactions = Transaction.objects.filter(user=user)
+            export_data["transactions"] = [{
+                "asset_ticker": tx.asset.ticker if tx.asset else None,
+                "transaction_type": tx.transaction_type,
+                "quantity": float(tx.quantity) if tx.quantity else None,
+                "total_value": float(tx.total_value),
+                "date": tx.transaction_date.isoformat(),
+            } for tx in transactions[:1000]]
+        
+        if include_goals:
+            goals = Goal.objects.filter(user=user)
+            export_data["goals"] = [{
+                "name": g.name,
+                "target_amount": float(g.target_amount),
+                "current_amount": float(g.current_amount),
+                "horizon_months": g.horizon_months,
+                "monthly_contribution": float(g.monthly_contribution),
+            } for g in goals]
+        
+        if include_automations:
+            from apps.automations.models import AutomationTrigger
+            automations = AutomationTrigger.objects.filter(user=user)
+            export_data["automations"] = [{
+                "name": a.name,
+                "trigger_type": a.trigger_type,
+                "condition_value": float(a.condition_value),
+                "asset_ticker": a.asset_ticker,
+                "action_type": a.action_type,
+                "is_active": a.is_active,
+            } for a in automations]
+        
+        export_data["summary"] = {
+            "positions_count": len(export_data.get("positions", [])),
+            "transactions_count": len(export_data.get("transactions", [])),
+            "goals_count": len(export_data.get("goals", [])),
+            "automations_count": len(export_data.get("automations", [])),
+        }
+        
+        if format_type == 'json':
+            return Response(export_data)
+        elif format_type == 'csv':
+            import io
+            import csv
+            
+            output = io.StringIO()
+            writer = csv.writer(output)
+            
+            writer.writerow(["NEXO Backup Export"])
+            writer.writerow([f"Export Date: {export_data['export_date']}"])
+            writer.writerow([f"User: {export_data['user']['username']}"])
+            writer.writerow([])
+            
+            if export_data.get("positions"):
+                writer.writerow(["=== POSITIONS ==="])
+                writer.writerow(["Ticker", "Name", "Type", "Quantity", "Avg Price", "Current Price", "Institution"])
+                for p in export_data["positions"]:
+                    writer.writerow([p["ticker"], p["name"], p["asset_type"], p["quantity"], p["average_price"], p["current_price"], p["institution"]])
+            
+            response = HttpResponse(output.getvalue(), content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename=nexo_backup_{datetime.now().strftime("%Y%m%d")}.csv'
+            return response
+        
+        return Response({"error": "Formato não suportado"}, status=400)
+
+
+class PortfolioSnapshotView(generics.ListCreateAPIView):
+    serializer_class = PortfolioSnapshotSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return PortfolioSnapshot.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        date = serializer.validated_data.get('date')
+
+        if PortfolioSnapshot.objects.filter(user=user, date=date).exists():
+            return Response({"error": "Snapshot já existe para esta data"}, status=400)
+
+        positions = Position.objects.filter(account__user=user).select_related('asset', 'account__institution')
+        accounts = InvestmentAccount.objects.filter(user=user)
+
+        total_value = decimal.Decimal('0.0')
+        position_value = decimal.Decimal('0.0')
+        cash_value = decimal.Decimal('0.0')
+        allocations = {}
+        positions_count = 0
+
+        for pos in positions:
+            if pos.quantity > 0:
+                current_p = pos.current_price or pos.average_price
+                value = pos.quantity * current_p
+                position_value += value
+                total_value += value
+                positions_count += 1
+
+                asset_type = pos.asset.asset_type
+                if asset_type not in allocations:
+                    allocations[asset_type] = decimal.Decimal('0.0')
+                allocations[asset_type] += value
+
+        for acc in accounts:
+            cash_value += decimal.Decimal('1000.00')
+
+        serializer.save(
+            user=user,
+            total_value=total_value + cash_value,
+            position_value=position_value,
+            cash_value=cash_value,
+            allocation=allocations,
+            positions_count=positions_count,
+            accounts_count=accounts.count()
+        )
+
+
+class PortfolioSnapshotDetailView(generics.RetrieveDestroyAPIView):
+    serializer_class = PortfolioSnapshotSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return PortfolioSnapshot.objects.filter(user=self.request.user)
+
+
+class GenerateSnapshotView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from django.utils import timezone
+        import datetime
+
+        user = request.user
+        today = timezone.now().date()
+
+        positions = Position.objects.filter(account__user=user).select_related('asset', 'account__institution')
+        accounts = InvestmentAccount.objects.filter(user=user)
+
+        total_value = decimal.Decimal('0.0')
+        position_value = decimal.Decimal('0.0')
+        cash_value = decimal.Decimal('0.0')
+        allocations = {}
+        positions_count = 0
+
+        for pos in positions:
+            if pos.quantity > 0:
+                current_p = pos.current_price or pos.average_price
+                value = pos.quantity * current_p
+                position_value += value
+                total_value += value
+                positions_count += 1
+
+                asset_type = pos.asset.asset_type
+                if asset_type not in allocations:
+                    allocations[asset_type] = decimal.Decimal('0.0')
+                allocations[asset_type] += value
+
+        for acc in accounts:
+            cash_value += decimal.Decimal('1000.00')
+
+        total_value += cash_value
+
+        snapshot, created = PortfolioSnapshot.objects.update_or_create(
+            user=user,
+            date=today,
+            defaults={
+                'total_value': total_value,
+                'position_value': position_value,
+                'cash_value': cash_value,
+                'allocation': allocations,
+                'positions_count': positions_count,
+                'accounts_count': accounts.count(),
+            }
+        )
+
+        return Response({
+            "message": "Snapshot gerado com sucesso",
+            "snapshot_id": snapshot.id,
+            "total_value": float(total_value),
+            "created": created
         })

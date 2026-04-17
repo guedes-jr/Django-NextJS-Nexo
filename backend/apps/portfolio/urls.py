@@ -33,7 +33,13 @@ from .views import (
     ReconciliationIssueListView,
     ReconciliationIssueResolveView,
     RunReconciliationView,
-    CorporateActionListCreateView
+    CorporateActionListCreateView,
+    ProfitabilityReportView,
+    GenerateReportView,
+    BackupExportView,
+    PortfolioSnapshotView,
+    PortfolioSnapshotDetailView,
+    GenerateSnapshotView
 )
 
 urlpatterns = [
@@ -71,4 +77,10 @@ urlpatterns = [
     path('reconciliation/<int:pk>/', ReconciliationIssueResolveView.as_view(), name='reconciliation_resolve'),
     path('reconciliation/run/', RunReconciliationView.as_view(), name='run_reconciliation'),
     path('corporate-actions/', CorporateActionListCreateView.as_view(), name='corporate_actions'),
+    path('reports/profitability/', ProfitabilityReportView.as_view(), name='profitability_report'),
+    path('reports/generate/', GenerateReportView.as_view(), name='generate_report'),
+    path('backup/export/', BackupExportView.as_view(), name='backup_export'),
+    path('snapshots/', PortfolioSnapshotView.as_view(), name='snapshots'),
+    path('snapshots/<int:pk>/', PortfolioSnapshotDetailView.as_view(), name='snapshot_detail'),
+    path('snapshots/generate/', GenerateSnapshotView.as_view(), name='generate_snapshot'),
 ]
