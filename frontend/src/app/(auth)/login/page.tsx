@@ -111,7 +111,7 @@ export default function LoginPage() {
       <div className={`${styles.authCard} glass-panel animate-fade-in ${isTyping ? styles.typingActive : ''}`}>
         
         <div className={styles.logo}>
-          <div className={styles.logoIcon}>💎</div>
+          <img src="/logo_icon.png" alt="NEXO" style={{ width: 36, height: 36, objectFit: 'contain' }} />
           <span>NEXO</span>
         </div>
 
