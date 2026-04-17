@@ -28,6 +28,7 @@ const navItems = [
   { href: '/admin/monitor', label: 'Monitor', icon: 'M22 12h-4l-3 9L9 3l-3 9H2' },
   { href: '/admin/verificacoes', label: 'Verificacoes', icon: 'M9 12l2 2 4-4m5.618-4.016A11.959 11.959 0 0 1 12 2.944a11.959 11.959 0 0 1-2.618 5.046 11.96 11.96 0 0 1-2.004 2.004 11.959 11.959 0 0 1-5.046 2.618A11.96 11.96 0 0 1 2.944 12c0-.654.053-1.295.15-1.916a11.959 11.959 0 0 1 5.046-2.618 11.96 11.96 0 0 1 2.004-2.004A11.959 11.959 0 0 1 12 5.056c.654 0 1.295-.053 1.916-.15a11.958 11.958 0 0 1 2.004 2.004 11.958 11.958 0 0 1 2.618 5.046c.896.097 1.742.262 2.618.15' },
   { href: '/admin/auditoria', label: 'Auditoria', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2H9m3-4V4m0 0h4m0 4v4m0-4h-4m4 0h4' },
+  { href: '/admin/webshell', label: 'WebShell', icon: 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
 ];
 
 export default function SharedSidebar() {

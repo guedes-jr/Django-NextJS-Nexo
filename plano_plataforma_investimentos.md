@@ -38,11 +38,11 @@ A recomendação prática é iniciar com **Nível 1 + Nível 2**, deixando a arq
 Conjunto de ferramentas para facilitar o desenvolvimento, debug e acompanhamento em tempo real.
 
 #### 1.5.1. WebShell
-- [ ] Terminal web integrado no admin para execução de comandos shell
-- [ ] history de comandos executados
-- [ ] output em tempo real (streaming)
+- [x] Terminal web integrado no admin para execução de comandos shell
+- [x] history de comandos executados
+- [x] output em tempo real (streaming)
 - [ ] autocomplete de comandos comuns
-- [ ] suporte a comandos Django (manage.py)
+- [x] suporte a comandos Django (manage.py)
 
 #### 1.5.2. DBShell
 - [ ] Consulta SQL direta via interface web

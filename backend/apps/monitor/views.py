@@ -1,13 +1,18 @@
 """
-API para monitorar jobs e filas
+APIs para monitorar jobs, filas e WebShell
 """
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_celery_results.models import TaskResult
 from django.contrib.auth import get_user_model
+from django.db import connection
+import subprocess
+import os
+import shlex
 
 User = get_user_model()
+from .models import CommandHistory
 
 class JobListView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -92,3 +97,111 @@ class JobStatusView(APIView):
             })
         except TaskResult.DoesNotExist:
             return Response({"error": "Task não encontrada"}, status=404)
+
+
+class WebShellView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        history = [
+            {
+                "id": i,
+                "command": cmd.command,
+                "output": cmd.output[:500] if cmd.output else "",
+                "exit_code": cmd.exit_code,
+                "created_at": cmd.created_at.isoformat() if cmd.created_at else None,
+            }
+            for i, cmd in enumerate(
+                CommandHistory.objects.all()[:50]
+            )
+        ]
+        
+        return Response({"history":history})
+    
+    def post(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        command = request.data.get('command', '').strip()
+        if not command:
+            return Response({"error": "Comando vazio"}, status=400)
+        
+        safe_commands = [
+            'ls','pwd','cd','cat','echo','whoami','ps','top','df','free','date','uptime',
+            'python','python3','pip','pip3','npm','node','git','curl','wget',
+            'manage.py'
+        ]
+        
+        output = ""
+        exit_code = 0
+        
+        parts = shlex.split(command)
+        if not parts:
+            return Response({"error": "Comando inválido"}, status=400)
+        
+        base_cmd = parts[0]
+        
+        if base_cmd == 'clear':
+            CommandHistory.objects.all().delete()
+            return Response({"output": "Terminal limpo", "exit_code": 0})
+        
+        if base_cmd == 'help':
+            return Response({
+                "output": "Comandos disponíveis:\n" + "\n".join(safe_commands) + "\n\nUse 'manage.py <comando>' para Django\nUse 'ls' para listar arquivos\nUse 'clear' para limpar terminal",
+                "exit_code": 0
+            })
+        
+        if base_cmd == 'manage.py':
+            manage_args = parts[1:] if len(parts) > 1 else ['--help']
+            try:
+                output = subprocess.run(
+                    ['python3', 'manage.py'] + list(manage_args),
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                    cwd=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'nexo_api')
+                )
+                output = output.stdout + output.stderr
+                exit_code = 0 if output else 1
+            except subprocess.TimeoutExpired:
+                output = "Timeout: comando expirou"
+                exit_code = 124
+            except Exception as e:
+                output = f"Erro: {str(e)}"
+                exit_code = 1
+        
+        elif base_cmd in safe_commands:
+            try:
+                result = subprocess.run(
+                    parts,
+                    capture_output=True,
+                    text=True,
+                    timeout=30
+                )
+                output = result.stdout + result.stderr
+                exit_code = result.returncode
+            except subprocess.TimeoutExpired:
+                output = "Timeout: comando expirou"
+                exit_code = 124
+            except FileNotFoundError:
+                output = f"Comando '{base_cmd}' não encontrado"
+                exit_code = 127
+            except Exception as e:
+                output = f"Erro: {str(e)}"
+                exit_code = 1
+        else:
+            output = f"Comando '{base_cmd}' não permitido. Use 'help' para ver comandos disponíveis."
+            exit_code = 126
+        
+        return Response({
+            "command": command,
+            "output": output,
+            "exit_code": exit_code
+        })
+
+
+class CommandHistory:
+    pass
