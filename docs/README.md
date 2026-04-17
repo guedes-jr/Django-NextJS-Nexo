@@ -1,59 +1,85 @@
 # Documentação NEXO - Plataforma de Investimentos
 
-## Funcionalidades Implementadas
+Visão geral e guia de referência para todas as funcionalidades disponíveis na plataforma.
 
-### 1. Autenticação e Usuários
-- [Login e Registro](./autenticacao.md)
-- [Perfil do Investidor](./perfil-investidor.md)
-- [Gestão de Usuários Admin](./gestao-usuarios.md)
+---
 
-### 2. Gestão de Carteira
-- [Visualização da Carteira](./carteira.md)
-- [Importação de Posições (CSV/Excel)](./importacao-posicoes.md)
-- [Alocação de Ativos](./alocacao.md)
-- [Histórico de Movimentações](./movimentacoes.md)
+## 1. Autenticação e Usuários
 
-### 3. Análise e Inteligência
-- [Benchmarks](./benchmark.md)
-- [Análise de Concentração](./concentracao.md)
-- [Evolução Patrimonial (Snapshots)](./historico-patrimonial.md)
-- [Insights da Carteira](./insights.md)
-- [Saúde da Carteira](./saude-carteira.md)
+| Recurso | Descrição |
+|---------|-----------|
+| [Login e Registro](./autenticacao.md) | Autenticação, registro, recuperação de senha e gestão de sessões |
 
-### 4. Metas e Simulações
-- [Metas de Investimento](./metas.md)
-- [Simulador de Cenários](./simulador-cenarios.md)
+---
 
-### 5. Integrações
-- [Conexão de Corretoras](./corretoras.md)
-- [Comparativo de Corretoras](./comparativo-corretoras.md)
-- [Market Data (Yahoo Finance)](./market-data.md)
+## 2. Gestão de Carteira
 
-### 6. Eventos e Dados
-- [Eventos Corporativos](./eventos-corporativos.md)
-- [Reconciliação Automática](./reconciliacao.md)
+| Recurso | Descrição |
+|---------|-----------|
+| [Importação de Posições](./importacao-posicoes.md) | Importação de dados via CSV/Excel |
+| [Histórico de Movimentações](./movimentacoes.md) | Registro e histórico de todas as movimentações |
 
-### 7. Automação e Notificações
-- [Automações (Gatilhos)](./automacoes.md)
-- [Central de Notificações](./notificacoes.md)
-- [Alertas](./alertas.md)
+---
 
-### 8. Documentos
-- [Gestão de Documentos](./documentos.md)
-- [Consentimentos](./consentimentos.md)
+## 3. Análise e Inteligência
 
-### 9. Admin e Monitoramento
-- [Dashboard Admin](./admin-dashboard.md)
-- [Central de Suporte](./suporte.md)
-- [CMS (Banners e FAQs)](./cms.md)
-- [Monitor de Jobs](./monitor-jobs.md)
+| Recurso | Descrição |
+|---------|-----------|
+| [Benchmarks](./benchmark.md) | Comparação com índices de referência |
+| [Análise de Concentração](./concentracao.md) | Análise de diversificação da carteira |
+| [Evolução Patrimonial](./historico-patrimonial.md) | Snapshots e histórico patrimonial |
 
-### 10. Relatórios
-- [Relatórios de Rentabilidade](./relatorios-rentabilidade.md)
-- [Backup e Exportação](./backup-export.md)
+---
 
-### 11. Landing Page
-- [Página de Divulgação](./landing-page.md)
+## 4. Integrações e Dados
+
+| Recurso | Descrição |
+|---------|-----------|
+| [Conexão de Corretoras](./corretoras.md) | Integração com diferentes corretoras |
+| [Eventos Corporativos](./eventos-corporativos.md) | Eventos como dividendos, splits, bonificações |
+| [Reconciliação](./reconciliacao.md) | Reconciliação automática e manual de posições |
+| [Integração API](./integracao.md) | Integração com provedores de dados externos |
+
+---
+
+## 5. Impostos e Obrigações
+
+| Recurso | Descrição |
+|---------|-----------|
+| [Imposto de Renda](./imposto-renda.md) | Cálculo de IR, DARF e obrigações tributárias |
+
+---
+
+## 6. Automação e Comunicação
+
+| Recurso | Descrição |
+|---------|-----------|
+| [Central de Notificações](./notificacoes.md) | Notificações e avisos regulatórios |
+
+---
+
+## 7. Documentação e Apresentação
+
+| Recurso | Descrição |
+|---------|-----------|
+| [Landing Page](./landing-page.md) | Página institucional de divulgação |
+| [Relatórios de Rentabilidade](./relatorios-rentabilidade.md) | Relatórios detalhados de performance |
+
+---
+
+## 8. Segurança e Auditoria
+
+| Recurso | Descrição |
+|---------|-----------|
+| [Trilha de Auditoria](./auditoria.md) | Log de auditoria completo e de login |
+
+---
+
+## 9. Ferramentas de Desenvolvimento
+
+| Recurso | Descrição |
+|---------|-----------|
+| [Dev Tools](./dev-tools.md) | WebShell, DBShell, Monitor em tempo real, Cache Manager, Task Monitor, Config Editor |
 
 ---
 
@@ -61,4 +87,3 @@
 
 - [README Principal](../README.md)
 - [Plano de Desenvolvimento](../plano_plataforma_investimentos.md)
-- [Stack Técnica](./stack-tecnica.md)
