@@ -7,6 +7,249 @@ import styles from './carteira.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 
+interface PreviewRow {
+  ticker: string;
+  name: string;
+  asset_type: string;
+  quantity: number;
+  average_price: number;
+  current_price: number;
+  total_value: number;
+  row_index: number;
+}
+
+function ImportModal({ onClose }: { onClose: () => void }) {
+  const [step, setStep] = useState<'upload' | 'preview'>('upload');
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<PreviewRow[]>([]);
+  const [totalRows, setTotalRows] = useState(0);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const token = typeof window !== 'undefined' ? localStorage.getItem('nexo_access') : null;
+
+  const handleFileSelect = async (selectedFile: File) => {
+    const ext = selectedFile.name.split('.').pop()?.toLowerCase();
+    if (!['csv', 'xlsx'].includes(ext || '')) {
+      alert('Apenas arquivos CSV ou XLSX são aceitos');
+      return;
+    }
+    setFile(selectedFile);
+    await fetchPreview(selectedFile);
+  };
+
+  const fetchPreview = async (selectedFile: File) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const res = await fetch(`${API_URL}/api/portfolio/positions/import/preview/`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (data.preview_rows) {
+        setPreview(data.preview_rows);
+        setTotalRows(data.total_rows);
+        setErrors(data.errors || []);
+        setStep('preview');
+      } else if (data.error) {
+        alert(data.error);
+      }
+    } catch (err) {
+      alert('Erro ao processar arquivo');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmImport = async () => {
+    if (!file) return;
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch(`${API_URL}/api/portfolio/positions/import/`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message);
+        window.location.reload();
+      } else {
+        alert(data.error || 'Erro na importação');
+      }
+    } catch (err) {
+      alert('Erro ao importar');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const downloadTemplate = async (format: 'csv' | 'xlsx') => {
+    try {
+      const res = await fetch(`${API_URL}/api/portfolio/positions/import/template/?format=${format}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nexo_importacao_template.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (err) {
+      alert('Erro ao baixar template');
+    }
+  };
+
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+  return (
+    <div className={styles.modalOverlay} onClick={onClose}>
+      <div className={`${styles.modal} ${styles.importModal}`} onClick={e => e.stopPropagation()}>
+        <div className={styles.modalHeader}>
+          <div>
+            <h2>Importar Posições</h2>
+            <p>Importe seus ativos de arquivos CSV ou Excel</p>
+          </div>
+          <button className={styles.modalClose} onClick={onClose}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        {step === 'upload' && (
+          <>
+            <div className={styles.templateActions}>
+              <button className={styles.templateBtn} onClick={() => downloadTemplate('csv')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Baixar CSV
+              </button>
+              <button className={styles.templateBtn} onClick={() => downloadTemplate('xlsx')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Baixar Excel
+              </button>
+            </div>
+
+            <div
+              className={`${styles.dropZone} ${dragging ? styles.dragging : ''}`}
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={e => { e.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={e => {
+                e.preventDefault();
+                setDragging(false);
+                const f = e.dataTransfer.files[0];
+                if (f) handleFileSelect(f);
+              }}
+            >
+              <div className={styles.dropZoneIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <p className={styles.dropZoneText}>
+                <strong>Clique para selecionar</strong> ou arraste o arquivo aqui<br />
+                <small>CSV ou XLSX até 10MB</small>
+              </p>
+            </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              accept=".csv,.xlsx"
+              onChange={e => {
+                const f = e.target.files?.[0];
+                if (f) handleFileSelect(f);
+              }}
+            />
+          </>
+        )}
+
+        {step === 'preview' && (
+          <>
+            <div className={styles.previewSummary}>
+              <span>Total de linhas:</span> <strong>{totalRows}</strong>
+              <span style={{ marginLeft: 24 }}>Pré-visualização:</span> <strong>{preview.length}</strong>
+            </div>
+
+            {errors.length > 0 && (
+              <div className={styles.errorList}>
+                <h4>⚠️ Erros encontrados</h4>
+                <ul>
+                  {errors.map((err, i) => <li key={i}>{err}</li>)}
+                </ul>
+              </div>
+            )}
+
+            <div className={styles.previewTable}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ticker</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Qtd</th>
+                    <th>Preço Médio</th>
+                    <th>Preço Atual</th>
+                    <th>Valor Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {preview.map((row, i) => (
+                    <tr key={i}>
+                      <td><strong>{row.ticker}</strong></td>
+                      <td>{row.name}</td>
+                      <td>{row.asset_type}</td>
+                      <td>{row.quantity}</td>
+                      <td>{formatCurrency(row.average_price)}</td>
+                      <td>{formatCurrency(row.current_price)}</td>
+                      <td>{formatCurrency(row.total_value)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className={styles.modalActions}>
+              <button className={styles.cancelBtn} onClick={() => { setStep('upload'); setFile(null); setPreview([]); }}>
+                Cancelar
+              </button>
+              <button className={styles.confirmBtn} onClick={handleConfirmImport} disabled={loading}>
+                {loading ? 'Importando...' : `Importar ${totalRows} posições`}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function AddAssetModal({ onClose }: { onClose: () => void }) {
   const [ticker, setTicker] = useState('');
   const [searchResults, setSearchResults] = useState<{ticker: string; name: string; type: string}[]>([]);
@@ -227,8 +470,6 @@ export default function CarteiraPage() {
   const [sortBy, setSortBy] = useState<string>('value');
   const [showImportModal, setShowImportModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [importing, setImporting] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('nexo_access');
@@ -305,44 +546,6 @@ export default function CarteiraPage() {
             </button>
           </div>
         </header>
-
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          accept=".csv"
-          onChange={async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            
-            setImporting(true);
-            const token = localStorage.getItem('nexo_access');
-            const formData = new FormData();
-            formData.append('file', file);
-            
-            try {
-              const res = await fetch(`${API_URL}/api/portfolio/positions/import/`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` },
-                body: formData
-              });
-              
-              if (res.ok) {
-                const data = await res.json();
-                alert(data.message);
-                window.location.reload();
-              } else {
-                const err = await res.json();
-                alert(err.error || 'Erro na importacao');
-              }
-            } catch (err) {
-              alert('Erro ao importar arquivo');
-            } finally {
-              setImporting(false);
-              if (fileInputRef.current) fileInputRef.current.value = '';
-            }
-          }}
-        />
 
         <div className={styles.filters}>
           <div className={styles.filterGroup}>
@@ -426,6 +629,7 @@ export default function CarteiraPage() {
       </main>
 
       {showAddModal && <AddAssetModal onClose={() => setShowAddModal(false)} />}
+      {showImportModal && <ImportModal onClose={() => setShowImportModal(false)} />}
     </div>
   );
 }

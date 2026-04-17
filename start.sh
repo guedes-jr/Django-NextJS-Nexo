@@ -11,6 +11,12 @@ RESET='\033[0m'
 FRONT_TAG="${CYAN}[FRONTEND]${RESET}"
 BACK_TAG="${YELLOW}[BACKEND]${RESET}"
 
+# Modo background (não espera)
+BACKGROUND=false
+if [ "$1" = "--background" ] || [ "$1" = "-b" ]; then
+    BACKGROUND=true
+fi
+
 echo ""
 echo -e "${GREEN}🚀 Iniciando a plataforma NEXO localmente...${RESET}"
 echo -e "${GRAY}────────────────────────────────────────────────${RESET}"
@@ -20,8 +26,18 @@ cleanup() {
     echo ""
     echo -e "${RED}🛑 Encerrando todos os servidores da NEXO...${RESET}"
     trap - SIGINT SIGTERM
-    kill $FRONTEND_PID $BACKEND_PID 2>/dev/null
-    wait $FRONTEND_PID $BACKEND_PID 2>/dev/null
+    
+    if [ -n "$FRONTEND_PID" ]; then
+        kill -TERM $FRONTEND_PID 2>/dev/null
+    fi
+    if [ -n "$BACKEND_PID" ]; then
+        kill -TERM $BACKEND_PID 2>/dev/null
+    fi
+    
+    sleep 1
+    pkill -f "npm run dev" 2>/dev/null
+    pkill -f "runserver 8001" 2>/dev/null
+    
     echo -e "${GREEN}✅ Servidores encerrados.${RESET}"
     exit 0
 }
@@ -50,5 +66,17 @@ echo -e "  ${FRONT_TAG} http://localhost:3000"
 echo -e "  ${BACK_TAG}  http://localhost:8001"
 echo -e "${GRAY}────────────────────────────────────────────────${RESET}"
 echo ""
+echo -e "${YELLOW}Pressione Ctrl+C para encerrar${RESET}"
+echo ""
 
-wait $FRONTEND_PID $BACKEND_PID
+if [ "$BACKGROUND" = true ]; then
+    echo -e "${GREEN}Modo background ativado. Os processos continuam em background.${RESET}"
+    exit 0
+fi
+
+# Espera com capacidade de interrupção
+while kill -0 $FRONTEND_PID 2>/dev/null; do
+    sleep 1
+done &
+
+wait $FRONTEND_PID $BACKEND_PID 2>/dev/null

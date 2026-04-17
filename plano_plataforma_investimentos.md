@@ -586,6 +586,9 @@ Para web e mobile, o **Firebase Cloud Messaging** é a escolha mais natural. A d
 
 ## 6. Plano cronológico real de desenvolvimento
 
+> **Status Atual: Release 2 / Etapa 9-10**
+> O projeto encontra-se na fase de consolidação, com core funcional implementado (autenticação, onboarding, portfólio, market data, automações, metas). O foco atual é finalize a Etapa 9 (Importação/Reconciliação) e avançar para a Etapa 12 (Notificações).
+
 ### Etapa 1 — Fundamentos do produto
 Objetivo: fechar o que será construído.
 
@@ -778,13 +781,13 @@ Objetivo: profundidade.
 Objetivo: reduzir divergência de dados.
 
 #### Sequência
-- [ ] 1. importação CSV/XLSX
-- [ ] 2. importação por corretora/parceiro
+- [x] 1. importação CSV (frontend)
+- [ ] 2. importação por corretora/parceiro (API + mock)
 - [ ] 3. validação de schema
 - [ ] 4. tratamento de duplicidade
 - [ ] 5. idempotência
-- [ ] 6. reconciliação automática
-- [ ] 7. fila de pendências manuais
+- [x] 6. reconciliação automática (modelos prontos)
+- [x] 7. fila de pendências manuais ( ReconciliationIssue)
 - [ ] 8. logs de falha
 - [ ] 9. reprocessamento
 - [ ] 10. relatórios de consistência
@@ -820,14 +823,14 @@ Objetivo: retenção e recorrência de uso.
 
 #### Sequência
 - [ ] 1. criar meta
-- [ ] 2. vincular horizonte
-- [ ] 3. definir valor alvo
-- [ ] 4. definir aporte mensal
-- [ ] 5. estimar progresso
-- [ ] 6. mostrar projeções
-- [ ] 7. simular cenários
+- [x] 2. vincular horizonte
+- [x] 3. definir valor alvo
+- [x] 4. definir aporte mensal
+- [x] 5. estimar progresso
+- [x] 6. mostrar projeções
+- [x] 7. simular cenários
 - [ ] 8. sugerir ajustes
-- [ ] 9. disparar alertas
+- [ ] 9. dispara alertas
 - [ ] 10. acompanhar evolução
 
 ---
@@ -907,10 +910,12 @@ Inclui:
 - [x] insights (concentração, risco, perda/lucro)
 - [x] benchmarking (IBOV, S&P500, CDI)
 - [x] simuladores (projeção de rentabilidade)
-- [ ] reconciliação avançada
+- [ ] reconciliação avançada (parcial: modelos prontos)
 - [x] documentos (termos, contratos, logs de aceite)
 - [x] push (via market data)
 - [x] analytics (via insights)
+- [x] automações (gatilhos automaticos)
+- [x] integrações (conexao corretoras mock)
 - [ ] gestão operacional madura
 
 ### Release 3 — Produto premium

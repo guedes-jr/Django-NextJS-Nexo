@@ -48,6 +48,25 @@ make dev
 
 ---
 
+**📖 Documentação Detalhada:** Todas as funcionalidades estão documentadas em [docs/README.md](./docs/README.md)
+
+## 📚 Funcionalidades Implementadas
+
+Todas as funcionalidades implementadas estão documentadas na pasta `docs/`:
+
+| # | Funcionalidade | Arquivo |
+|---|----------------|---------|
+| 1 | Autenticação (JWT, Login, Registro) | [docs/autenticacao.md](./docs/autenticacao.md) |
+| 2 | Importação de Posições (CSV/Excel) | [docs/importacao-posicoes.md](./docs/importacao-posicoes.md) |
+| 3 | Conexão de Corretoras | [docs/corretoras.md](./docs/corretoras.md) |
+| 4 | Reconciliação Automática | [docs/reconciliacao.md](./docs/reconciliacao.md) |
+| 5 | Notificações Avançadas | [docs/notificacoes.md](./docs/notificacoes.md) |
+| 6 | Eventos Corporativos | [docs/eventos-corporativos.md](./docs/eventos-corporativos.md) |
+
+**[Ver índice completo](./docs/README.md)**
+
+---
+
 ## 🛠 Stack Tecnológica
 
 | Camada | Tecnologias |

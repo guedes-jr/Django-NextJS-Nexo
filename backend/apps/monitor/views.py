@@ -47,6 +47,9 @@ class TriggerJobView(APIView):
             'update_b3_prices': 'apps.market_data.tasks.update_b3_prices',
             'update_b3_indices': 'apps.market_data.tasks.update_b3_indices',
             'update_all_market_data': 'apps.market_data.tasks.update_all_market_data',
+            'run_portfolio_reconciliation': 'apps.portfolio.tasks.run_portfolio_reconciliation',
+            'auto_resolve_issues': 'apps.portfolio.tasks.auto_resolve_issues',
+            'cleanup_old_reconciliation_issues': 'apps.portfolio.tasks.cleanup_old_reconciliation_issues',
         }
         
         if job_name not in jobs:

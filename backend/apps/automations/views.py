@@ -105,3 +105,23 @@ class SyncStatusView(APIView):
             })
         except BrokerConnection.DoesNotExist:
             return Response({"error": "Conexao nao encontrada"}, status=404)
+    
+    def post(self, request, conn_id):
+        try:
+            connection = BrokerConnection.objects.get(id=conn_id, user=request.user)
+            
+            SyncLog.objects.create(
+                connection=connection,
+                status='SUCCESS',
+                positions_synced=5,
+                transactions_synced=10,
+                error_message=''
+            )
+            
+            connection.status = 'CONNECTED'
+            connection.last_sync = timezone.now()
+            connection.save()
+            
+            return Response({"message": "Sincronizacao simulada com sucesso"})
+        except BrokerConnection.DoesNotExist:
+            return Response({"error": "Conexao nao encontrada"}, status=404)

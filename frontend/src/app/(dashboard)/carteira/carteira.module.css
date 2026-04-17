@@ -499,3 +499,206 @@
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+.importModal {
+  width: 100%;
+  max-width: 700px;
+}
+
+.importModal .modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.importModal .modalHeader h2 {
+  font-size: 20px;
+}
+
+.importModal .modalHeader p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.importModal .modalTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.importModal .tabBtn {
+  padding: 8px 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.importModal .tabBtn.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.importModal .dropZone {
+  border: 2px dashed var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 16px;
+}
+
+.importModal .dropZone:hover,
+.importModal .dropZone.dragging {
+  border-color: var(--accent-primary);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.importModal .dropZoneIcon {
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+
+.importModal .dropZoneText {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.importModal .dropZoneText strong {
+  color: var(--accent-primary);
+}
+
+.importModal .templateActions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.importModal .templateBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.importModal .templateBtn:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+}
+
+.importModal .previewTable {
+  margin-top: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.importModal .previewTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.importModal .previewTable th {
+  background: var(--bg-tertiary);
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  position: sticky;
+  top: 0;
+}
+
+.importModal .previewTable td {
+  padding: 10px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.importModal .previewSummary {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+
+.importModal .previewSummary span {
+  color: var(--text-secondary);
+}
+
+.importModal .previewSummary strong {
+  color: var(--text-primary);
+}
+
+.importModal .errorList {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
+}
+
+.importModal .errorList h4 {
+  color: var(--danger);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.importModal .errorList ul {
+  list-style: none;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.importModal .errorList li {
+  margin-bottom: 4px;
+}
+
+.importModal .modalActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.importModal .cancelBtn {
+  padding: 14px 24px;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.importModal .confirmBtn {
+  flex: 1;
+  padding: 14px 24px;
+  background: var(--accent-gradient);
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.importModal .confirmBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

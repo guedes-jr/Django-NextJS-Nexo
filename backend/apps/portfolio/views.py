@@ -22,6 +22,10 @@ from .serializers import (
 import decimal
 import csv
 import io
+import json
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+from django.http import HttpResponse
 
 class PortfolioSummaryView(APIView):
     permission_classes = [IsAuthenticated]
@@ -247,27 +251,25 @@ class ImportPositionsView(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
+    ALLOWED_EXTENSIONS = ['.csv', '.xlsx']
+
     def post(self, request):
         file = request.FILES.get('file')
         if not file:
             return Response({"error": "Nenhum arquivo enviado"}, status=400)
         
-        if not file.name.endswith('.csv'):
-            return Response({"error": "Apenas arquivos CSV sao aceitos"}, status=400)
+        ext = '.' + file.name.split('.')[-1].lower()
+        if ext not in self.ALLOWED_EXTENSIONS:
+            return Response({"error": "Apenas arquivos CSV ou XLSX sao aceitos"}, status=400)
         
         try:
-            decoded = file.read().decode('utf-8')
-            csv_reader = csv.DictReader(io.StringIO(decoded))
+            rows = self._parse_file(file, ext)
             
             required_columns = ['ticker', 'quantity', 'average_price', 'current_price']
-            first_row = next(csv_reader, None)
-            if first_row:
-                missing = [col for col in required_columns if col not in first_row]
-                if missing:
-                    return Response({"error": "Colunas obrigatorias faltando: " + str(missing)}, status=400)
-            
-            file.seek(0)
-            csv_reader = csv.DictReader(io.StringIO(decoded))
+            first_row = rows[0] if rows else {}
+            missing = [col for col in required_columns if col not in first_row]
+            if missing:
+                return Response({"error": "Colunas obrigatorias faltando: " + str(missing)}, status=400)
             
             user = request.user
             
@@ -281,7 +283,7 @@ class ImportPositionsView(APIView):
             created_count = 0
             updated_count = 0
             
-            for row in csv_reader:
+            for row in rows:
                 ticker = row.get('ticker', '').strip().upper()
                 quantity = row.get('quantity', '0').replace(',', '.').strip()
                 avg_price = row.get('average_price', '0').replace(',', '.').strip()
@@ -323,6 +325,144 @@ class ImportPositionsView(APIView):
             
         except Exception as e:
             return Response({"error": "Erro ao processar arquivo: " + str(e)}, status=400)
+    
+    def _parse_file(self, file, ext):
+        if ext == '.csv':
+            decoded = file.read().decode('utf-8')
+            reader = csv.DictReader(io.StringIO(decoded))
+            return list(reader)
+        elif ext == '.xlsx':
+            import pandas as pd
+            df = pd.read_excel(file)
+            return df.fillna('').to_dict('records')
+        return []
+
+
+class ImportTemplateView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        format_type = request.query_params.get('format', 'csv')
+        
+        if format_type == 'xlsx':
+            wb = Workbook()
+            ws = wb.active
+            ws.title = "Template Importacao"
+            
+            headers = ['ticker', 'name', 'asset_type', 'quantity', 'average_price', 'current_price']
+            ws.append(headers)
+            
+            examples = [
+                ['PETR4', 'Petroleo Brasileiro S.A.', 'ACAO', '100', '35.50', '42.30'],
+                ['ITUB4', 'Itau Unibanco Holding', 'ACAO', '200', '28.00', '32.50'],
+                ['BTC', 'Bitcoin', 'CRIPTO', '0.5', '180000.00', '210000.00'],
+                ['KNCR11', 'Kinea Rendimentos', 'FII', '50', '100.00', '105.00'],
+            ]
+            for ex in examples:
+                ws.append(ex)
+            
+            response = HttpResponse(
+                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+            response['Content-Disposition'] = 'attachment; filename=nexo_importacao_template.xlsx'
+            wb.save(response)
+            return response
+        else:
+            output = io.StringIO()
+            writer = csv.writer(output)
+            writer.writerow(['ticker', 'name', 'asset_type', 'quantity', 'average_price', 'current_price'])
+            writer.writerow(['PETR4', 'Petroleo Brasileiro S.A.', 'ACAO', '100', '35.50', '42.30'])
+            writer.writerow(['ITUB4', 'Itau Unibanco Holding', 'ACAO', '200', '28.00', '32.50'])
+            writer.writerow(['BTC', 'Bitcoin', 'CRIPTO', '0.5', '180000.00', '210000.00'])
+            writer.writerow(['KNCR11', 'Kinea Rendimentos', 'FII', '50', '100.00', '105.00'])
+            
+            response = HttpResponse(output.getvalue(), content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename=nexo_importacao_template.csv'
+            return response
+
+
+class ImportPreviewView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+    
+    ALLOWED_EXTENSIONS = ['.csv', '.xlsx']
+    
+    def post(self, request):
+        file = request.FILES.get('file')
+        if not file:
+            return Response({"error": "Nenhum arquivo enviado"}, status=400)
+        
+        ext = '.' + file.name.split('.')[-1].lower()
+        if ext not in self.ALLOWED_EXTENSIONS:
+            return Response({"error": "Apenas arquivos CSV ou XLSX sao aceitos"}, status=400)
+        
+        try:
+            rows = self._parse_file(file, ext)
+            
+            required_columns = ['ticker', 'quantity', 'average_price', 'current_price']
+            if rows:
+                missing = [col for col in required_columns if col not in rows[0]]
+                if missing:
+                    return Response({"error": "Colunas obrigatorias faltando: " + str(missing)}, status=400)
+            
+            preview_rows = []
+            errors = []
+            
+            for idx, row in enumerate(rows[:20]):
+                ticker = row.get('ticker', '').strip().upper()
+                quantity = row.get('quantity', '').replace(',', '.').strip()
+                avg_price = row.get('average_price', '').replace(',', '.').strip()
+                curr_price = row.get('current_price', avg_price).replace(',', '.').strip()
+                
+                if not ticker:
+                    errors.append(f"Linha {idx + 1}: ticker vazio")
+                    continue
+                
+                try:
+                    qty = decimal.Decimal(quantity) if quantity else decimal.Decimal('0')
+                except:
+                    errors.append(f"Linha {idx + 1}: quantidade invalida")
+                    continue
+                
+                try:
+                    avg = decimal.Decimal(avg_price) if avg_price else decimal.Decimal('0')
+                except:
+                    errors.append(f"Linha {idx + 1}: preco medio invalido")
+                    continue
+                
+                curr = decimal.Decimal(curr_price) if curr_price else avg
+                
+                preview_rows.append({
+                    "ticker": ticker,
+                    "name": row.get('name', ticker),
+                    "asset_type": row.get('asset_type', 'ACAO').upper(),
+                    "quantity": float(qty),
+                    "average_price": float(avg),
+                    "current_price": float(curr),
+                    "total_value": float(qty * curr),
+                    "row_index": idx + 1
+                })
+            
+            return Response({
+                "total_rows": len(rows),
+                "preview_rows": preview_rows,
+                "errors": errors[:10],
+                "has_more": len(rows) > 20
+            })
+            
+        except Exception as e:
+            return Response({"error": "Erro ao processar arquivo: " + str(e)}, status=400)
+    
+    def _parse_file(self, file, ext):
+        if ext == '.csv':
+            decoded = file.read().decode('utf-8')
+            reader = csv.DictReader(io.StringIO(decoded))
+            return list(reader)
+        elif ext == '.xlsx':
+            import pandas as pd
+            df = pd.read_excel(file)
+            return df.fillna('').to_dict('records')
+        return []
 
 class RebalanceView(APIView):
     permission_classes = [IsAuthenticated]
