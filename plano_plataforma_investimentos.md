@@ -664,7 +664,7 @@ Objetivo: travar o coração do acesso.
 - [x] 9. gestão de sessões
 - [ ] 10. revogação de dispositivos
 - [x] 11. RBAC
-- [ ] 12. trilha de auditoria de login
+- [x] 12. trilha de auditoria de login
 - [x] 13. política de senha
 - [x] 14. rate limiting (padrão DRF)
 - [ ] 15. antifraude básico

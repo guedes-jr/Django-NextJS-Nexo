@@ -135,10 +135,32 @@ class LogoutView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
+        try:
+            from apps.identity.audit import AuditLog
+            ip_address = self.get_client_ip(request)
+            AuditLog.log(
+                user=request.user,
+                action='LOGOUT',
+                resource='auth',
+                ip_address=ip_address,
+                endpoint=request.path,
+                status='SUCCESS',
+            )
+        except Exception:
+            pass
+        
         return Response(
             {"message": "Logout realizado com sucesso"},
             status=status.HTTP_200_OK
         )
+    
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
 
 class PasswordResetRequestView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
