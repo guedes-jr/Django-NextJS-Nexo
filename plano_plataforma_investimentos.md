@@ -63,8 +63,8 @@ Conjunto de ferramentas para facilitar o desenvolvimento, debug e acompanhamento
 - [x] Definir TTL manual
 
 #### 1.5.5. Task Monitor
-- [ ] Lista de tasks Celery/async
-- [ ] Status em tempo real
+- [x] Lista de tasks Celery/async
+- [x] Status em tempo real
 - [ ] Retry de tasks falhadas
 - [ ] Schedule de tasks
 
