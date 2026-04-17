@@ -62,6 +62,7 @@ Todas as funcionalidades implementadas estão documentadas na pasta `docs/`:
 | 4 | Reconciliação Automática | [docs/reconciliacao.md](./docs/reconciliacao.md) |
 | 5 | Notificações Avançadas | [docs/notificacoes.md](./docs/notificacoes.md) |
 | 6 | Eventos Corporativos | [docs/eventos-corporativos.md](./docs/eventos-corporativos.md) |
+| 7 | Landing Page Pública | [docs/landing-page.md](./docs/landing-page.md) |
 
 **[Ver índice completo](./docs/README.md)**
 

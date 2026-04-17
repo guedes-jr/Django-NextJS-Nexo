@@ -52,6 +52,9 @@
 - [Relatórios de Rentabilidade](./relatorios-rentabilidade.md)
 - [Backup e Exportação](./backup-export.md)
 
+### 11. Landing Page
+- [Página de Divulgação](./landing-page.md)
+
 ---
 
 ## Links Úteis
