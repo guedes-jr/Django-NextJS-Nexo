@@ -20,16 +20,20 @@ NEXO é um ecossistema **Fullstack (Django + Next.js)** projetado para consolida
 
 ---
 
-## ✨ Funcionalidades Atuais (Release 4)
+## ✨ Funcionalidades Atuais (Release 5)
 
-- **[x] Autenticação Robusta:** Sistema JWT completo com login, registro, MFA e dispositivos confiáveis.
-- **[x] Onboarding Completo:** Fluxo guiado com perfil de risco, Suitability e verificação de documentos.
+- **[x] Autenticação Robusta:** Sistema JWT completo com login, registro, MFA, dispositivos confiáveis e trilha de auditoria.
+- **[x] Onboarding Completo:** Fluxo guiado com perfil de risco, Suitability, verificação de documentos e aprovação manual.
 - **[x] Gestão Multi-Ativos:** Suporte para Ações, FIIs, ETFs, RF, Cripto, Fundos e Previdência.
 - **[x]Dashboard Dinâmico:** Gráficos de alocação, rentabilidade e evolução patrimonial.
 - **[x] Inteligência de Carteira:** Concentração, risco, rebalanceamento e score de saúde.
 - **[x] Cálculo de IR:** Cálculo trimestral automático, geração de DARF e lotes fiscais FIFO.
 - **[x] Metas Financeiras:** Simulações, projeções e alertas de progresso.
 - **[x] Documentos e Compliance:** Notas, Informes, Comprovantes e Avisos Regulatórios.
+- **[x] Integração API:** Conexão com provedores externos (Mock, Open Finance) e importação automática.
+- **[x] Reconciliação:** Reconciliação automática e manual com interface de resolução.
+- **[x] Trilha de Auditoria:** Log completo de todas as ações no sistema.
+- **[x] Admin Completo:** Gestão de usuários, CMS, suporte, reconciliação, verificações e auditoria.
 
 ---
 
@@ -70,6 +74,10 @@ Todas as funcionalidades implementadas estão documentadas na pasta `docs/`:
 | 9 | Análise de Concentração | [docs/concentracao.md](./docs/concentracao.md) |
 | 10 | Benchmark | [docs/benchmark.md](./docs/benchmark.md) |
 | 11 | Evolução Patrimonial | [docs/historico-patrimonial.md](./docs/historico-patrimonial.md) |
+| 12 | Cálculo de IR e DARF | [docs/imposto-renda.md](./docs/imposto-renda.md) |
+| 13 | Integração API | [docs/integracao.md](./docs/integracao.md) |
+| 14 | Reconciliação | [docs/reconciliacao.md](./docs/reconciliacao.md) |
+| 15 | Trilha de Auditoria | [docs/auditoria.md](./docs/auditoria.md) |
 
 **[Ver índice completo](./docs/README.md)**
 

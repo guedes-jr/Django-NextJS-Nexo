@@ -33,6 +33,68 @@ A recomendação prática é iniciar com **Nível 1 + Nível 2**, deixando a arq
 
 ---
 
+## 1.5. Ferramentas de Desenvolvimento (Dev Tools)
+
+Conjunto de ferramentas para facilitar o desenvolvimento, debug e acompanhamento em tempo real.
+
+#### 1.5.1. WebShell
+- [ ] Terminal web integrado no admin para execução de comandos shell
+- [ ] history de comandos executados
+- [ ] output em tempo real (streaming)
+- [ ] autocomplete de comandos comuns
+- [ ] suporte a comandos Django (manage.py)
+
+#### 1.5.2. DBShell
+- [ ] Consulta SQL direta via interface web
+- [ ] Histórico de queries executadas
+- [ ] Visualizador de esquema do banco
+- [ ] Exportar resultados (CSV, JSON)
+- [ ] Explain de queries lentas
+
+#### 1.5.3. Monitor em Tempo Real
+- [ ] Logs de aplicação em streaming
+- [ ] Filtros por nível (DEBUG, INFO, WARNING, ERROR)
+- [ ] Busca em logs
+- [ ] Download de logs
+
+#### 1.5.4. Cache Manager
+- [ ] Visualizar todas as chaves em cache
+- [ ] Expirar chaves específicas
+- [ ] Definir TTL manual
+
+#### 1.5.5. Task Monitor
+- [ ] Lista de tasks Celery/async
+- [ ] Status em tempo real
+- [ ] Retry de tasks falhadas
+- [ ] Schedule de tasks
+
+#### 1.5.6. Config Editor
+- [ ] Editar variáveis de ambiente
+- [ ] Feature flags dinâmicos
+- [ ] rollback de configurações
+
+#### 1.5.7. API Playground
+- [ ] Testador de endpoints integrado
+- [ ] Coleção de requests favoritos
+- [ ] Gerador de código (cURL, Python, JS)
+
+#### 1.5.8. Email catcher (Dev)
+- [ ] Capturar emails enviados
+- [ ] Visualizar emails em desenvolvimento
+- [ ] Download de anexos
+
+#### 1.5.9. Fixture Generator
+- [ ] Gerar dados fake para testes
+- [ ] Fixture em JSON/YAML
+- [ ] Factory para models
+
+#### 1.5.10. Django Debug Toolbar (Web)
+- [ ] Toolbar web integrada
+- [ ] SQL queries, templates, signals
+- [ ] Cache analysis
+
+---
+
 ## 2. Escopo funcional completo
 
 ### 2.1. Módulos principais do produto
