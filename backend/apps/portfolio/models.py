@@ -325,7 +325,106 @@ class PortfolioSnapshot(models.Model):
     class Meta:
         ordering = ['-date']
         unique_together = ('user', 'date')
-
+    
     def __str__(self):
         return f"{self.user.username} - {self.date} - R$ {self.total_value}"
+
+
+class BrokerConnection(models.Model):
+    PROVIDERS = [
+        ('OPEN_FINANCE', 'Open Finance Brasil'),
+        ('BELVO', 'Belvo'),
+        ('PLAID', 'Plaid'),
+        ('MOCK', 'Mock Provider'),
+    ]
+    
+    STATUS = [
+        ('CONNECTED', 'Conectado'),
+        ('DISCONNECTED', 'Desconectado'),
+        ('ERROR', 'Erro'),
+        ('PENDING', 'Pendente'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='broker_connections')
+    provider = models.CharField(max_length=20, choices=PROVIDERS)
+    institution = models.ForeignKey(Institution, on_delete=models.SET_NULL, null=True, blank=True)
+    external_account_id = models.CharField(max_length=100, blank=True)
+    access_token = models.CharField(max_length=500, blank=True)
+    refresh_token = models.CharField(max_length=500, blank=True)
+    token_expires_at = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS, default='PENDING')
+    last_sync = models.DateTimeField(null=True, blank=True)
+    sync_status = models.CharField(max_length=20, choices=[
+        ('IDLE', 'Aguardando'),
+        ('SYNCING', 'Sincronizando'),
+        ('SUCCESS', 'Sucesso'),
+        ('FAILED', 'Falhou'),
+    ], default='IDLE')
+    error_message = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ('user', 'provider', 'institution')
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.provider}"
+
+
+class DataImport(models.Model):
+    IMPORT_TYPES = [
+        ('POSITIONS', 'Posições'),
+        ('TRANSACTIONS', 'Transações'),
+        ('HISTORIC', 'Histórico'),
+        ('DIVIDENDS', 'Dividendos'),
+    ]
+    
+    STATUS = [
+        ('PENDING', 'Pendente'),
+        ('PROCESSING', 'Processando'),
+        ('COMPLETED', 'Completo'),
+        ('FAILED', 'Falhou'),
+        ('PARTIAL', 'Parcial'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='data_imports')
+    connection = models.ForeignKey(BrokerConnection, on_delete=models.CASCADE, related_name='imports')
+    import_type = models.CharField(max_length=20, choices=IMPORT_TYPES)
+    status = models.CharField(max_length=20, choices=STATUS, default='PENDING')
+    imported_count = models.IntegerField(default=0)
+    rejected_count = models.IntegerField(default=0)
+    started_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    error_log = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.import_type} - {self.user.username} ({self.status})"
+
+
+class WebhookEvent(models.Model):
+    EVENT_TYPES = [
+        ('ACCOUNT_UPDATE', 'Atualização de Conta'),
+        ('POSITION_UPDATE', 'Atualização de Posição'),
+        ('TRANSACTION', 'Nova Transação'),
+        ('DIVIDEND', 'Dividendo'),
+    ]
+    
+    provider = models.CharField(max_length=20)
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPES)
+    external_id = models.CharField(max_length=100)
+    payload = models.JSONField(default=dict)
+    processed = models.BooleanField(default=False)
+    processed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('provider', 'external_id')
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.event_type} - {self.external_id}"
 
