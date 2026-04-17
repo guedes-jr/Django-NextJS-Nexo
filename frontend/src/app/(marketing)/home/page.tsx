@@ -164,14 +164,14 @@ export default function LandingPage() {
           left: 0;
           right: 0;
           z-index: 1000;
-          padding: 0.5rem 3rem;
+          padding: 0.4rem 2rem;
           display: flex;
           flex-direction: row !important;
           flex-wrap: nowrap;
           justify-content: space-between !important;
           align-items: center;
           width: 100%;
-          min-height: 56px;
+          min-height: 48px;
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           background: ${scrolled ? 'rgba(2, 6, 23, 0.85)' : 'transparent'};
           backdrop-filter: ${scrolled ? 'blur(20px)' : 'none'};
@@ -182,18 +182,19 @@ export default function LandingPage() {
         .nav-left { display: flex; align-items: center; justify-content: flex-start; flex: 1; }
         .nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 2rem; flex: 2; }
         
-        .logo { display: flex; align-items: center; gap: 0.75rem; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; transition: transform 0.3s ease; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; transition: transform 0.3s ease; }
         .logo:hover { transform: scale(1.02); }
         
-        .nav-links { display: flex; gap: 1rem; align-items: center; list-style: none; white-space: nowrap; margin: 0; padding: 0; }
-        .nav-link { 
+        .nav-links { display: flex; gap: 0.75rem; align-items: center; list-style: none; white-space: nowrap; margin: 0; padding: 0; }
+.nav-link { 
           color: var(--text-muted); 
           text-decoration: none; 
-          font-size: 0.95rem; 
+          font-size: 0.8rem; 
           font-weight: 500;
-          padding: 0.5rem 1.2rem;
-          border-radius: 50px;
-          transition: all 0.3s;
+          transition: all 0.2s; 
+          position: relative;
+          display: inline-block;
+          padding: 0.25rem 0;
         }
         .nav-link:hover, .nav-link.active { 
           color: var(--text); background: rgba(255, 255, 255, 0.06); 
@@ -771,7 +772,7 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="nav">
         <div className="nav-left">
-          <div className="logo" style={{ display: 'flex', alignItems: 'center', width: '160px' }}>
+          <div className="logo" style={{ display: 'flex', alignItems: 'center', width: '120px' }}>
             <img src="/logo.png" alt="NEXO Logo" style={{ width: '100%', height: 'auto', objectFit: 'contain' }} />
           </div>
         </div>
@@ -1024,7 +1025,7 @@ export default function LandingPage() {
       <footer className="footer">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div className="logo" style={{ display: 'flex', alignItems: 'center', width: '180px', marginBottom: '1.5rem' }}>
+            <div className="logo" style={{ display: 'flex', alignItems: 'center', width: '130px', marginBottom: '1.5rem' }}>
               <img src="/logo.png" alt="NEXO Logo" style={{ width: '100%', height: 'auto', objectFit: 'contain' }} />
             </div>
             <p>Plataforma inteligente de gestão de patrimônio e investimentos focada em segurança, tecnologia e autonomia para o investidor moderno.</p>
