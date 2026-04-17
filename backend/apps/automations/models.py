@@ -56,7 +56,7 @@ class BrokerConnection(models.Model):
         ('DISABLED', 'Desativado'),
     ]
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='broker_connections')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='auto_broker_connections')
     broker_name = models.CharField(max_length=50)
     broker_code = models.CharField(max_length=20)
     account_number = models.CharField(max_length=50, blank=True)

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'apps.automations',
     'apps.cms',
     'apps.monitor',
+    'apps.intelligence',
 ]
 
 MIDDLEWARE = [

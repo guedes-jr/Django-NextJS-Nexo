@@ -209,6 +209,20 @@ Ordem de desenvolvimento:
 - [x] 7. projecoes com cenarios
 - [x] 8. sugestao de esforco mensal
 
+#### Modulo H2 — Inteligência de Investimentos (NOVO)
+- [ ] 1. ranking de acoes (screening Bazin/Graham)
+- [ ] 2. lista de favoritoes/recomendacoes
+- [ ] 3. score por indicador (DY, P/L, ROE)
+- [ ] 4. classificacao por atratividade
+- [ ] 5. analise de carteira (breakdown)
+- [ ] 6. score de carteira
+- [ ] 7. projecao curto prazo (1-12 meses)
+- [ ] 8. projecao longo prazo (1-30 anos)
+- [ ] 9. simulacao Monte Carlo
+- [ ] 10. cenarios customizaveis
+
+> Ver documento: [plano_inteligencia_investimentos.md](./plano_inteligencia_investimentos.md)
+
 #### Modulo I — Notificacoes e comunicacao
 - [x] 1. push
 - [x] 2. e-mail
@@ -652,8 +666,15 @@ Para web e mobile, o **Firebase Cloud Messaging** é a escolha mais natural. A d
 
 ## 6. Plano cronológico real de desenvolvimento
 
-> **Status Atual: Release 4 / Etapas 8-14**
-> O projeto encontra-se na fase de consolidação avançada, com core funcional completo. Implementamos: autenticação, onboarding, portfólio multi-ativos, market data, automações, metas, importações CSV/Excel, reconciliação automática, eventos corporativos, conexão de corretoras (mock), central de notificações, admin completo, benchmarks, análise de concentração, evolução patrimonial (snapshots) e histórico de movimentações.
+> **Status Atual: Release 5 / Etapas 8-14**
+> O projeto encontra-se na fase de consolidação avançada, com core funcional completo. Implementamos: autenticação, onboarding, portfólio multi-ativos, market data, automações, metas, importações CSV/Excel, reconciliação automática, eventos corporativos, conexão de corretoras (mock), central de notificações, admin completo, benchmarks, análise de concentração, evolução patrimonial (snapshots), histórico de movimentações e cálculo de IR.
+
+> **Próximas Funcionalidades (Release 6):** Inteligência de Investimentos
+> - Ranking de Ações (screening estilo Bazin/Graham)
+> - Análise de Carteira (score, breakdown por setor/dimensão)
+> - Projeção de Ganhos (curto e longo prazo com Monte Carlo)
+
+> Ver documento: [plano_inteligencia_investimentos.md](./plano_inteligencia_investimentos.md)
 
 ### Etapa 1 — Fundamentos do produto
 Objetivo: fechar o que será construído.

@@ -28,6 +28,8 @@ Visão geral e guia de referência para todas as funcionalidades disponíveis na
 | [Benchmarks](./benchmark.md) | Comparação com índices de referência |
 | [Análise de Concentração](./concentracao.md) | Análise de diversificação da carteira |
 | [Evolução Patrimonial](./historico-patrimonial.md) | Snapshots e histórico patrimonial |
+| [Ranking de Ações](./inteligencia-investimentos.md) | Screening estilo Bazin/Graham |
+| [Projeção de Ganhos](./inteligencia-investimentos.md) | Projeção curto/longo prazo com Monte Carlo |
 
 ---
 

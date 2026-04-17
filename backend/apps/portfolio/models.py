@@ -80,9 +80,18 @@ class TaxReport(models.Model):
         return f"DARF {self.quarter}/{self.year} - {self.user.username}"
 
 
+class Institution(models.Model):
+    name = models.CharField(max_length=100)
+    external_id = models.CharField(max_length=50, blank=True, null=True, help_text="Mapping ID for Open Finance")
+    logo_url = models.URLField(blank=True, null=True)
+    
+    def __str__(self):
+        return self.name
+
+
 class TaxLot(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tax_lots')
-    asset = models.ForeignKey(Asset, on_delete=models.RESTRICT)
+    asset = models.ForeignKey('portfolio.Asset', on_delete=models.RESTRICT)
     
     acquisition_date = models.DateField()
     quantity = models.DecimalField(max_digits=18, decimal_places=6)
@@ -113,13 +122,6 @@ class TaxLot(models.Model):
     def __str__(self):
         return f"Lote {self.asset.ticker} - {self.acquisition_date}"
 
-class Institution(models.Model):
-    name = models.CharField(max_length=100)
-    external_id = models.CharField(max_length=50, blank=True, null=True, help_text="Mapping ID for Open Finance")
-    logo_url = models.URLField(blank=True, null=True)
-    
-    def __str__(self):
-        return self.name
 
 class Asset(models.Model):
     ASSET_TYPES = [
