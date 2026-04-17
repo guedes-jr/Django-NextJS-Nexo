@@ -3,7 +3,13 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import RegisterView, UserProfileView, LogoutView, PasswordResetRequestView, PasswordResetConfirmView, CurrentUserView, MFAEnableView, MFAVerifyView, MFASetupView, TrustedDeviceView, PreferencesView, ConsentListView, ConsentAcceptView, ProfileListView, ProfileDetailView, SupportTicketListView, SupportTicketDetailView, SupportMessageView
+from .views import (
+    RegisterView, UserProfileView, LogoutView, PasswordResetRequestView, PasswordResetConfirmView,
+    CurrentUserView, MFAEnableView, MFAVerifyView, MFASetupView, TrustedDeviceView, PreferencesView,
+    ConsentListView, ConsentAcceptView, ProfileListView, ProfileDetailView, SupportTicketListView,
+    SupportTicketDetailView, SupportMessageView, DocumentUploadView, DocumentListView, DocumentDeleteView,
+    AccountVerificationView, AccountVerificationAdminView
+)
 
 urlpatterns = [
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -26,4 +32,9 @@ urlpatterns = [
     path('mfa/enable/', MFAEnableView.as_view(), name='mfa_enable'),
     path('mfa/verify/', MFAVerifyView.as_view(), name='mfa_verify'),
     path('devices/', TrustedDeviceView.as_view(), name='trusted_devices'),
+    path('documents/upload/', DocumentUploadView.as_view(), name='document_upload'),
+    path('documents/', DocumentListView.as_view(), name='document_list'),
+    path('documents/<int:pk>/', DocumentDeleteView.as_view(), name='document_delete'),
+    path('verification/', AccountVerificationView.as_view(), name='account_verification'),
+    path('verification/admin/<uuid:user_id>/', AccountVerificationAdminView.as_view(), name='account_verification_admin'),
 ]

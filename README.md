@@ -20,13 +20,16 @@ NEXO é um ecossistema **Fullstack (Django + Next.js)** projetado para consolida
 
 ---
 
-## ✨ Funcionalidades Atuais (Etapa 5/6)
+## ✨ Funcionalidades Atuais (Release 4)
 
-- **[x] Autenticação Robusta:** Sistema JWT completo com login, registro e tokens de renovação.
-- **[x] Onboarding Interativo:** Fluxo guiado para perfil do investidor (Suitability) e configuração de corretoras parceiras.
-- **[x] Gestão Multi-Ativos:** Suporte nativo para Ações (B3), FIIs e Criptoativos.
-- **[x] Dashboard Dinâmico:** Gráficos de alocação renderizados via CSS puro e tabelas de posições calculadas em tempo real.
-- **[x] Camada de Market Data:** Arquitetura de provedores preparada para integração com Yahoo Finance e Open Finance.
+- **[x] Autenticação Robusta:** Sistema JWT completo com login, registro, MFA e dispositivos confiáveis.
+- **[x] Onboarding Completo:** Fluxo guiado com perfil de risco, Suitability e verificação de documentos.
+- **[x] Gestão Multi-Ativos:** Suporte para Ações, FIIs, ETFs, RF, Cripto, Fundos e Previdência.
+- **[x]Dashboard Dinâmico:** Gráficos de alocação, rentabilidade e evolução patrimonial.
+- **[x] Inteligência de Carteira:** Concentração, risco, rebalanceamento e score de saúde.
+- **[x] Cálculo de IR:** Cálculo trimestral automático, geração de DARF e lotes fiscais FIFO.
+- **[x] Metas Financeiras:** Simulações, projeções e alertas de progresso.
+- **[x] Documentos e Compliance:** Notas, Informes, Comprovantes e Avisos Regulatórios.
 
 ---
 
@@ -56,13 +59,17 @@ Todas as funcionalidades implementadas estão documentadas na pasta `docs/`:
 
 | # | Funcionalidade | Arquivo |
 |---|----------------|---------|
-| 1 | Autenticação (JWT, Login, Registro) | [docs/autenticacao.md](./docs/autenticacao.md) |
+| 1 | Autenticação (JWT, Login, Registro, MFA) | [docs/autenticacao.md](./docs/autenticacao.md) |
 | 2 | Importação de Posições (CSV/Excel) | [docs/importacao-posicoes.md](./docs/importacao-posicoes.md) |
 | 3 | Conexão de Corretoras | [docs/corretoras.md](./docs/corretoras.md) |
 | 4 | Reconciliação Automática | [docs/reconciliacao.md](./docs/reconciliacao.md) |
-| 5 | Notificações Avançadas | [docs/notificacoes.md](./docs/notificacoes.md) |
-| 6 | Eventos Corporativos | [docs/eventos-corporativos.md](./docs/eventos-corporativos.md) |
-| 7 | Landing Page Pública | [docs/landing-page.md](./docs/landing-page.md) |
+| 5 | Cálculo de IR e DARF | [docs/imposto-renda.md](./docs/imposto-renda.md) |
+| 6 | Notificações Avançadas | [docs/notificacoes.md](./docs/notificacoes.md) |
+| 7 | Eventos Corporativos | [docs/eventos-corporativos.md](./docs/eventos-corporativos.md) |
+| 8 | Landing Page Pública | [docs/landing-page.md](./docs/landing-page.md) |
+| 9 | Análise de Concentração | [docs/concentracao.md](./docs/concentracao.md) |
+| 10 | Benchmark | [docs/benchmark.md](./docs/benchmark.md) |
+| 11 | Evolução Patrimonial | [docs/historico-patrimonial.md](./docs/historico-patrimonial.md) |
 
 **[Ver índice completo](./docs/README.md)**
 

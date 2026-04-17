@@ -193,11 +193,80 @@ class SupportMessage(models.Model):
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+class UserDocument(models.Model):
+    DOCUMENT_TYPE_CHOICES = [
+        ('RG', 'RG'),
+        ('CPF', 'CPF'),
+        ('COMPROVANTE_RESIDENCIA', 'Comprovante de Residência'),
+        ('EXTRATO_BANCARIO', 'Extrato Bancário'),
+        ('OUTRO', 'Outro'),
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='documents')
+    document_type = models.CharField(max_length=30, choices=DOCUMENT_TYPE_CHOICES)
+    file = models.FileField(upload_to='user_documents/%Y/%m/%d/')
+    original_name = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=[
+        ('PENDING', 'Pendente'),
+        ('APPROVED', 'Aprovado'),
+        ('REJECTED', 'Rejeitado'),
+    ], default='PENDING')
+    rejection_reason = models.TextField(blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    reviewed_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_documents')
+
+    class Meta:
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return f"{self.document_type} - {self.user.username}"
+
+
+class AccountVerification(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pendente'),
+        ('IN_REVIEW', 'Em Análise'),
+        ('APPROVED', 'Aprovado'),
+        ('REJECTED', 'Rejeitado'),
+        ('REQUIRES_ACTION', 'Requer Ação'),
+    ]
+
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='account_verification')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    documents_complete = models.BooleanField(default=False)
+    verification_level = models.CharField(max_length=20, choices=[
+        ('BASIC', 'Básico'),
+        ('COMPLETE', 'Completo'),
+        ('PREMIUM', 'Premium'),
+    ], default='BASIC')
+    
+    submitted_at = models.DateTimeField(null=True, blank=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    reviewed_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='verified_accounts')
+    
+    notes = models.TextField(blank=True, null=True)
+    internal_notes = models.TextField(blank=True, null=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Verificação {self.user.username} - {self.status}"
+
+
 @receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         InvestorProfile.objects.create(user=instance)
+        AccountVerification.objects.create(user=instance)
+
 
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+    if hasattr(instance, 'account_verification'):
+        instance.account_verification.save()

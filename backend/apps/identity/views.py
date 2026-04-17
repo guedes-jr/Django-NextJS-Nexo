@@ -34,8 +34,8 @@ from django.utils.timezone import now
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from .serializers import RegisterSerializer, InvestorProfileSerializer, PasswordResetSerializer, UserSerializer, PreferencesSerializer, ConsentSerializer, ConsentAcceptSerializer, ProfileListSerializer, RoleUpdateSerializer, SupportTicketSerializer, SupportMessageSerializer
-from .models import InvestorProfile, TrustedDevice, SupportTicket, SupportMessage
+from .serializers import RegisterSerializer, InvestorProfileSerializer, PasswordResetSerializer, UserSerializer, PreferencesSerializer, ConsentSerializer, ConsentAcceptSerializer, ProfileListSerializer, RoleUpdateSerializer, SupportTicketSerializer, SupportMessageSerializer, UserDocumentSerializer, UserDocumentUploadSerializer, AccountVerificationSerializer
+from .models import InvestorProfile, TrustedDevice, SupportTicket, SupportMessage, UserDocument, AccountVerification
 from apps.documents.models import UserConsent
 from django.core.mail import send_mail
 
@@ -451,3 +451,113 @@ class SupportMessageView(generics.GenericAPIView):
             ticket.save()
         
         return Response({"message": "Mensagem enviada"}, status=201)
+
+
+class DocumentUploadView(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserDocumentUploadSerializer
+    
+    def post(self, request):
+        serializer = UserDocumentUploadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        file_obj = serializer.validated_data['file']
+        doc_type = serializer.validated_data['document_type']
+        
+        doc = UserDocument.objects.create(
+            user=request.user,
+            document_type=doc_type,
+            file=file_obj,
+            original_name=file_obj.name
+        )
+        
+        return Response({
+            "message": "Documento enviado com sucesso",
+            "document_id": doc.id,
+            "document_type": doc.document_type
+        }, status=201)
+
+
+class DocumentListView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserDocumentSerializer
+    
+    def get_queryset(self):
+        return UserDocument.objects.filter(user=self.request.user)
+
+
+class DocumentDeleteView(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = UserDocument.objects.all()
+    
+    def get_queryset(self):
+        return UserDocument.objects.filter(user=self.request.user)
+
+
+class AccountVerificationView(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = AccountVerificationSerializer
+    
+    def get(self, request):
+        try:
+            verification = request.user.account_verification
+        except AccountVerification.DoesNotExist:
+            verification = AccountVerification.objects.create(user=request.user)
+        
+        serializer = AccountVerificationSerializer(verification)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        try:
+            verification = request.user.account_verification
+        except AccountVerification.DoesNotExist:
+            verification = AccountVerification.objects.create(user=request.user)
+        
+        required_docs = ['RG', 'CPF', 'COMPROVANTE_RESIDENCIA']
+        uploaded_types = list(request.user.documents.values_list('document_type', flat=True))
+        
+        verification.documents_complete = all(doc in uploaded_types for doc in required_docs)
+        
+        if verification.status == 'PENDING':
+            verification.status = 'IN_REVIEW'
+            verification.submitted_at = now()
+        
+        verification.save()
+        
+        serializer = AccountVerificationSerializer(verification)
+        return Response(serializer.data)
+
+
+class AccountVerificationAdminView(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = AccountVerificationSerializer
+    queryset = AccountVerification.objects.all()
+    lookup_field = 'user_id'
+    
+    def get_queryset(self):
+        if not self.request.user.is_admin:
+            return AccountVerification.objects.none()
+        return AccountVerification.objects.all()
+    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        new_status = request.data.get('status')
+        notes = request.data.get('notes', '')
+        
+        if new_status in ['APPROVED', 'REJECTED']:
+            instance.status = new_status
+            instance.reviewed_at = now()
+            instance.reviewed_by = request.user
+            instance.notes = notes
+            instance.save()
+            
+            if new_status == 'APPROVED':
+                if hasattr(instance.user, 'profile'):
+                    instance.user.profile.onboarding_completed = True
+                    instance.user.profile.save()
+        else:
+            instance.notes = notes
+            instance.save()
+        
+        serializer = AccountVerificationSerializer(instance)
+        return Response(serializer.data)

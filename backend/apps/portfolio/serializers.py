@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Institution, Asset, InvestmentAccount, Position, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction, PortfolioSnapshot
+from .models import Institution, Asset, InvestmentAccount, Position, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction, PortfolioSnapshot, TaxReport, TaxLot
 
 class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -97,3 +97,18 @@ class PortfolioSnapshotSerializer(serializers.ModelSerializer):
         model = PortfolioSnapshot
         fields = '__all__'
         read_only_fields = ('user', 'created_at')
+
+
+class TaxReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaxReport
+        fields = '__all__'
+        read_only_fields = ('user', 'created_at', 'updated_at', 'darf_code')
+
+
+class TaxLotSerializer(serializers.ModelSerializer):
+    asset_ticker = serializers.CharField(source='asset.ticker', read_only=True)
+    
+    class Meta:
+        model = TaxLot
+        fields = '__all__'

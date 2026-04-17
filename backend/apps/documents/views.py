@@ -2,7 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
-from .models import Document, UserConsent, DocumentAccess
+from django.contrib.auth import get_user_model
+from .models import Document, UserConsent, DocumentAccess, Note, Informe, Comprovante
+from .serializers import NoteSerializer, InformeSerializer, ComprovanteSerializer
+
+User = get_user_model()
 
 class DocumentListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -109,3 +113,148 @@ class UserConsentsView(APIView):
             "accepted_at": c.accepted_at.isoformat() if c.accepted_at else None,
             "document_title": c.document.title if c.document else None
         } for c in consents])
+
+
+class NoteListView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        notes = Note.objects.filter(user=request.user)
+        return Response(NoteSerializer(notes, many=True).data)
+    
+    def post(self, request):
+        serializer = NoteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+
+
+class NoteDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, note_id):
+        try:
+            note = Note.objects.get(id=note_id, user=request.user)
+        except Note.DoesNotExist:
+            return Response({"error": "Nota não encontrada"}, status=404)
+        return Response(NoteSerializer(note).data)
+    
+    def put(self, request, note_id):
+        try:
+            note = Note.objects.get(id=note_id, user=request.user)
+        except Note.DoesNotExist:
+            return Response({"error": "Nota não encontrada"}, status=404)
+        serializer = NoteSerializer(note, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+    def delete(self, request, note_id):
+        try:
+            note = Note.objects.get(id=note_id, user=request.user)
+            note.delete()
+            return Response({"message": "Nota deletada"})
+        except Note.DoesNotExist:
+            return Response({"error": "Nota não encontrada"}, status=404)
+
+
+class InformeListView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        year = request.query_params.get('year')
+        informes = Informe.objects.filter(user=request.user)
+        if year:
+            informes = informes.filter(year=int(year))
+        return Response(InformeSerializer(informes, many=True).data)
+    
+    def post(self, request):
+        serializer = InformeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+
+
+class InformeGenerateView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        from apps.portfolio.models import Position, Transaction
+        
+        year = request.data.get('year')
+        report_type = request.data.get('report_type', 'ANNUAL')
+        
+        if not year:
+            return Response({"error": "Ano é obrigatório"}, status=400)
+        
+        positions = Position.objects.filter(user=request.user)
+        transactions = Transaction.objects.filter(
+            user=request.user,
+            date__year=int(year)
+        )
+        
+        total_dividends = sum(t.value for t in transactions if t.transaction_type == 'DIVIDEND')
+        total_taxes = sum(t.value for t in transactions if t.transaction_type == 'TAX')
+        
+        assets_summary = []
+        for pos in positions:
+            assets_summary.append({
+                "ticker": pos.ticker,
+                "quantity": float(pos.quantity),
+                "current_value": float(pos.current_value) if pos.current_value else 0,
+            })
+        
+        transactions_summary = []
+        for t in transactions[:50]:
+            transactions_summary.append({
+                "date": t.date.isoformat() if t.date else None,
+                "type": t.transaction_type,
+                "ticker": t.ticker,
+                "value": float(t.value) if t.value else 0,
+            })
+        
+        informe = Informe.objects.create(
+            user=request.user,
+            title=f"Informe {year}",
+            report_type=report_type,
+            year=int(year),
+            total_dividends=total_dividends,
+            total_taxes=total_taxes,
+            assets_summary=assets_summary,
+            transactions_summary=transactions_summary,
+        )
+        
+        return Response(InformeSerializer(informe).data, status=201)
+
+
+class ComprovanteListView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        comprovantes = Comprovante.objects.filter(user=request.user)
+        return Response(ComprovanteSerializer(comprovantes, many=True).data)
+    
+    def post(self, request):
+        serializer = ComprovanteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+
+
+class ComprovanteDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, comp_id):
+        try:
+            comp = Comprovante.objects.get(id=comp_id, user=request.user)
+        except Comprovante.DoesNotExist:
+            return Response({"error": "Comprovante não encontrado"}, status=404)
+        return Response(ComprovanteSerializer(comp).data)
+    
+    def delete(self, request, comp_id):
+        try:
+            comp = Comprovante.objects.get(id=comp_id, user=request.user)
+            comp.delete()
+            return Response({"message": "Comprovante deletado"})
+        except Comprovante.DoesNotExist:
+            return Response({"error": "Comprovante não encontrado"}, status=404)

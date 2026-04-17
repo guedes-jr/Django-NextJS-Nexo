@@ -57,3 +57,86 @@ class DocumentAccess(models.Model):
     
     class Meta:
         unique_together = ('user', 'document')
+
+
+class Note(models.Model):
+    NOTE_TYPES = [
+        ('PORTFOLIO', 'Nota de Carteira'),
+        ('PERFORMANCE', 'Nota de Desempenho'),
+        ('TAX', 'Nota Fiscal'),
+        ('ANALYSIS', 'Análise'),
+        ('GENERAL', 'Geral'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
+    title = models.CharField(max_length=200)
+    note_type = models.CharField(max_length=20, choices=NOTE_TYPES, default='GENERAL')
+    content = models.TextField()
+    metadata = models.JSONField(default=dict, blank=True)
+    is_pinned = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-is_pinned', '-created_at']
+    
+    def __str__(self):
+        return f"{self.title} - {self.user.username}"
+
+
+class Informe(models.Model):
+    TYPE_CHOICES = [
+        ('ANNUAL', 'Informe Anual'),
+        ('QUARTERLY', 'Informe Trimestral'),
+        ('MONTHLY', 'Informe Mensal'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='informes')
+    title = models.CharField(max_length=200)
+    report_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    year = models.IntegerField()
+    period = models.CharField(max_length=20, blank=True)
+    total_capital_gains = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    total_dividends = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    total_taxes = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    assets_summary = models.JSONField(default=list)
+    transactions_summary = models.JSONField(default=list)
+    file_url = models.URLField(blank=True, null=True)
+    generated_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'report_type', 'year', 'period')
+        ordering = ['-year', '-report_type']
+    
+    def __str__(self):
+        return f"{self.report_type} {self.year} - {self.user.username}"
+
+
+class Comprovante(models.Model):
+    TYPE_CHOICES = [
+        ('DEPOSIT', 'Depósito'),
+        ('WITHDRAWAL', 'Saque'),
+        ('TRANSFER', 'Transferência'),
+        ('PURCHASE', 'Compra'),
+        ('SALE', 'Venda'),
+        ('DIVIDEND', 'Dividendo'),
+        ('FEE', 'Taxa'),
+        ('OTHER', 'Outro'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comprovantes')
+    comprovante_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    ticker = models.CharField(max_length=20, blank=True, null=True)
+    quantity = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True)
+    unit_price = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
+    total_value = models.DecimalField(max_digits=15, decimal_places=2)
+    description = models.TextField(blank=True)
+    transaction_date = models.DateField()
+    file_url = models.URLField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-transaction_date', '-created_at']
+    
+    def __str__(self):
+        return f"{self.comprovante_type} - {self.user.username} - {self.transaction_date}"

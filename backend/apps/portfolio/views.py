@@ -9,7 +9,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.db.models import Sum
-from .models import Position, Asset, Institution, InvestmentAccount, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction, PortfolioSnapshot
+from .models import Position, Asset, Institution, InvestmentAccount, Transaction, Goal, Notification, ReconciliationIssue, CorporateAction, PortfolioSnapshot, TaxReport, TaxLot
 from .serializers import (
     InstitutionSerializer, 
     AssetSerializer, 
@@ -20,7 +20,9 @@ from .serializers import (
     NotificationSerializer,
     ReconciliationIssueSerializer,
     CorporateActionSerializer,
-    PortfolioSnapshotSerializer
+    PortfolioSnapshotSerializer,
+    TaxReportSerializer,
+    TaxLotSerializer
 )
 import decimal
 import csv
@@ -2099,3 +2101,214 @@ class GenerateSnapshotView(APIView):
             "total_value": float(total_value),
             "created": created
         })
+
+
+class TaxCalculationView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        year = request.query_params.get('year', timezone.now().year)
+        quarter = request.query_params.get('quarter')
+        
+        reports = TaxReport.objects.filter(user=request.user, year=int(year))
+        if quarter:
+            reports = reports.filter(quarter=quarter)
+        
+        return Response(TaxReportSerializer(reports, many=True).data)
+    
+    def post(self, request):
+        year = request.data.get('year')
+        quarter = request.data.get('quarter')
+        
+        if not year or not quarter:
+            return Response({"error": "Ano e trimestre são obrigatórios"}, status=400)
+        
+        quarter_months = {
+            'Q1': (1, 2, 3),
+            'Q2': (4, 5, 6),
+            'Q3': (7, 8, 9),
+            'Q4': (10, 11, 12),
+        }
+        
+        months = quarter_months.get(quarter, (1, 2, 3))
+        
+        transactions = Transaction.objects.filter(
+            user=request.user,
+            transaction_date__year=int(year),
+            transaction_date__month__in=months,
+            transaction_type__in=['VENDA', 'COMPRA']
+        ).order_by('transaction_date')
+        
+        total_gains = decimal.Decimal('0.0')
+        total_losses = decimal.Decimal('0.0')
+        day_trade_gains = decimal.Decimal('0.0')
+        exempted_gains = decimal.Decimal('0.0')
+        
+        sells = transactions.filter(transaction_type='VENDA')
+        buys = transactions.filter(transaction_type='COMPRA')
+        
+        sell_dates = {}
+        sell_quantities = {}
+        
+        for t in sells:
+            ticker = t.asset.ticker
+            date_key = (t.transaction_date, t.quantity)
+            
+            if ticker not in sell_dates:
+                sell_dates[ticker] = []
+            sell_dates[ticker].append({
+                'date': t.transaction_date,
+                'quantity': t.quantity,
+                'price': t.unit_price,
+                'is_day_trade': False,
+            })
+        
+        for t in sells:
+            buy_same_day = Transaction.objects.filter(
+                user=request.user,
+                asset=t.asset,
+                transaction_type='COMPRA',
+                transaction_date=t.transaction_date
+            ).exists()
+            
+            if buy_same_day:
+                day_trade_gains += t.total_value
+                continue
+            
+            buys_for_asset = Transaction.objects.filter(
+                user=request.user,
+                asset=t.asset,
+                transaction_type='COMPRA',
+                transaction_date__lt=t.transaction_date,
+                quantity__gt=0
+            ).order_by('transaction_date')
+            
+            remaining_sell_qty = t.quantity
+            
+            for buy in buys_for_asset:
+                if remaining_sell_qty <= 0:
+                    break
+                
+                buy_qty = buy.quantity
+                cost = buy.unit_price * min(remaining_sell_qty, buy_qty)
+                proceeds = t.unit_price * min(remaining_sell_qty, buy_qty)
+                gain = proceeds - cost
+                
+                if gain > 0:
+                    if t.asset.asset_type in ['FII', 'ETF']:
+                        exempted_gains += gain
+                    else:
+                        total_gains += gain
+                else:
+                    total_losses += abs(gain)
+                
+                remaining_sell_qty -= min(remaining_sell_qty, buy_qty)
+        
+        net_gain = max(total_gains - total_losses, 0)
+        
+        tax_report, created = TaxReport.objects.update_or_create(
+            user=request.user,
+            year=int(year),
+            quarter=quarter,
+            defaults={
+                'total_gains': total_gains,
+                'total_losses': total_losses,
+                'net_gain': net_gain,
+                'day_trade_gains': day_trade_gains,
+                'exempted_gains': exempted_gains,
+            }
+        )
+        tax_report.calculate_tax()
+        tax_report.save()
+        
+        return Response(TaxReportSerializer(tax_report).data, status=201)
+
+
+class DARFGenerationView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        year = request.query_params.get('year', timezone.now().year)
+        quarter = request.query_params.get('quarter')
+        
+        reports = TaxReport.objects.filter(
+            user=request.user,
+            year=int(year),
+            status__in=['CALCULATED', 'OVERDUE']
+        )
+        if quarter:
+            reports = reports.filter(quarter=quarter)
+        
+        return Response(TaxReportSerializer(reports, many=True).data)
+    
+    def post(self, request):
+        report_id = request.data.get('report_id')
+        
+        try:
+            tax_report = TaxReport.objects.get(id=report_id, user=request.user)
+        except TaxReport.DoesNotExist:
+            return Response({"error": "Relatório não encontrado"}, status=404)
+        
+        if tax_report.net_gain <= 0 or tax_report.tax_due <= 0:
+            return Response({"error": "IR não devido para este período"}, status=400)
+        
+        darf_codes = {
+            'Q1': '6015',
+            'Q2': '6015',
+            'Q3': '6015',
+            'Q4': '6015',
+        }
+        
+        tax_report.darf_code = darf_codes.get(tax_report.quarter, '6015')
+        tax_report.status = 'CALCULATED'
+        tax_report.save()
+        
+        return Response({
+            "message": "DARF gerado",
+            "darf_code": tax_report.darf_code,
+            "darf_value": float(tax_report.tax_due),
+            "deadline": tax_report.darf_deadline,
+            "reference": f"{tax_report.year}{tax_report.quarter}",
+        })
+
+
+class DARFPaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        report_id = request.data.get('report_id')
+        paid_date = request.data.get('paid_date')
+        paid_value = request.data.get('paid_value')
+        
+        try:
+            tax_report = TaxReport.objects.get(id=report_id, user=request.user)
+        except TaxReport.DoesNotExist:
+            return Response({"error": "Relatório não encontrado"}, status=404)
+        
+        from datetime import datetime
+        if paid_date:
+            tax_report.darf_paid_date = datetime.strptime(paid_date, '%Y-%m-%d').date()
+        if paid_value:
+            tax_report.darf_value = decimal.Decimal(str(paid_value))
+        
+        tax_report.status = 'PAID'
+        tax_report.save()
+        
+        return Response({
+            "message": "Pagamento registrado",
+            "status": tax_report.status,
+            "paid_date": tax_report.darf_paid_date,
+        })
+
+
+class TaxLotManagementView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        asset_ticker = request.query_params.get('ticker')
+        
+        lots = TaxLot.objects.filter(user=request.user)
+        if asset_ticker:
+            lots = lots.filter(asset__ticker=asset_ticker)
+        
+        return Response(TaxLotSerializer(lots, many=True).data)

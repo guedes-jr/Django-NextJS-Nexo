@@ -20,14 +20,20 @@ export default function DocumentosPage() {
   const [consents, setConsents] = useState<Record<string, boolean>>({});
   const [selectedDoc, setSelectedDoc] = useState<Doc | null>(null);
   const [docContent, setDocContent] = useState<string>('');
+  const [regulatoryNotices, setRegulatoryNotices] = useState<any[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('nexo_access');
     if (!token) { router.push('/login'); return; }
-    fetch(`${API_URL}/api/documents/`, { headers: { 'Authorization': `Bearer ${token}` } })
-      .then(res => res.json())
-      .then(data => {
+    
+    Promise.all([
+      fetch(`${API_URL}/api/documents/`, { headers: { 'Authorization': `Bearer ${token}` } }),
+      fetch(`${API_URL}/api/cms/regulatory/`, { headers: { 'Authorization': `Bearer ${token}` } })
+    ])
+      .then(([docsRes, regRes]) => Promise.all([docsRes.json(), regRes.json()]))
+      .then(([data, regData]) => {
         if (data.documents) { setDocuments(data.documents); setConsents(data.user_consents || {}); }
+        setRegulatoryNotices(regData || []);
       })
       .finally(() => { setLoading(false); });
   }, [router]);
@@ -65,7 +71,20 @@ export default function DocumentosPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
           <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '24px' }}>
-            <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>Documentos</h2>
+            <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>Avisos Regulatórios</h2>
+            {regulatoryNotices.length === 0 ? (
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>Nenhum aviso regulatório</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+                {regulatoryNotices.map((notice, idx) => (
+                  <div key={idx} onClick={() => { setSelectedDoc(notice); setDocContent(notice.content); }} style={{ padding: '12px', background: 'rgba(255,153,0,0.1)', border: '1px solid var(--warning)', borderRadius: '8px', cursor: 'pointer' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--warning)' }}>{notice.title}</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>v{notice.version} - {notice.effective_date}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <h2 style={{ fontSize: '18px', marginBottom: '16px', borderTop: '1px solid var(--glass-border)', paddingTop: '16px' }}>Documentos</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {documents.length === 0 ? <p style={{ color: 'var(--text-secondary)' }}>Nenhum documento</p> : documents.map(d => (
                 <div key={d.id} onClick={() => handleViewDoc(d)} style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--glass-border)', borderRadius: '8px', cursor: 'pointer' }}>

@@ -156,19 +156,23 @@ Ordem de desenvolvimento:
 - [x] 6. gatilhos por evento
 - [x] 7. campanhas segmentadas
 - [x] 8. lembretes de aporte
-- [ ] 9. avisos regulatorios
+- [x] 9. avisos regulatorios
 
 #### Módulo J — Documentos e compliance
 - [x] 1. termos
 - [x] 2. contratos
-- [ ] 3. notas
+- [x] 3. notas
 - [x] 4. extratos
-- [ ] 5. informes
-- [ ] 6. comprovantes
+- [x] 5. informes
+- [x] 6. comprovantes
 - [x] 7. logs de aceite
 - [x] 8. retenção documental
 - [x] 9. trilha de auditoria
 - [x] 10. versionamento de políticas
+- [x] 11. cálculo de IR trimestral
+- [x] 12. geração de DARF
+- [x] 13. lotes fiscais (FIFO)
+- [x] 14. controle de ganhos/day trade
 
 #### Módulo K — Área administrativa
 - [x] 1. gestão de usuários
@@ -177,10 +181,10 @@ Ordem de desenvolvimento:
 - [x] 4. suporte
 - [x] 5. monitoramento de integrações
 - [x] 6. reconciliações pendentes
-- [ ] 7. filas e jobs
+- [x] 7. filas e jobs
 - [x] 8. conexao de corretoras
 - [x] 9. gatilhos automaticos
-- [ ] 9. conteúdo institucional
+- [x] conteúdo institucional
 - [x] 10. CMS para banners, cards, FAQs e mensagens
 
 #### Módulo L — Parceiros e integrações

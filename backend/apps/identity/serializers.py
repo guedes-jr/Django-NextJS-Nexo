@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, InvestorProfile, SupportTicket, SupportMessage
+from .models import CustomUser, InvestorProfile, SupportTicket, SupportMessage, UserDocument, AccountVerification
 from apps.documents.models import UserConsent, Document
 
 class UserSerializer(serializers.ModelSerializer):
@@ -73,6 +73,36 @@ class InvestorProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvestorProfile
         fields = ('birth_date', 'risk_level', 'primary_broker', 'financial_goal', 'onboarding_completed')
+
+
+class UserDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserDocument
+        fields = ('id', 'document_type', 'file', 'original_name', 'status', 'rejection_reason', 'uploaded_at', 'reviewed_at')
+        read_only_fields = ('status', 'rejection_reason', 'uploaded_at', 'reviewed_at')
+
+
+class UserDocumentUploadSerializer(serializers.Serializer):
+    document_type = serializers.ChoiceField(choices=UserDocument.DOCUMENT_TYPE_CHOICES)
+    file = serializers.FileField()
+
+
+class AccountVerificationSerializer(serializers.ModelSerializer):
+    user_username = serializers.SerializerMethodField()
+    documents = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = AccountVerification
+        fields = ('id', 'user', 'user_username', 'status', 'documents_complete', 'verification_level', 
+                  'submitted_at', 'reviewed_at', 'notes', 'documents')
+        read_only_fields = ('submitted_at', 'reviewed_at')
+    
+    def get_user_username(self, obj):
+        return obj.user.username
+    
+    def get_documents(self, obj):
+        docs = obj.user.documents.all()
+        return UserDocumentSerializer(docs, many=True).data
 
 class ConsentSerializer(serializers.ModelSerializer):
     class Meta:

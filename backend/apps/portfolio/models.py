@@ -1,8 +1,117 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from decimal import Decimal
+from django.utils import timezone
 
 User = get_user_model()
+
+
+class TaxReport(models.Model):
+    TAX_TYPES = [
+        ('IR', 'Imposto de Renda'),
+        ('IOF', 'IOF'),
+        ('CIDE', 'CIDE-Remuneração'),
+    ]
+    
+    QUARTERS = [
+        ('Q1', '1º Trimestre (Jan-Mar)'),
+        ('Q2', '2º Trimestre (Abr-Jun)'),
+        ('Q3', '3º Trimestre (Jul-Set)'),
+        ('Q4', '4º Trimestre (Out-Dez)'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tax_reports')
+    year = models.IntegerField()
+    quarter = models.CharField(max_length=2, choices=QUARTERS)
+    tax_type = models.CharField(max_length=10, choices=TAX_TYPES, default='IR')
+    
+    total_gains = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    total_losses = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    net_gain = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    
+    aliquot = models.DecimalField(max_digits=5, decimal_places=2, default=15)
+    tax_due = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    
+    exempted_gains = models.DecimalField(max_digits=18, decimal_places=2, default=0, help_text="Ganhos isentos (ex: FII)")
+    day_trade_gains = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    
+    status = models.CharField(max_length=20, choices=[
+        ('CALCULATED', 'Calculado'),
+        ('PAID', 'Pago'),
+        ('OVERDUE', 'Vencido'),
+    ], default='CALCULATED')
+    
+    darf_code = models.CharField(max_length=20, blank=True, help_text="Código DARF")
+    darf_deadline = models.DateField(blank=True, null=True)
+    darf_paid_date = models.DateField(null=True, blank=True)
+    darf_value = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ('user', 'year', 'quarter', 'tax_type')
+        ordering = ['-year', '-quarter']
+    
+    def save(self, *args, **kwargs):
+        if not self.darf_deadline:
+            month_map = {'Q1': 3, 'Q2': 6, 'Q3': 9, 'Q4': 12}
+            month = month_map.get(self.quarter)
+            self.darf_deadline = timezone.datetime(self.year, month, 15).date()
+        super().save(*args, **kwargs)
+    
+    def calculate_tax(self):
+        if self.net_gain <= 0:
+            self.tax_due = 0
+            return
+        
+        taxable = max(self.net_gain - self.exempted_gains - self.day_trade_gains, 0)
+        
+        if taxable <= 0:
+            self.tax_due = 0
+        elif taxable <= 5000000:
+            self.aliquot = 15
+        else:
+            self.aliquot = 20
+        
+        self.tax_due = (taxable * self.aliquot) / 100
+    
+    def __str__(self):
+        return f"DARF {self.quarter}/{self.year} - {self.user.username}"
+
+
+class TaxLot(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tax_lots')
+    asset = models.ForeignKey(Asset, on_delete=models.RESTRICT)
+    
+    acquisition_date = models.DateField()
+    quantity = models.DecimalField(max_digits=18, decimal_places=6)
+    unit_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    total_cost = models.DecimalField(max_digits=18, decimal_places=2)
+    
+    transaction = models.ForeignKey('Transaction', on_delete=models.SET_NULL, null=True, blank=True, related_name='tax_lots')
+    is_sold = models.BooleanField(default=False)
+    sold_date = models.DateField(null=True, blank=True)
+    sold_quantity = models.DecimalField(max_digits=18, decimal_places=6, null=True, blank=True)
+    sold_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    gain_loss = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
+    
+    class Meta:
+        ordering = ['acquisition_date']
+    
+    def calculate_gain(self, sale_price, sale_quantity, sale_date):
+        if self.is_sold:
+            return 0
+        
+        qty = min(sale_quantity, self.quantity)
+        cost = (self.unit_cost * qty)
+        proceeds = (sale_price * qty)
+        
+        self.gain_loss = proceeds - cost
+        return self.gain_loss
+    
+    def __str__(self):
+        return f"Lote {self.asset.ticker} - {self.acquisition_date}"
 
 class Institution(models.Model):
     name = models.CharField(max_length=100)
@@ -122,6 +231,7 @@ class Notification(models.Model):
         ('INFO', 'Informacao'),
         ('WARNING', 'Aviso'),
         ('SUCCESS', 'Sucesso'),
+        ('REGULATORY', 'Aviso Regulatório'),
     ]
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')

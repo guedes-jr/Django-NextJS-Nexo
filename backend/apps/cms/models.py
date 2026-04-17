@@ -39,3 +39,32 @@ class Message(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class InstitutionalContent(models.Model):
+    CONTENT_TYPES = [
+        ('PRIVACY_POLICY', 'Política de Privacidade'),
+        ('TERMS_OF_USE', 'Termos de Uso'),
+        ('REGULATORY_DISCLAIMER', 'Aviso Regulatório'),
+        ('RISK_DISCLAIMER', 'Aviso de Risco'),
+        ('ABOUT_US', 'Sobre Nós'),
+        ('CONTACT', 'Contato'),
+        ('FAQ_CATEGORY', 'Categoria FAQ'),
+    ]
+    
+    content_type = models.CharField(max_length=30, choices=CONTENT_TYPES)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    version = models.CharField(max_length=20, default='1.0')
+    is_active = models.BooleanField(default=True)
+    is_current = models.BooleanField(default=True)
+    effective_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey('identity.CustomUser', on_delete=models.SET_NULL, null=True, blank=True, related_name='created_contents')
+
+    class Meta:
+        ordering = ['-version', '-effective_date']
+
+    def __str__(self):
+        return f"{self.get_content_type_display()} v{self.version}"
