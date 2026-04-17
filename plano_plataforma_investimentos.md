@@ -69,9 +69,9 @@ Conjunto de ferramentas para facilitar o desenvolvimento, debug e acompanhamento
 - [ ] Schedule de tasks
 
 #### 1.5.6. Config Editor
-- [ ] Editar variáveis de ambiente
-- [ ] Feature flags dinâmicos
-- [ ] rollback de configurações
+- [x] Editar variáveis de ambiente
+- [x] Feature flags dinâmicos
+- [x] rollback de configurações
 
 #### 1.5.7. API Playground
 - [ ] Testador de endpoints integrado

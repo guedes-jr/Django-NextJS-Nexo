@@ -12,7 +12,7 @@ import os
 import shlex
 
 User = get_user_model()
-from .models import CommandHistory, QueryHistory, AppLog
+from .models import CommandHistory, QueryHistory, AppLog, FeatureFlag, ConfigHistory
 
 class JobListView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -474,3 +474,119 @@ class CacheManagerView(APIView):
             return Response({"status": "updated", "key": key, "ttl": ttl})
         
         return Response({"error": "Ação inválida"}, status=400)
+
+
+class ConfigEditorView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        flags = FeatureFlag.objects.all()
+        return Response({
+            "flags": [
+                {
+                    "id": f.id,
+                    "name": f.name,
+                    "description": f.description,
+                    "value": f.value,
+                    "is_active": f.is_active,
+                    "is_global": f.is_global,
+                    "created_at": f.created_at.isoformat() if f.created_at else None,
+                    "updated_at": f.updated_at.isoformat() if f.updated_at else None,
+                }
+                for f in flags
+            ]
+        })
+    
+    def post(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        action = request.data.get('action')
+        
+        if action == 'create':
+            name = request.data.get('name')
+            value = request.data.get('value', {})
+            description = request.data.get('description', '')
+            
+            if not name:
+                return Response({"error": "Nome é obrigatório"}, status=400)
+            
+            flag, created = FeatureFlag.objects.get_or_create(
+                name=name,
+                defaults={
+                    'value': value,
+                    'description': description,
+                    'created_by': request.user
+                }
+            )
+            
+            return Response({
+                "message": "Flag criada" if created else "Flag já existe",
+                "id": flag.id
+            })
+        
+        if action == 'update':
+            flag_id = request.data.get('id')
+            value = request.data.get('value')
+            is_active = request.data.get('is_active')
+            change_reason = request.data.get('change_reason', '')
+            
+            try:
+                flag = FeatureFlag.objects.get(id=flag_id)
+            except FeatureFlag.DoesNotExist:
+                return Response({"error": "Flag não encontrada"}, status=404)
+            
+            ConfigHistory.objects.create(
+                config=flag,
+                old_value=flag.value,
+                new_value=value,
+                changed_by=request.user,
+                change_reason=change_reason
+            )
+            
+            if value is not None:
+                flag.value = value
+            if is_active is not None:
+                flag.is_active = is_active
+            
+            flag.save()
+            
+            return Response({"message": "Flag atualizada"})
+        
+        if action == 'delete':
+            flag_id = request.data.get('id')
+            
+            try:
+                flag = FeatureFlag.objects.get(id=flag_id)
+                flag.delete()
+                return Response({"message": "Flag deletada"})
+            except FeatureFlag.DoesNotExist:
+                return Response({"error": "Flag não encontrada"}, status=404)
+        
+        return Response({"error": "Ação inválida"}, status=400)
+
+
+class ConfigHistoryView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request, flag_id):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        history = ConfigHistory.objects.filter(config_id=flag_id)[:20]
+        
+        return Response({
+            "history": [
+                {
+                    "old_value": h.old_value,
+                    "new_value": h.new_value,
+                    "changed_by": h.changed_by.username if h.changed_by else None,
+                    "change_reason": h.change_reason,
+                    "created_at": h.created_at.isoformat(),
+                }
+                for h in history
+            ]
+        })

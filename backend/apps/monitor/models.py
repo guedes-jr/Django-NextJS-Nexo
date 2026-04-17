@@ -72,3 +72,39 @@ class AppLog(models.Model):
     
     def __str__(self):
         return f"[{self.level}] {self.logger}: {self.message[:50]}"
+
+
+class FeatureFlag(models.Model):
+    name = models.CharField(max_length=100, unique=True, help_text="Nome da flag")
+    description = models.TextField(blank=True)
+    value = models.JSONField(default=dict)
+    is_active = models.BooleanField(default=True)
+    is_global = models.BooleanField(default=False, help_text="Se true, afeta todos os usuários")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_flags')
+    
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Feature Flag'
+        verbose_name_plural = 'Feature Flags'
+    
+    def __str__(self):
+        return f"{self.name} = {self.value}"
+
+
+class ConfigHistory(models.Model):
+    config = models.ForeignKey(FeatureFlag, on_delete=models.CASCADE, related_name='history')
+    old_value = models.JSONField(default=dict)
+    new_value = models.JSONField(default=dict)
+    changed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    change_reason = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Histórico de Configuração'
+        verbose_name_plural = 'Histórico de Configurações'
+    
+    def __str__(self):
+        return f"{self.config.name} - {self.created_at}"
