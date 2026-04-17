@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import JobListView, TriggerJobView, JobStatusView, WebShellView, DBShellView, DBSchemaView, LogStreamView, LogCreateView
+from .views import JobListView, TriggerJobView, JobStatusView, WebShellView, DBShellView, DBSchemaView, LogStreamView, LogCreateView, CacheManagerView
 
 urlpatterns = [
     path('jobs/', JobListView.as_view(), name='jobs'),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('db/schema/', DBSchemaView.as_view(), name='db_schema'),
     path('logs/', LogStreamView.as_view(), name='logs'),
     path('logs/create/', LogCreateView.as_view(), name='logs_create'),
+    path('cache/', CacheManagerView.as_view(), name='cache'),
 ]

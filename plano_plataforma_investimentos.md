@@ -58,9 +58,9 @@ Conjunto de ferramentas para facilitar o desenvolvimento, debug e acompanhamento
 - [x] Download de logs
 
 #### 1.5.4. Cache Manager
-- [ ] Visualizar todas as chaves em cache
-- [ ] Expirar chaves específicas
-- [ ] Definir TTL manual
+- [x] Visualizar todas as chaves em cache
+- [x] Expirar chaves específicas
+- [x] Definir TTL manual
 
 #### 1.5.5. Task Monitor
 - [ ] Lista de tasks Celery/async

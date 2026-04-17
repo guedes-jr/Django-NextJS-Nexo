@@ -31,6 +31,7 @@ const navItems = [
   { href: '/admin/webshell', label: 'WebShell', icon: 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
   { href: '/admin/dbshell', label: 'DBShell', icon: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 4-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 4-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' },
   { href: '/admin/logs', label: 'Logs', icon: 'M9 12h6m-3-3v6m-3-6V6a3 3 0 013-3' },
+  { href: '/admin/cache', label: 'Cache', icon: 'M12 15v2m-6 4v2m-6-8V6a2 2 0 012-2h2a2 2 0 012 2v6a2 2 0 01-2 2h-2z' },
 ];
 
 export default function SharedSidebar() {

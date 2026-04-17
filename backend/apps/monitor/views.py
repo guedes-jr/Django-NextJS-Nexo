@@ -412,3 +412,65 @@ class LogCreateView(APIView):
         )
         
         return Response({"status": "ok"})
+
+
+class CacheManagerView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        from django.core.cache import cache
+        
+        cache_keys = []
+        try:
+            for key in cache._cache.keys('*'):
+                if key:
+                    try:
+                        value = cache.get(key)
+                        ttl = cache.ttl(key) if hasattr(cache, 'ttl') else -1
+                        cache_keys.append({
+                            "key": key,
+                            "type": type(value).__name__,
+                            "ttl": ttl,
+                        })
+                    except:
+                        pass
+        except:
+            try:
+                keys = cache.keys('*')
+                for key in keys[:100]:
+                    cache_keys.append({
+                        "key": key,
+                        "type": "unknown",
+                        "ttl": -1,
+                    })
+            except:
+                pass
+        
+        return Response({"cache_keys": cache_keys[:100]})
+    
+    def post(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        action = request.data.get('action')
+        key = request.data.get('key')
+        ttl = request.data.get('ttl')
+        
+        from django.core.cache import cache
+        
+        if action == 'delete' and key:
+            cache.delete(key)
+            return Response({"status": "deleted", "key": key})
+        
+        if action == 'clear':
+            cache.clear()
+            return Response({"status": "cleared"})
+        
+        if action == 'set_ttl' and key and ttl:
+            cache.set(key, cache.get(key), timeout=int(ttl))
+            return Response({"status": "updated", "key": key, "ttl": ttl})
+        
+        return Response({"error": "Ação inválida"}, status=400)
