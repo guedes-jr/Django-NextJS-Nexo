@@ -131,15 +131,17 @@ export default function LandingPage() {
     <div className="landing">
       <style>{`
         :root {
-          --primary: #6366f1;
-          --primary-dark: #4f46e5;
-          --secondary: #22c55e;
-          --accent: #f59e0b;
-          --dark: #0f172a;
-          --dark-2: #1e293b;
+          --primary: #4f46e5;
+          --primary-dark: #3730a3;
+          --secondary: #16a34a;
+          --accent: #d97706;
+          --dark: #020617;
+          --dark-2: #0f172a;
+          --dark-3: #1e293b;
           --light: #f8fafc;
-          --text: #e2e8f0;
+          --text: #f1f5f9;
           --text-muted: #94a3b8;
+          --text-dim: #64748b;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -155,25 +157,71 @@ export default function LandingPage() {
           left: 0;
           right: 0;
           z-index: 1000;
-          padding: 1rem 2rem;
+          padding: 1rem 3rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
           transition: all 0.3s ease;
-          background: ${scrolled ? 'rgba(15, 23, 42, 0.9)' : 'transparent'};
-          backdrop-filter: ${scrolled ? 'blur(20px)' : 'none'};
-          border-bottom: ${scrolled ? '1px solid rgba(99, 102, 241, 0.1)' : 'none'};
+          background: ${scrolled ? 'rgba(2, 6, 23, 0.95)' : 'rgba(2, 6, 23, 0.8)'};
+          backdrop-filter: blur(20px);
+          border-bottom: 1px solid rgba(79, 70, 229, 0.15);
         }
         
-        .logo { display: flex; align-items: center; gap: 0.75rem; font-size: 1.5rem; font-weight: 700; }
-        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+        .logo-icon { 
+          width: 42px; height: 42px; 
+          background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); 
+          border-radius: 10px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          font-size: 1.25rem; 
+          box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
         
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
-        .nav-link:hover, .nav-link.active { color: var(--primary); }
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; list-style: none; }
+        .nav-link { 
+          color: var(--text-muted); 
+          text-decoration: none; 
+          font-size: 0.95rem; 
+          font-weight: 500;
+          transition: all 0.2s; 
+          position: relative;
+          padding: 0.5rem 0;
+        }
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: var(--primary);
+          transition: width 0.2s;
+        }
+        .nav-link:hover, .nav-link.active { 
+          color: var(--text); 
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+          width: 100%;
+        }
         
-        .nav-cta { background: var(--primary); color: white; padding: 0.6rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.2s; }
-        .nav-cta:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .nav-cta { 
+          background: var(--primary); 
+          color: white; 
+          padding: 0.7rem 1.75rem; 
+          border-radius: 10px; 
+          text-decoration: none; 
+          font-weight: 600; 
+          font-size: 0.9rem;
+          transition: all 0.2s; 
+          box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+        .nav-cta:hover { 
+          background: var(--primary-dark); 
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
         
         /* Hero */
         .hero {
@@ -349,9 +397,9 @@ export default function LandingPage() {
           margin: 0 auto;
         }
         
-        .feature-card {
-          background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-          border: 1px solid rgba(99, 102, 241, 0.1);
+.feature-card {
+          background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.95));
+          border: 1px solid rgba(79, 70, 229, 0.12);
           border-radius: 20px;
           padding: 2rem;
           transition: all 0.3s ease;
@@ -598,13 +646,13 @@ export default function LandingPage() {
           <div className="logo-icon">💎</div>
           <span>NEXO</span>
         </div>
-        <div className="nav-links">
-          <a href="#features" className={`nav-link ${activeSection === 'features' ? 'active' : ''}`}>Recursos</a>
-          <a href="#benefits" className={`nav-link ${activeSection === 'benefits' ? 'active' : ''}`}>Benefícios</a>
-          <a href="#how-it-works" className={`nav-link ${activeSection === 'how-it-works' ? 'active' : ''}`}>Como Funciona</a>
-          <a href="#pricing" className={`nav-link ${activeSection === 'pricing' ? 'active' : ''}`}>Planos</a>
-          <a href="#faq" className={`nav-link ${activeSection === 'faq' ? 'active' : ''}`}>FAQ</a>
-        </div>
+        <ul className="nav-links">
+          <li><a href="#features" className={`nav-link ${activeSection === 'features' ? 'active' : ''}`}>Recursos</a></li>
+          <li><a href="#benefits" className={`nav-link ${activeSection === 'benefits' ? 'active' : ''}`}>Benefícios</a></li>
+          <li><a href="#how-it-works" className={`nav-link ${activeSection === 'how-it-works' ? 'active' : ''}`}>Como Funciona</a></li>
+          <li><a href="#pricing" className={`nav-link ${activeSection === 'pricing' ? 'active' : ''}`}>Planos</a></li>
+          <li><a href="#faq" className={`nav-link ${activeSection === 'faq' ? 'active' : ''}`}>FAQ</a></li>
+        </ul>
         <Link href="/login" className="nav-cta">Entrar</Link>
       </nav>
 

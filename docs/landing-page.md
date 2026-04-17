@@ -26,12 +26,17 @@ A landing page é dividida em 8 seções principais:
 - **Animações**: Fade-in, transições suaves, hover effects
 - **Responsivo**: Totalmente adaptável para mobile
 
-### Cores
-- Primary: #6366f1 (Indigo)
-- Secondary: #22c55e (Green)
-- Accent: #f59e0b (Amber)
-- Dark: #0f172a (Slate 900)
-- Light: #f8fafc
+### Cores (tons mais escuros)
+- Primary: #4f46e5 (Indigo mais escuro)
+- Primary Dark: #3730a3 (Indigo escuro)
+- Secondary: #16a34a (Green mais escuro)
+- Accent: #d97706 (Amber escuro)
+- Dark: #020617 (slate 950 - mais escuro)
+- Dark-2: #0f172a (slate 900)
+- Dark-3: #1e293b (slate 800)
+- Text: #f1f5f9 (slate 100)
+- Text Muted: #94a3b8 (slate 400)
+- Text Dim: #64748b (slate 500)
 
 ## Navegação
 
