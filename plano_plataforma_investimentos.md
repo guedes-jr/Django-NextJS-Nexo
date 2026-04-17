@@ -37,61 +37,61 @@ A recomendação prática é iniciar com **Nível 1 + Nível 2**, deixando a arq
 
 Conjunto de ferramentas para facilitar o desenvolvimento, debug e acompanhamento em tempo real.
 
-#### 1.5.1. WebShell
+#### 1.5.1. WebShell ✅ IMPLEMENTADO
 - [x] Terminal web integrado no admin para execução de comandos shell
 - [x] history de comandos executados
 - [x] output em tempo real (streaming)
-- [ ] autocomplete de comandos comuns
+- [ ] autocomplete de comandos comuns (pendente)
 - [x] suporte a comandos Django (manage.py)
 
-#### 1.5.2. DBShell
+#### 1.5.2. DBShell ✅ IMPLEMENTADO
 - [x] Consulta SQL direta via interface web
 - [x] Histórico de queries executadas
-- [ ] Visualizador de esquema do banco
+- [ ] Visualizador de esquema do banco (pendente)
 - [x] Exportar resultados (CSV, JSON)
-- [ ] Explain de queries lentas
+- [ ] Explain de queries lentas (pendente)
 
-#### 1.5.3. Monitor em Tempo Real
+#### 1.5.3. Monitor em Tempo Real ✅ IMPLEMENTADO
 - [x] Logs de aplicação em streaming
 - [x] Filtros por nível (DEBUG, INFO, WARNING, ERROR)
 - [x] Busca em logs
 - [x] Download de logs
 
-#### 1.5.4. Cache Manager
+#### 1.5.4. Cache Manager ✅ IMPLEMENTADO
 - [x] Visualizar todas as chaves em cache
 - [x] Expirar chaves específicas
 - [x] Definir TTL manual
 
-#### 1.5.5. Task Monitor
+#### 1.5.5. Task Monitor ✅ IMPLEMENTADO
 - [x] Lista de tasks Celery/async
 - [x] Status em tempo real
-- [ ] Retry de tasks falhadas
-- [ ] Schedule de tasks
+- [ ] Retry de tasks falhadas (pendente)
+- [ ] Schedule de tasks (pendente)
 
-#### 1.5.6. Config Editor
-- [x] Editar variáveis de ambiente
+#### 1.5.6. Config Editor ✅ IMPLEMENTADO
+- [x] Editar variáveis de ambiente (features flags)
 - [x] Feature flags dinâmicos
 - [x] rollback de configurações
 
 #### 1.5.7. API Playground
-- [ ] Testador de endpoints integrado
-- [ ] Coleção de requests favoritos
-- [ ] Gerador de código (cURL, Python, JS)
+- [ ] Testador de endpoints integrado (pendente)
+- [ ] Coleção de requests favoritos (pendente)
+- [ ] Gerador de código (cURL, Python, JS) (pendente)
 
 #### 1.5.8. Email catcher (Dev)
-- [ ] Capturar emails enviados
-- [ ] Visualizar emails em desenvolvimento
-- [ ] Download de anexos
+- [ ] Capturar emails enviados (pendente)
+- [ ] Visualizar emails em desenvolvimento (pendente)
+- [ ] Download de anexos (pendente)
 
 #### 1.5.9. Fixture Generator
-- [ ] Gerar dados fake para testes
-- [ ] Fixture em JSON/YAML
-- [ ] Factory para models
+- [ ] Gerar dados fake para testes (pendente)
+- [ ] Fixture em JSON/YAML (pendente)
+- [ ] Factory para models (pendente)
 
 #### 1.5.10. Django Debug Toolbar (Web)
-- [ ] Toolbar web integrada
-- [ ] SQL queries, templates, signals
-- [ ] Cache analysis
+- [ ] Toolbar web integrada (pendente)
+- [ ] SQL queries, templates, signals (pendente)
+- [ ] Cache analysis (pendente)
 
 ---
 

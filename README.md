@@ -20,12 +20,12 @@ NEXO é um ecossistema **Fullstack (Django + Next.js)** projetado para consolida
 
 ---
 
-## ✨ Funcionalidades Atuais (Release 5)
+## ✨ Funcionalidades Atuais (Release 6)
 
 - **[x] Autenticação Robusta:** Sistema JWT completo com login, registro, MFA, dispositivos confiáveis e trilha de auditoria.
 - **[x] Onboarding Completo:** Fluxo guiado com perfil de risco, Suitability, verificação de documentos e aprovação manual.
 - **[x] Gestão Multi-Ativos:** Suporte para Ações, FIIs, ETFs, RF, Cripto, Fundos e Previdência.
-- **[x]Dashboard Dinâmico:** Gráficos de alocação, rentabilidade e evolução patrimonial.
+- **[x] Dashboard Dinâmico:** Gráficos de alocação, rentabilidade e evolução patrimonial.
 - **[x] Inteligência de Carteira:** Concentração, risco, rebalanceamento e score de saúde.
 - **[x] Cálculo de IR:** Cálculo trimestral automático, geração de DARF e lotes fiscais FIFO.
 - **[x] Metas Financeiras:** Simulações, projeções e alertas de progresso.
@@ -34,6 +34,7 @@ NEXO é um ecossistema **Fullstack (Django + Next.js)** projetado para consolida
 - **[x] Reconciliação:** Reconciliação automática e manual com interface de resolução.
 - **[x] Trilha de Auditoria:** Log completo de todas as ações no sistema.
 - **[x] Admin Completo:** Gestão de usuários, CMS, suporte, reconciliação, verificações e auditoria.
+- **[x] Dev Tools:** WebShell, DBShell, Logs em tempo real, Cache Manager, Task Monitor e Config Editor.
 
 ---
 
@@ -78,6 +79,7 @@ Todas as funcionalidades implementadas estão documentadas na pasta `docs/`:
 | 13 | Integração API | [docs/integracao.md](./docs/integracao.md) |
 | 14 | Reconciliação | [docs/reconciliacao.md](./docs/reconciliacao.md) |
 | 15 | Trilha de Auditoria | [docs/auditoria.md](./docs/auditoria.md) |
+| 16 | Dev Tools (WebShell, DBShell, Logs, Cache, Tasks, Config) | [docs/dev-tools.md](./docs/dev-tools.md) |
 
 **[Ver índice completo](./docs/README.md)**
 
