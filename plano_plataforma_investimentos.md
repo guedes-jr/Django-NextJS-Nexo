@@ -45,10 +45,10 @@ Conjunto de ferramentas para facilitar o desenvolvimento, debug e acompanhamento
 - [x] suporte a comandos Django (manage.py)
 
 #### 1.5.2. DBShell
-- [ ] Consulta SQL direta via interface web
-- [ ] Histórico de queries executadas
+- [x] Consulta SQL direta via interface web
+- [x] Histórico de queries executadas
 - [ ] Visualizador de esquema do banco
-- [ ] Exportar resultados (CSV, JSON)
+- [x] Exportar resultados (CSV, JSON)
 - [ ] Explain de queries lentas
 
 #### 1.5.3. Monitor em Tempo Real

@@ -12,7 +12,7 @@ import os
 import shlex
 
 User = get_user_model()
-from .models import CommandHistory
+from .models import CommandHistory, QueryHistory
 
 class JobListView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -205,3 +205,139 @@ class WebShellView(APIView):
 
 class CommandHistory:
     pass
+
+
+class DBShellView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        history = [
+            {
+                "id": i,
+                "query": q.query[:100],
+                "rows_affected": q.rows_affected,
+                "status": q.status,
+                "execution_time": q.execution_time,
+                "created_at": q.created_at.isoformat() if q.created_at else None,
+            }
+            for i, q in enumerate(QueryHistory.objects.all()[:50])
+        ]
+        
+        return Response({"history": history})
+    
+    def post(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        query = request.data.get('query', '').strip()
+        export = request.data.get('export', '')
+        
+        if not query:
+            return Response({"error": "Query vazia"}, status=400)
+        
+        from django.db import connection
+        import time
+        import json
+        
+        forbidden = [
+            'DROP DATABASE',
+            'DROP SCHEMA',
+            'TRUNCATE',
+            'DELETE FROM auth_user', 
+            'DELETE FROM django_session',
+            'ALTER TABLE auth',
+            'ALTER TABLE django',
+        ]
+        
+        for f in forbidden:
+            if f in query.upper():
+                return Response({"error": f"Comando não permitido: {f}"}, status=403)
+        
+        start_time = time.time()
+        output = []
+        rows_affected = 0
+        status = 'SUCCESS'
+        error_message = ''
+        
+        try:
+            with connection.cursor() as cursor:
+                if query.upper().strip().startswith('SELECT') or 'RETURNING' in query.upper():
+                    cursor.execute(query)
+                    columns = [col[0] for col in cursor.description] if cursor.description else []
+                    rows = cursor.fetchall()
+                    rows_affected = len(rows)
+                    
+                    if export == 'json':
+                        result = [dict(zip(columns, row)) for row in rows]
+                        output = json.dumps(result, indent=2, default=str)[:10000]
+                    elif export == 'csv':
+                        import csv
+                        import io
+                        output = ','.join(columns) + '\n'
+                        for row in rows:
+                            output += ','.join([str(v) for v in row]) + '\n'
+                    else:
+                        for row in rows[:100]:
+                            output.append([str(v) for v in row])
+                else:
+                    cursor.execute(query)
+                    rows_affected = cursor.rowcount
+                    output = [f"OK: {rows_affected} linha(s) afetada(s)"]
+        except Exception as e:
+            status = 'ERROR'
+            error_message = str(e)
+            output = [f"Erro: {error_message}"]
+        
+        execution_time = (time.time() - start_time) * 1000
+        
+        QueryHistory.objects.create(
+            user=request.user,
+            query=query,
+            rows_affected=rows_affected,
+            status=status,
+            error_message=error_message,
+            execution_time=execution_time
+        )
+        
+        return Response({
+            "query": query,
+            "output": output,
+            "columns": output[0] if output and isinstance(output[0], list) else [],
+            "rows_affected": rows_affected,
+            "status": status,
+            "execution_time": round(execution_time, 2)
+        })
+
+
+class DBSchemaView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        from django.db import connection
+        
+        schema = []
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT table_name, column_name, data_type, is_nullable
+                    FROM information_schema.columns 
+                    WHERE table_schema = 'public'
+                    ORDER BY table_name, ordinal_position
+                """)
+                for row in cursor.fetchall():
+                    schema.append({
+                        "table": row[0],
+                        "column": row[1],
+                        "type": row[2],
+                        "nullable": row[3]
+                    })
+        except:
+            pass
+        
+        return Response({"schema": schema})
