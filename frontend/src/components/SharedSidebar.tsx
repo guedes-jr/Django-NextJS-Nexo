@@ -30,6 +30,7 @@ const navItems = [
   { href: '/admin/auditoria', label: 'Auditoria', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2H9m3-4V4m0 0h4m0 4v4m0-4h-4m4 0h4' },
   { href: '/admin/webshell', label: 'WebShell', icon: 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
   { href: '/admin/dbshell', label: 'DBShell', icon: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 4-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 4-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' },
+  { href: '/admin/logs', label: 'Logs', icon: 'M9 12h6m-3-3v6m-3-6V6a3 3 0 013-3' },
 ];
 
 export default function SharedSidebar() {

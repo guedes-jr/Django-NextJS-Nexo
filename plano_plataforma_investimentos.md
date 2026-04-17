@@ -52,10 +52,10 @@ Conjunto de ferramentas para facilitar o desenvolvimento, debug e acompanhamento
 - [ ] Explain de queries lentas
 
 #### 1.5.3. Monitor em Tempo Real
-- [ ] Logs de aplicação em streaming
-- [ ] Filtros por nível (DEBUG, INFO, WARNING, ERROR)
-- [ ] Busca em logs
-- [ ] Download de logs
+- [x] Logs de aplicação em streaming
+- [x] Filtros por nível (DEBUG, INFO, WARNING, ERROR)
+- [x] Busca em logs
+- [x] Download de logs
 
 #### 1.5.4. Cache Manager
 - [ ] Visualizar todas as chaves em cache

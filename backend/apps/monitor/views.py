@@ -12,7 +12,7 @@ import os
 import shlex
 
 User = get_user_model()
-from .models import CommandHistory, QueryHistory
+from .models import CommandHistory, QueryHistory, AppLog
 
 class JobListView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -341,3 +341,74 @@ class DBSchemaView(APIView):
             pass
         
         return Response({"schema": schema})
+
+
+class LogStreamView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        level = request.query_params.get('level')
+        logger = request.query_params.get('logger')
+        search = request.query_params.get('search')
+        limit = int(request.query_params.get('limit', 100))
+        
+        logs = AppLog.objects.all()
+        
+        if level:
+            logs = logs.filter(level=level.upper())
+        if logger:
+            logs = logs.filter(logger__icontains=logger)
+        if search:
+            logs = logs.filter(message__icontains=search)
+        
+        logs = logs[:limit]
+        
+        return Response({
+            "logs": [
+                {
+                    "id": log.id,
+                    "logger": log.logger,
+                    "level": log.level,
+                    "message": log.message,
+                    "traceback": log.traceback[:500] if log.traceback else None,
+                    "extra_data": log.extra_data,
+                    "ip_address": log.ip_address,
+                    "user": log.user.username if log.user else None,
+                    "created_at": log.created_at.isoformat(),
+                }
+                for log in logs
+            ]
+        })
+
+
+class LogCreateView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def post(self, request):
+        logger = request.data.get('logger', 'app')
+        level = request.data.get('level', 'INFO').upper()
+        message = request.data.get('message', '')
+        traceback = request.data.get('traceback', '')
+        extra_data = request.data.get('extra_data', {})
+        
+        valid_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+        if level not in valid_levels:
+            level = 'INFO'
+        
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        ip = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+        
+        AppLog.objects.create(
+            logger=logger,
+            level=level,
+            message=message,
+            traceback=traceback,
+            extra_data=extra_data,
+            ip_address=ip,
+            user=request.user if request.user.is_authenticated else None,
+        )
+        
+        return Response({"status": "ok"})

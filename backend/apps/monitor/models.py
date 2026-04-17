@@ -40,3 +40,35 @@ class QueryHistory(models.Model):
     
     def __str__(self):
         return f"{self.query[:50]} - {self.created_at}"
+
+
+class AppLog(models.Model):
+    LEVELS = [
+        ('DEBUG', 'Debug'),
+        ('INFO', 'Info'),
+        ('WARNING', 'Warning'),
+        ('ERROR', 'Error'),
+        ('CRITICAL', 'Critical'),
+    ]
+    
+    logger = models.CharField(max_length=100, help_text="Nome do logger")
+    level = models.CharField(max_length=20, choices=LEVELS)
+    message = models.TextField()
+    traceback = models.TextField(blank=True)
+    extra_data = models.JSONField(default=dict, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Log de Aplicação'
+        verbose_name_plural = 'Logs de Aplicação'
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['level']),
+            models.Index(fields=['logger']),
+        ]
+    
+    def __str__(self):
+        return f"[{self.level}] {self.logger}: {self.message[:50]}"
