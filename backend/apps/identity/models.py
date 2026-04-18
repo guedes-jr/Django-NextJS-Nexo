@@ -62,6 +62,9 @@ class CustomUser(AbstractUser):
     push_notifications = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=False)
     locale = models.CharField(max_length=5, default='pt-BR')
+    
+    avatar = models.ImageField(upload_to='avatars/%Y/%m/', blank=True, null=True)
+    about = models.TextField(blank=True, default='')
 
     def __str__(self):
         return self.username

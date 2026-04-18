@@ -5,12 +5,19 @@ from apps.documents.models import UserConsent, Document
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'phone', 'is_premium', 'theme', 'currency', 'email_notifications', 'push_notifications', 'newsletter', 'locale')
+        fields = ('id', 'username', 'email', 'phone', 'is_premium', 'theme', 'currency', 'email_notifications', 'push_notifications', 'newsletter', 'locale', 'avatar', 'about')
 
 class PreferencesSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('theme', 'currency', 'email_notifications', 'push_notifications', 'newsletter', 'locale')
+        fields = ('theme', 'currency', 'email_notifications', 'push_notifications', 'newsletter', 'locale', 'avatar', 'about')
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(required=False, allow_null=True)
+    
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'phone', 'about', 'avatar')
 
 class ProfileListSerializer(serializers.ModelSerializer):
     all_permissions = serializers.SerializerMethodField()

@@ -8,7 +8,7 @@ from .views import (
     CurrentUserView, MFAEnableView, MFAVerifyView, MFASetupView, TrustedDeviceView, PreferencesView,
     ConsentListView, ConsentAcceptView, ProfileListView, ProfileDetailView, SupportTicketListView,
     SupportTicketDetailView, SupportMessageView, DocumentUploadView, DocumentListView, DocumentDeleteView,
-    AccountVerificationView, AccountVerificationAdminView, AccountVerificationListView
+    AccountVerificationView, AccountVerificationAdminView, AccountVerificationListView, ProfileUpdateView
 )
 from .audit_views import AuditLogListView, AuditLogDetailView, UserActivityView
 
@@ -21,6 +21,7 @@ urlpatterns = [
     path('auth/user/', CurrentUserView.as_view(), name='current_user'),
     path('register/', RegisterView.as_view(), name='register'),
     path('profile/', UserProfileView.as_view(), name='profile'),
+    path('profile/me/', ProfileUpdateView.as_view(), name='profile_update'),
     path('preferences/', PreferencesView.as_view(), name='preferences'),
     path('consents/', ConsentListView.as_view(), name='consents_list'),
     path('consents/accept/', ConsentAcceptView.as_view(), name='consents_accept'),

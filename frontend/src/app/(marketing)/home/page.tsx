@@ -164,14 +164,13 @@ export default function LandingPage() {
           left: 0;
           right: 0;
           z-index: 1000;
-          padding: 0.4rem 2rem;
+          padding: 0 2rem;
           display: flex;
           flex-direction: row !important;
-          flex-wrap: nowrap;
           justify-content: space-between !important;
-          align-items: center;
+          align-items: center !important;
           width: 100%;
-          min-height: 48px;
+          height: 80px;
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           background: ${scrolled ? 'rgba(2, 6, 23, 0.85)' : 'transparent'};
           backdrop-filter: ${scrolled ? 'blur(20px)' : 'none'};
@@ -182,7 +181,7 @@ export default function LandingPage() {
         .nav-left { display: flex; align-items: center; justify-content: flex-start; flex: 1; }
         .nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 2rem; flex: 2; }
         
-        .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; transition: transform 0.3s ease; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s ease; margin: 10px 0 auto 0; }
         .logo:hover { transform: scale(1.02); }
         
         .nav-links { display: flex; gap: 0.75rem; align-items: center; list-style: none; white-space: nowrap; margin: 0; padding: 0; }
@@ -772,8 +771,8 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="nav">
         <div className="nav-left">
-          <div className="logo" style={{ display: 'flex', alignItems: 'center', width: '120px' }}>
-            <img src="/logo.png" alt="NEXO Logo" style={{ width: '100%', height: 'auto', objectFit: 'contain' }} />
+          <div className="logo" style={{ display: 'flex', alignItems: 'center', width: '12rem' }}>
+            <img src="/logo.png" alt="NEXO Logo" style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
           </div>
         </div>
         <div className="nav-right">
