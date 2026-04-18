@@ -7,11 +7,13 @@ import SharedSidebar from '@/components/SharedSidebar';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 
 interface ConcentrationData {
-  top_concentration: Array<{ ticker: string; value: number; percentage: number }>;
-  issuer_concentration: Array<{ issuer: string; value: number; percentage: number }>;
-  alerts: Array<{ type: string; severity: string; message: string }>;
-  total_positions: number;
-  diversified: boolean;
+  by_ticker?: Array<{ ticker: string; value: number; percentage: number }>;
+  top_concentration?: Array<{ ticker: string; value: number; percentage: number }>;
+  issuer_concentration?: Array<{ issuer: string; value: number; percentage: number }>;
+  alerts?: Array<{ type: string; severity: string; message: string }>;
+  total_positions?: number;
+  diversified?: boolean;
+  message?: string;
 }
 
 export default function ConcentracaoPage() {
@@ -61,6 +63,10 @@ export default function ConcentracaoPage() {
     return '#22c55e';
   };
 
+  const concentrationData = data?.by_ticker || data?.top_concentration || [];
+  const issuerData = data?.issuer_concentration || [];
+  const alertsData = data?.alerts || [] as any[];
+
   if (loading) {
     return (
       <div className="container">
@@ -99,11 +105,11 @@ export default function ConcentracaoPage() {
           </div>
         </div>
 
-        {data.alerts.length > 0 && (
+        {alertsData.length > 0 && (
           <div className="alerts-section">
             <h3>Alertas de Risco</h3>
             <div className="alerts-list">
-              {data.alerts.map((alert, i) => (
+              {alertsData.map((alert: any, i: number) => (
                 <div key={i} className="alert-card" style={{ borderLeftColor: getSeverityColor(alert.severity) }}>
                   <span className="alert-severity" style={{ backgroundColor: getSeverityColor(alert.severity) }}>
                     {alert.severity}
@@ -119,7 +125,7 @@ export default function ConcentracaoPage() {
           <div className="card">
             <h3>Top 10 Ativos por Ticker</h3>
             <div className="chart-container">
-              {data.top_concentration.map((item, i) => (
+              {(data.by_ticker || data.top_concentration || []).slice(0, 10).map((item: any, i: number) => (
                 <div key={item.ticker} className="bar-item">
                   <div className="bar-label">
                     <span className="bar-ticker">{item.ticker}</span>
@@ -145,10 +151,10 @@ export default function ConcentracaoPage() {
           <div className="card">
             <h3>Concentração por Emissor</h3>
             <div className="chart-container">
-              {data.issuer_concentration.length === 0 ? (
+              {!issuerData || issuerData.length === 0 ? (
                 <p className="empty-text">Dados de emissor não disponíveis</p>
               ) : (
-                data.issuer_concentration.map((item, i) => (
+                issuerData.map((item: any, i: number) => (
                   <div key={item.issuer} className="bar-item">
                     <div className="bar-label">
                       <span className="bar-ticker">{item.issuer}</span>
@@ -186,7 +192,7 @@ export default function ConcentracaoPage() {
           </div>
           <div className="stat-box">
             <span className="stat-value">
-              {data.top_concentration[0]?.ticker || '-'}
+              {concentrationData[0]?.ticker || '-'}
             </span>
             <span className="stat-label">Maior Concentração</span>
           </div>
@@ -201,8 +207,8 @@ export default function ConcentracaoPage() {
                 <li>Evite concentrar mais de 20% do patrimônio em um único ativo</li>
               </>
             )}
-            {data.top_concentration[0]?.percentage > 20 && (
-              <li>Alta concentração em {data.top_concentration[0].ticker}. Considere reduzir posição.</li>
+            {concentrationData[0]?.percentage > 20 && (
+              <li>Alta concentração em {concentrationData[0].ticker}. Considere reduzir posição.</li>
             )}
             {data.diversified && (
               <li>Sua carteira está bem diversificada. Continue monitorando periodicamente.</li>

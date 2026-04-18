@@ -102,6 +102,70 @@ class JobStatusView(APIView):
 class WebShellView(APIView):
     permission_classes = (IsAuthenticated,)
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._shell_namespace = {
+            '__name__': '__console__',
+            '__doc__': None,
+        }
+        self._initialized = False
+    
+    def _init_django(self):
+        if not self._initialized:
+            import django
+            from django.conf import settings
+            if not settings.configured:
+                import os
+                import sys
+                sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'nexo_api'))
+                os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nexo_api.settings')
+                django.setup()
+            from django.apps import apps
+            from django.conf import settings
+            self._shell_namespace['apps'] = apps
+            self._shell_namespace['settings'] = settings
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            self._shell_namespace['User'] = User
+            self._shell_namespace['User'] = User
+            from apps.portfolio.models import InvestmentAccount, Asset, Position, Transaction
+            self._shell_namespace['InvestmentAccount'] = InvestmentAccount
+            self._shell_namespace['Asset'] = Asset
+            self._shell_namespace['Position'] = Position
+            self._shell_namespace['Transaction'] = Transaction
+            try:
+                from apps.intelligence.models import StockScore, Watchlist, Projecao
+                self._shell_namespace['StockScore'] = StockScore
+                self._shell_namespace['Watchlist'] = Watchlist
+                self._shell_namespace['Projecao'] = Projecao
+            except:
+                pass
+            try:
+                from apps.market_data.models import AtivoB3
+                self._shell_namespace['AtivoB3'] = AtivoB3
+            except:
+                pass
+            self._initialized = True
+    
+    def _get_attributes(self, obj):
+        attrs = []
+        try:
+            for attr in dir(obj):
+                if not attr.startswith('_'):
+                    try:
+                        val = getattr(obj, attr)
+                        if callable(val):
+                            attrs.append({'name': attr, 'type': 'method'})
+                        elif hasattr(val, '__iter__') and not isinstance(val, str):
+                            attrs.append({'name': attr, 'type': 'property'})
+                        else:
+                            attrs.append({'name': attr, 'type': 'property'})
+                    except:
+                        attrs.append({'name': attr, 'type': 'property'})
+        except:
+            pass
+        return attrs[:50]
+    
     def get(self, request):
         if not request.user.is_admin:
             return Response({"error": "Acesso negado"}, status=403)
@@ -123,84 +187,115 @@ class WebShellView(APIView):
     
     def post(self, request):
         if not request.user.is_admin:
-            return Response({"error": "Acesso negado"}, status=403)
+            return Response({"error": "Acesso negativo"}, status=403)
         
         command = request.data.get('command', '').strip()
         if not command:
             return Response({"error": "Comando vazio"}, status=400)
         
-        safe_commands = [
-            'ls','pwd','cd','cat','echo','whoami','ps','top','df','free','date','uptime',
-            'python','python3','pip','pip3','npm','node','git','curl','wget',
-            'manage.py'
-        ]
+        self._init_django()
         
-        output = ""
-        exit_code = 0
+        import sys
+        from io import StringIO
         
-        parts = shlex.split(command)
-        if not parts:
-            return Response({"error": "Comando inválido"}, status=400)
-        
-        base_cmd = parts[0]
-        
-        if base_cmd == 'clear':
+        if command == 'clear':
             CommandHistory.objects.all().delete()
             return Response({"output": "Terminal limpo", "exit_code": 0})
         
-        if base_cmd == 'help':
+        if command == 'help':
             return Response({
-                "output": "Comandos disponíveis:\n" + "\n".join(safe_commands) + "\n\nUse 'manage.py <comando>' para Django\nUse 'ls' para listar arquivos\nUse 'clear' para limpar terminal",
+                "output": """WebShell Python (Django shell)
+Modelos disponíveis:
+  - User (usuarios)
+  - InvestmentAccount, Asset, Position, Transaction (portfolio)
+  - StockScore, Watchlist, Projecao (intelligence)
+  - AtivoB3 (market_data)
+  - apps, settings
+
+Comandos especiais:
+  - clear: limpar histórico
+  - whoami: mostrar usuário atual
+  -exit: sair do shell (mantém contexto)
+Exemplos:
+  User.objects.all()[:5]
+  InvestmentAccount.objects.first()
+  Asset.objects.filter(ticker__startswith='PETR')
+  Transaction.objects.filter(account__id=1).order_by('-date')[:10]
+  help(User)
+""",
                 "exit_code": 0
             })
         
-        if base_cmd == 'manage.py':
-            manage_args = parts[1:] if len(parts) > 1 else ['--help']
-            try:
-                output = subprocess.run(
-                    ['python3', 'manage.py'] + list(manage_args),
-                    capture_output=True,
-                    text=True,
-                    timeout=60,
-                    cwd=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'nexo_api')
-                )
-                output = output.stdout + output.stderr
-                exit_code = 0 if output else 1
-            except subprocess.TimeoutExpired:
-                output = "Timeout: comando expirou"
-                exit_code = 124
-            except Exception as e:
-                output = f"Erro: {str(e)}"
-                exit_code = 1
+        if command == 'whoami':
+            return Response({
+                "output": f"{request.user.username} (id={request.user.id}, admin={request.user.is_admin})",
+                "exit_code": 0
+            })
         
-        elif base_cmd in safe_commands:
-            try:
-                result = subprocess.run(
-                    parts,
-                    capture_output=True,
-                    text=True,
-                    timeout=30
-                )
-                output = result.stdout + result.stderr
-                exit_code = result.returncode
-            except subprocess.TimeoutExpired:
-                output = "Timeout: comando expirou"
-                exit_code = 124
-            except FileNotFoundError:
-                output = f"Comando '{base_cmd}' não encontrado"
-                exit_code = 127
-            except Exception as e:
-                output = f"Erro: {str(e)}"
-                exit_code = 1
-        else:
-            output = f"Comando '{base_cmd}' não permitido. Use 'help' para ver comandos disponíveis."
-            exit_code = 126
+        old_stdout = sys.stdout
+        sys.stdout = captured = StringIO()
+        
+        local_namespace = self._shell_namespace.copy()
+        
+        exit_code = 0
+        output = ""
+        error_msg = ""
+        
+        try:
+            compiled = compile(command, '<string>', 'exec')
+            exec(compiled, local_namespace)
+            self._shell_namespace.update(local_namespace)
+            output = captured.getvalue()
+        except SyntaxError as e:
+            error_msg = f"SyntaxError: {e.msg} (linha {e.lineno})"
+            exit_code = 1
+        except NameError as e:
+            error_msg = f"NameError: {e}"
+            exit_code = 1
+        except TypeError as e:
+            error_msg = f"TypeError: {e}"
+            exit_code = 1
+        except ImportError as e:
+            error_msg = f"ImportError: {e}"
+            exit_code = 1
+        except Exception as e:
+            error_msg = f"{type(e).__name__}: {e}"
+            exit_code = 1
+        finally:
+            sys.stdout = old_stdout
+        
+        if not output and error_msg:
+            output = error_msg
         
         return Response({
             "command": command,
             "output": output,
             "exit_code": exit_code
         })
+    
+    def get_attributes(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        target = request.query_params.get('target', '')
+        
+        if not target:
+            return Response({"attributes": []})
+        
+        self._init_django()
+        
+        try:
+            obj = self._shell_namespace.get(target)
+            if obj is None:
+                parts = target.split('.')
+                obj = self._shell_namespace
+                for p in parts:
+                    obj = getattr(obj, p)
+            
+            attrs = self._get_attributes(obj)
+            return Response({"target": target, "attributes": attrs})
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
 
 
 class CommandHistory:
@@ -590,3 +685,61 @@ class ConfigHistoryView(APIView):
                 for h in history
             ]
         })
+
+
+class ShellAttributesView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    _shell_cache = {}
+    
+    def get(self, request):
+        if not request.user.is_admin:
+            return Response({"error": "Acesso negado"}, status=403)
+        
+        target = request.query_params.get('target', '')
+        namespace = request.query_params.get('namespace', '')
+        
+        if not target:
+            return Response({"attributes": []})
+        
+        try:
+            import django
+            from django.conf import settings
+            if not settings.configured:
+                import os
+                import sys
+                sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'nexo_api'))
+                os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nexo_api.settings')
+                django.setup()
+            
+            import sys
+            from io import StringIO
+            old_stdout = sys.stdout
+            sys.stdout = StringIO()
+            
+            exec(f"from {namespace or 'django.contrib.auth import get_user_model' if target == 'User' else 'apps.portfolio.models import ' + target if target in ['InvestmentAccount', 'Asset', 'Position', 'Transaction'] else target}", {})
+            
+            result = sys.stdout.getvalue()
+            sys.stdout = old_stdout
+            
+            obj = eval(target, {})
+            attrs = []
+            for attr in dir(obj):
+                if not attr.startswith('_'):
+                    try:
+                        val = getattr(obj, attr)
+                        if callable(val) and not attr.startswith('__'):
+                            attrs.append({'name': attr, 'type': 'method', 'signature': str(type(val).__name__)})
+                        elif hasattr(val, '__iter__') and not isinstance(val, (str, bytes)):
+                            attrs.append({'name': attr, 'type': 'property', 'signature': f'[{type(val).__name__}]'})
+                        else:
+                            attrs.append({'name': attr, 'type': 'field', 'signature': type(val).__name__})
+                    except:
+                        attrs.append({'name': attr, 'type': 'unknown'})
+            
+            return Response({
+                "target": target,
+                "attributes": attrs[:50]
+            })
+        except Exception as e:
+            return Response({"error": str(e), "attributes": []}, status=400)

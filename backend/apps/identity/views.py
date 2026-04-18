@@ -65,7 +65,12 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = InvestorProfileSerializer
 
     def get_object(self):
-        return self.request.user.profile
+        try:
+            return self.request.user.profile
+        except Exception:
+            # Garanto a criação do perfil caso ele não exista por algum motivo de onboarding incompleto
+            profile, _ = InvestorProfile.objects.get_or_create(user=self.request.user)
+            return profile
 
 class CurrentUserView(generics.RetrieveAPIView):
     permission_classes = (IsAuthenticated,)

@@ -2,6 +2,8 @@
 from rest_framework.views import APIView
 from django.utils import timezone
 import datetime as dt
+import datetime
+import decimal
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
@@ -86,7 +88,7 @@ class PortfolioSummaryView(APIView):
         total_profit = total_balance - total_cost
         total_profit_pct = float((total_profit / total_cost) * 100) if total_cost > 0 else 0
         
-        recent_transactions = Transaction.objects.filter(user=user).order_by('-transaction_date')[:5]
+        recent_transactions = Transaction.objects.filter(user=user).order_by('-transaction_date')[:10]
         transactions_data = [{
             "id": t.id,
             "transaction_type": t.transaction_type,
@@ -97,16 +99,66 @@ class PortfolioSummaryView(APIView):
             "total_value": float(t.total_value),
             "transaction_date": t.transaction_date.isoformat(),
         } for t in recent_transactions]
-                
+        
+        corporate_events = CorporateAction.objects.filter(
+            user=user, date__gte=datetime.date.today() - datetime.timedelta(days=30)
+        ).order_by('-date')[:5]
+        events_data = [{
+            "id": e.id,
+            "asset_ticker": e.asset.ticker,
+            "action_type": e.action_type,
+            "date": e.date.isoformat(),
+            "ratio": float(e.ratio) if e.ratio else None,
+            "amount_per_share": float(e.amount_per_share) if e.amount_per_share else None,
+        } for e in corporate_events]
+        
+        dividends_gains = Transaction.objects.filter(
+            user=user, transaction_type__in=['DIVIDENDO', 'JRS']
+        ).aggregate(total=Sum('total_value'))
+        
+        snapshots = PortfolioSnapshot.objects.filter(user=user).order_by('-date')[:365]
+        growth_data = [{
+            "date": s.date.isoformat(),
+            "value": float(s.total_value)
+        } for s in snapshots]
+        
+        daily_variation = decimal.Decimal('0.0')
+        if snapshots.exists():
+            latest = snapshots.first()
+            yesterday = snapshots.filter(date=latest.date - datetime.timedelta(days=1)).first()
+            if yesterday:
+                daily_variation = latest.total_value - yesterday.total_value
+                daily_variation_pct = (daily_variation / yesterday.total_value * 100) if yesterday.total_value > 0 else 0
+            else:
+                daily_variation_pct = 0
+        else:
+            daily_variation_pct = 0
+        
+        goals = Goal.objects.filter(user=user, is_active=True)
+        goals_data = [{
+            "name": g.name,
+            "target_amount": float(g.target_amount),
+            "current_amount": float(g.current_amount),
+            "progress": float(g.progress_percentage),
+            "target_date": g.target_date.isoformat(),
+        } for g in goals[:3]]
+        
         return Response({
             "total_balance": float(total_balance),
             "total_cost": float(total_cost),
             "total_profit": float(total_profit),
             "total_profit_pct": total_profit_pct,
+            "daily_variation": float(daily_variation),
+            "daily_variation_pct": float(daily_variation_pct),
+            "dividends_received": float(dividends_gains['total'] or 0),
+            "positions_count": len(processed_positions),
             "allocations_value": {k: float(v) for k, v in allocations.items()},
             "allocations_pct": allocation_pct,
             "positions": processed_positions,
-            "recent_transactions": transactions_data
+            "recent_transactions": transactions_data,
+            "corporate_events": events_data,
+            "portfolio_growth": growth_data,
+            "goals": goals_data
         })
 
     def _generate_mock_seed(self, user):

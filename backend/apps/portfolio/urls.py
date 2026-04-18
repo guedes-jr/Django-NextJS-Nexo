@@ -66,6 +66,7 @@ urlpatterns = [
     path('allocation/', AllocationAnalysisView.as_view(), name='allocation'),
     path('rebalance-suggestion/', RebalanceSuggestionView.as_view(), name='rebalance_suggestion'),
     path('concentration/', ConcentrationRiskView.as_view(), name='concentration'),
+    path('concentracao/', ConcentrationRiskView.as_view(), name='concentracao'),
     path('health-score/', PortfolioHealthScoreView.as_view(), name='health_score'),
     path('risk-by-class/', RiskByClassView.as_view(), name='risk_by_class'),
     path('volatility/', VolatilityView.as_view(), name='volatility'),
